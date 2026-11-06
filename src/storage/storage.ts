@@ -1,0 +1,79 @@
+import * as idb from 'idb-keyval'
+import type { StyleId } from '../beat/patterns'
+import type { Plan } from '../planner/types'
+
+export interface Settings {
+  readonly mainStyle: StyleId
+  readonly volume: number
+  readonly mirror: boolean
+  readonly disclaimerAccepted: boolean
+  readonly clickWithUserMusic: boolean
+  readonly useUserMusic: boolean
+}
+
+export const DEFAULT_SETTINGS: Settings = {
+  mainStyle: 'guichu',
+  volume: 0.8,
+  mirror: true,
+  disclaimerAccepted: false,
+  clickWithUserMusic: false,
+  useUserMusic: false,
+}
+
+export interface WorkoutRecord {
+  readonly id: string
+  readonly date: string
+  readonly plan: Plan
+  readonly completedItems: readonly boolean[]
+  readonly actualSeconds: number
+}
+
+export type StoreResult<T> = { ok: true; value: T } | { ok: false }
+
+interface StoredMusic {
+  readonly blob: Blob
+  readonly name: string
+}
+
+let store: idb.UseStore | null = null
+const kv = (): idb.UseStore => (store ??= idb.createStore('moxing-fitness', 'kv'))
+
+async function attempt<T>(label: string, fn: () => Promise<T>): Promise<StoreResult<T>> {
+  try {
+    return { ok: true, value: await fn() }
+  } catch (error: unknown) {
+    console.error(`本地存储失败: ${label}`, error)
+    return { ok: false }
+  }
+}
+
+export async function loadSettings(): Promise<Settings> {
+  const r = await attempt('读取设置', () => idb.get<Partial<Settings>>('settings', kv()))
+  return { ...DEFAULT_SETTINGS, ...(r.ok ? r.value : {}) }
+}
+
+export function saveSettings(s: Settings): Promise<StoreResult<void>> {
+  return attempt('保存设置', () => idb.set('settings', s, kv()))
+}
+
+export async function listRecords(): Promise<StoreResult<readonly WorkoutRecord[]>> {
+  const r = await attempt('读取记录', () => idb.get<WorkoutRecord[]>('records', kv()))
+  if (!r.ok) return r
+  return { ok: true, value: [...(r.value ?? [])].sort((a, b) => b.date.localeCompare(a.date)) }
+}
+
+export async function appendRecord(record: WorkoutRecord): Promise<StoreResult<void>> {
+  return attempt('保存记录', async () => {
+    const existing = (await idb.get<WorkoutRecord[]>('records', kv())) ?? []
+    await idb.set('records', [...existing, record], kv())
+  })
+}
+
+export function saveUserMusic(blob: Blob, name: string): Promise<StoreResult<void>> {
+  return attempt('保存自选音乐', () => idb.set('userMusic', { blob, name } satisfies StoredMusic, kv()))
+}
+
+export async function loadUserMusic(): Promise<StoredMusic | null> {
+  const r = await attempt('读取自选音乐', () => idb.get<StoredMusic>('userMusic', kv()))
+  return r.ok ? (r.value ?? null) : null
+}
