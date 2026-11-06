@@ -1,0 +1,1143 @@
+[
+  {
+    "id": "march-in-place",
+    "name": "原地踏步",
+    "clip": "march-in-place",
+    "clipSeconds": 1.033,
+    "parts": [
+      "全身"
+    ],
+    "type": "warmup",
+    "level": 1,
+    "impact": "low",
+    "beatsPerRep": 2,
+    "defaultReps": 16,
+    "sided": false,
+    "cues": [
+      "身体挺直，目视前方",
+      "交替抬膝，手臂与腿反向摆动"
+    ],
+    "caution": ""
+  },
+  {
+    "id": "arm-circles-small",
+    "name": "手臂小绕环",
+    "clip": "arm-circles-small",
+    "clipSeconds": 1.8,
+    "parts": [
+      "上肢",
+      "肩颈"
+    ],
+    "type": "warmup",
+    "level": 1,
+    "impact": "low",
+    "beatsPerRep": 4,
+    "defaultReps": 8,
+    "sided": false,
+    "cues": [
+      "双臂侧平举到肩高",
+      "在空中画小圈，中途换方向"
+    ],
+    "caution": ""
+  },
+  {
+    "id": "shoulder-rolls-back",
+    "name": "肩部后绕环",
+    "clip": "shoulder-rolls-back",
+    "clipSeconds": 2.433,
+    "parts": [
+      "肩颈"
+    ],
+    "type": "warmup",
+    "level": 1,
+    "impact": "low",
+    "beatsPerRep": 4,
+    "defaultReps": 10,
+    "sided": false,
+    "cues": [
+      "双肩先向上耸起",
+      "向后绕并夹紧肩胛，再缓慢放下"
+    ],
+    "caution": ""
+  },
+  {
+    "id": "standing-hip-circles",
+    "name": "髋部绕环",
+    "clip": "standing-hip-circles",
+    "clipSeconds": 1.833,
+    "parts": [
+      "臀腿",
+      "腰腹"
+    ],
+    "type": "warmup",
+    "level": 1,
+    "impact": "low",
+    "beatsPerRep": 4,
+    "defaultReps": 8,
+    "sided": false,
+    "cues": [
+      "双脚与肩同宽，双手叉腰",
+      "髋部缓慢画大圈，做完换方向"
+    ],
+    "caution": ""
+  },
+  {
+    "id": "torso-circles",
+    "name": "躯干绕环",
+    "clip": "torso-circles",
+    "clipSeconds": 4.033,
+    "parts": [
+      "腰腹"
+    ],
+    "type": "warmup",
+    "level": 1,
+    "impact": "low",
+    "beatsPerRep": 8,
+    "defaultReps": 5,
+    "sided": false,
+    "cues": [
+      "双手叉腰，膝盖微屈",
+      "上身向前、侧、后、另一侧画圈"
+    ],
+    "caution": "向后时幅度要小，不要用力后仰"
+  },
+  {
+    "id": "standing-cat-cow",
+    "name": "站姿猫牛式",
+    "clip": "standing-cat-cow",
+    "clipSeconds": 2.833,
+    "parts": [
+      "胸背"
+    ],
+    "type": "warmup",
+    "level": 1,
+    "impact": "low",
+    "beatsPerRep": 4,
+    "defaultReps": 8,
+    "sided": false,
+    "cues": [
+      "屈膝，双手扶在大腿上",
+      "拱背收下巴，再挺胸抬头"
+    ],
+    "caution": "膝盖不适时只微微弯曲"
+  },
+  {
+    "id": "step-touch-clap",
+    "name": "并步拍手",
+    "clip": "step-touch-clap",
+    "clipSeconds": 2.033,
+    "parts": [
+      "全身"
+    ],
+    "type": "warmup",
+    "level": 1,
+    "impact": "low",
+    "beatsPerRep": 4,
+    "defaultReps": 15,
+    "sided": false,
+    "cues": [
+      "向一侧迈步",
+      "另一脚并拢点地并拍手，再换方向"
+    ],
+    "caution": ""
+  },
+  {
+    "id": "t-arms-trunk-rotation",
+    "name": "平举转体",
+    "clip": "t-arms-trunk-rotation",
+    "clipSeconds": 4.833,
+    "parts": [
+      "胸背",
+      "腰腹"
+    ],
+    "type": "warmup",
+    "level": 1,
+    "impact": "low",
+    "beatsPerRep": 8,
+    "defaultReps": 8,
+    "sided": false,
+    "cues": [
+      "双臂侧平举到肩高",
+      "上身和头转向一侧，髋部朝前不动"
+    ],
+    "caution": ""
+  },
+  {
+    "id": "front-leg-swing",
+    "name": "前后摆腿",
+    "clip": "front-leg-swing",
+    "clipSeconds": 1.433,
+    "parts": [
+      "臀腿"
+    ],
+    "type": "warmup",
+    "level": 1,
+    "impact": "low",
+    "beatsPerRep": 2,
+    "defaultReps": 10,
+    "sided": true,
+    "cues": [
+      "一手扶椅背或墙",
+      "伸直一条腿前后小幅摆动，背部挺直"
+    ],
+    "caution": ""
+  },
+  {
+    "id": "neck-side-tilt",
+    "name": "颈部侧倾",
+    "clip": "neck-side-tilt",
+    "clipSeconds": 6.033,
+    "parts": [
+      "肩颈"
+    ],
+    "type": "warmup",
+    "level": 1,
+    "impact": "low",
+    "beatsPerRep": 8,
+    "defaultReps": 5,
+    "sided": false,
+    "cues": [
+      "双肩放松下沉",
+      "耳朵靠向肩膀，肩膀不要抬起"
+    ],
+    "caution": ""
+  },
+  {
+    "id": "shoulder-shrugs",
+    "name": "耸肩",
+    "clip": "shoulder-shrugs",
+    "clipSeconds": 2.233,
+    "parts": [
+      "肩颈"
+    ],
+    "type": "main",
+    "level": 1,
+    "impact": "low",
+    "beatsPerRep": 4,
+    "defaultReps": 10,
+    "sided": false,
+    "cues": [
+      "双臂自然下垂",
+      "双肩向耳朵耸起，停一秒再放下"
+    ],
+    "caution": ""
+  },
+  {
+    "id": "chin-tuck",
+    "name": "收下巴",
+    "clip": "chin-tuck",
+    "clipSeconds": 3.033,
+    "parts": [
+      "肩颈"
+    ],
+    "type": "main",
+    "level": 1,
+    "impact": "low",
+    "beatsPerRep": 8,
+    "defaultReps": 10,
+    "sided": false,
+    "cues": [
+      "目视正前方",
+      "头部水平向后收，像做出双下巴"
+    ],
+    "caution": ""
+  },
+  {
+    "id": "scapular-squeeze",
+    "name": "夹肩胛",
+    "clip": "scapular-squeeze",
+    "clipSeconds": 3.533,
+    "parts": [
+      "肩颈",
+      "胸背"
+    ],
+    "type": "main",
+    "level": 1,
+    "impact": "low",
+    "beatsPerRep": 8,
+    "defaultReps": 10,
+    "sided": false,
+    "cues": [
+      "屈肘贴住身体两侧",
+      "夹紧肩胛、打开胸口，停留后放松"
+    ],
+    "caution": ""
+  },
+  {
+    "id": "w-squeeze",
+    "name": "W 字夹背",
+    "clip": "w-squeeze",
+    "clipSeconds": 2.633,
+    "parts": [
+      "肩颈",
+      "胸背"
+    ],
+    "type": "main",
+    "level": 2,
+    "impact": "low",
+    "beatsPerRep": 4,
+    "defaultReps": 10,
+    "sided": false,
+    "cues": [
+      "双肘抬到肩高，前臂朝上",
+      "手肘向下向后拉成 W 形并夹紧肩胛"
+    ],
+    "caution": ""
+  },
+  {
+    "id": "y-raise",
+    "name": "Y 字上举",
+    "clip": "y-raise",
+    "clipSeconds": 2.933,
+    "parts": [
+      "肩颈",
+      "上肢"
+    ],
+    "type": "main",
+    "level": 2,
+    "impact": "low",
+    "beatsPerRep": 8,
+    "defaultReps": 10,
+    "sided": false,
+    "cues": [
+      "双臂伸直向上外举成 Y 形",
+      "拇指朝上，缓慢放下"
+    ],
+    "caution": ""
+  },
+  {
+    "id": "biceps-curl",
+    "name": "弯举",
+    "clip": "biceps-curl",
+    "clipSeconds": 2.333,
+    "parts": [
+      "上肢"
+    ],
+    "type": "main",
+    "level": 1,
+    "impact": "low",
+    "beatsPerRep": 4,
+    "defaultReps": 12,
+    "sided": false,
+    "cues": [
+      "手肘贴紧身体两侧",
+      "屈肘把手举到肩前，再缓慢放下"
+    ],
+    "caution": ""
+  },
+  {
+    "id": "lateral-raise",
+    "name": "侧平举",
+    "clip": "lateral-raise",
+    "clipSeconds": 2.633,
+    "parts": [
+      "上肢",
+      "肩颈"
+    ],
+    "type": "main",
+    "level": 1,
+    "impact": "low",
+    "beatsPerRep": 4,
+    "defaultReps": 10,
+    "sided": false,
+    "cues": [
+      "手肘微屈",
+      "双臂向两侧举到肩高，再缓慢放下"
+    ],
+    "caution": ""
+  },
+  {
+    "id": "front-raise",
+    "name": "前平举",
+    "clip": "front-raise",
+    "clipSeconds": 2.633,
+    "parts": [
+      "上肢"
+    ],
+    "type": "main",
+    "level": 1,
+    "impact": "low",
+    "beatsPerRep": 4,
+    "defaultReps": 10,
+    "sided": false,
+    "cues": [
+      "双臂伸直放在大腿前",
+      "举到肩高后缓慢放下，不要甩"
+    ],
+    "caution": ""
+  },
+  {
+    "id": "triceps-kickback",
+    "name": "臂屈伸后踢",
+    "clip": "triceps-kickback",
+    "clipSeconds": 1.833,
+    "parts": [
+      "上肢"
+    ],
+    "type": "main",
+    "level": 2,
+    "impact": "low",
+    "beatsPerRep": 4,
+    "defaultReps": 12,
+    "sided": false,
+    "cues": [
+      "微屈膝，背部挺直前倾",
+      "手肘贴身朝后，前臂向后伸直再弯回"
+    ],
+    "caution": ""
+  },
+  {
+    "id": "punches",
+    "name": "直拳",
+    "clip": "punches",
+    "clipSeconds": 0.833,
+    "parts": [
+      "上肢",
+      "全身"
+    ],
+    "type": "main",
+    "level": 2,
+    "impact": "low",
+    "beatsPerRep": 2,
+    "defaultReps": 16,
+    "sided": false,
+    "cues": [
+      "膝盖放松，双手护在下巴前",
+      "左右手交替向前出拳，手肘不要锁死"
+    ],
+    "caution": ""
+  },
+  {
+    "id": "overhead-punches",
+    "name": "上冲拳",
+    "clip": "overhead-punches",
+    "clipSeconds": 0.933,
+    "parts": [
+      "上肢",
+      "全身"
+    ],
+    "type": "main",
+    "level": 3,
+    "impact": "low",
+    "beatsPerRep": 2,
+    "defaultReps": 16,
+    "sided": false,
+    "cues": [
+      "双拳放在肩旁",
+      "左右手交替向上冲拳，收紧腹部"
+    ],
+    "caution": "不要塌腰后仰"
+  },
+  {
+    "id": "pull-aparts",
+    "name": "双臂外展",
+    "clip": "pull-aparts",
+    "clipSeconds": 2.433,
+    "parts": [
+      "胸背"
+    ],
+    "type": "main",
+    "level": 1,
+    "impact": "low",
+    "beatsPerRep": 4,
+    "defaultReps": 12,
+    "sided": false,
+    "cues": [
+      "双臂在胸前平举到肩高",
+      "向两侧打开并夹紧肩胛，再慢慢收回"
+    ],
+    "caution": ""
+  },
+  {
+    "id": "standing-snow-angel",
+    "name": "站姿雪天使",
+    "clip": "standing-snow-angel",
+    "clipSeconds": 2.633,
+    "parts": [
+      "胸背",
+      "肩颈"
+    ],
+    "type": "main",
+    "level": 1,
+    "impact": "low",
+    "beatsPerRep": 4,
+    "defaultReps": 8,
+    "sided": false,
+    "cues": [
+      "从 W 姿势开始，前臂朝上",
+      "双臂向上滑到接近伸直，再收回夹背"
+    ],
+    "caution": ""
+  },
+  {
+    "id": "hinge-reverse-fly",
+    "name": "俯身反向飞鸟",
+    "clip": "hinge-reverse-fly",
+    "clipSeconds": 2.633,
+    "parts": [
+      "胸背"
+    ],
+    "type": "main",
+    "level": 2,
+    "impact": "low",
+    "beatsPerRep": 4,
+    "defaultReps": 10,
+    "sided": false,
+    "cues": [
+      "从髋部前倾，双臂自然下垂",
+      "双臂向两侧打开夹紧肩胛，再缓慢放下"
+    ],
+    "caution": ""
+  },
+  {
+    "id": "hinge-y-raise",
+    "name": "俯身 Y 字举",
+    "clip": "hinge-y-raise",
+    "clipSeconds": 2.933,
+    "parts": [
+      "胸背",
+      "肩颈"
+    ],
+    "type": "main",
+    "level": 2,
+    "impact": "low",
+    "beatsPerRep": 8,
+    "defaultReps": 10,
+    "sided": false,
+    "cues": [
+      "背部挺直从髋前倾，膝盖放松",
+      "双臂伸直向前外举成 Y 形，再缓慢放下"
+    ],
+    "caution": "腰部疲劳时身体抬高一些"
+  },
+  {
+    "id": "prone-superman",
+    "name": "俯卧超人",
+    "clip": "prone-superman",
+    "clipSeconds": 3.633,
+    "parts": [
+      "胸背",
+      "腰腹"
+    ],
+    "type": "main",
+    "level": 3,
+    "impact": "low",
+    "beatsPerRep": 8,
+    "defaultReps": 8,
+    "sided": false,
+    "cues": [
+      "俯卧，双臂向前伸直",
+      "手臂、胸口和腿稍微抬离地面，停 2 秒"
+    ],
+    "caution": "不要用力抬高，腰痛时只抬手臂"
+  },
+  {
+    "id": "standing-side-crunch",
+    "name": "站姿侧卷腹",
+    "clip": "standing-side-crunch",
+    "clipSeconds": 2.433,
+    "parts": [
+      "腰腹"
+    ],
+    "type": "main",
+    "level": 1,
+    "impact": "low",
+    "beatsPerRep": 4,
+    "defaultReps": 10,
+    "sided": false,
+    "cues": [
+      "双手放在脑后",
+      "一侧膝盖向外抬起，同侧手肘向下靠近"
+    ],
+    "caution": ""
+  },
+  {
+    "id": "standing-bicycle-crunch",
+    "name": "站姿单车卷腹",
+    "clip": "standing-bicycle-crunch",
+    "clipSeconds": 2.433,
+    "parts": [
+      "腰腹"
+    ],
+    "type": "main",
+    "level": 1,
+    "impact": "low",
+    "beatsPerRep": 4,
+    "defaultReps": 10,
+    "sided": false,
+    "cues": [
+      "双手放脑后，手肘打开",
+      "抬起一侧膝盖，用对侧手肘去碰"
+    ],
+    "caution": ""
+  },
+  {
+    "id": "standing-cross-crunch",
+    "name": "站姿交叉卷腹",
+    "clip": "standing-cross-crunch",
+    "clipSeconds": 3.633,
+    "parts": [
+      "腰腹"
+    ],
+    "type": "main",
+    "level": 2,
+    "impact": "low",
+    "beatsPerRep": 8,
+    "defaultReps": 10,
+    "sided": false,
+    "cues": [
+      "双手放在脑后",
+      "抬膝同时转体，让对侧手肘向下迎上"
+    ],
+    "caution": ""
+  },
+  {
+    "id": "dead-bug",
+    "name": "死虫式",
+    "clip": "dead-bug",
+    "clipSeconds": 4.833,
+    "parts": [
+      "腰腹"
+    ],
+    "type": "main",
+    "level": 2,
+    "impact": "low",
+    "beatsPerRep": 8,
+    "defaultReps": 8,
+    "sided": false,
+    "cues": [
+      "仰卧，双臂朝上，屈膝抬腿成直角",
+      "一侧手臂向后、对侧腿向前伸，腰贴地"
+    ],
+    "caution": "腰部吃力时只动腿不动手"
+  },
+  {
+    "id": "knee-plank",
+    "name": "跪姿平板支撑",
+    "clip": "knee-plank",
+    "clipSeconds": 5.033,
+    "parts": [
+      "腰腹"
+    ],
+    "type": "main",
+    "level": 2,
+    "impact": "low",
+    "beatsPerRep": 8,
+    "defaultReps": 4,
+    "sided": false,
+    "cues": [
+      "前臂撑地，手肘在肩膀正下方",
+      "膝盖着地，头到膝成一条直线，收紧腹部"
+    ],
+    "caution": "腰痛时降低臀部或停止"
+  },
+  {
+    "id": "plank-full",
+    "name": "平板支撑",
+    "clip": "plank-full",
+    "clipSeconds": 5.633,
+    "parts": [
+      "腰腹",
+      "全身"
+    ],
+    "type": "main",
+    "level": 3,
+    "impact": "low",
+    "beatsPerRep": 16,
+    "defaultReps": 4,
+    "sided": false,
+    "cues": [
+      "双手在肩膀正下方，双腿向后伸直",
+      "头到脚跟成一条直线，臀部不塌不翘"
+    ],
+    "caution": "手腕不适时改用前臂或跪姿"
+  },
+  {
+    "id": "mini-squat",
+    "name": "浅蹲",
+    "clip": "mini-squat",
+    "clipSeconds": 2.433,
+    "parts": [
+      "臀腿"
+    ],
+    "type": "main",
+    "level": 1,
+    "impact": "low",
+    "beatsPerRep": 4,
+    "defaultReps": 10,
+    "sided": false,
+    "cues": [
+      "双脚与肩同宽，双臂前伸",
+      "像坐高椅子一样稍微下蹲"
+    ],
+    "caution": "膝盖对准脚尖，不要内扣"
+  },
+  {
+    "id": "calf-raise",
+    "name": "提踵",
+    "clip": "calf-raise",
+    "clipSeconds": 2.633,
+    "parts": [
+      "臀腿"
+    ],
+    "type": "main",
+    "level": 1,
+    "impact": "low",
+    "beatsPerRep": 4,
+    "defaultReps": 12,
+    "sided": false,
+    "cues": [
+      "扶椅背保持平衡",
+      "慢慢踮起脚尖，再缓慢落下脚跟"
+    ],
+    "caution": ""
+  },
+  {
+    "id": "side-leg-raise",
+    "name": "侧抬腿",
+    "clip": "side-leg-raise",
+    "clipSeconds": 2.533,
+    "parts": [
+      "臀腿"
+    ],
+    "type": "main",
+    "level": 1,
+    "impact": "low",
+    "beatsPerRep": 4,
+    "defaultReps": 10,
+    "sided": true,
+    "cues": [
+      "一手扶椅背",
+      "一条腿伸直向侧抬起，脚尖朝前，再缓慢放下"
+    ],
+    "caution": ""
+  },
+  {
+    "id": "glute-bridge",
+    "name": "臀桥",
+    "clip": "glute-bridge",
+    "clipSeconds": 4.133,
+    "parts": [
+      "臀腿",
+      "腰腹"
+    ],
+    "type": "main",
+    "level": 2,
+    "impact": "low",
+    "beatsPerRep": 8,
+    "defaultReps": 10,
+    "sided": false,
+    "cues": [
+      "仰卧屈膝，双手放在地上",
+      "脚跟发力抬臀，肩到膝成一条直线，停 2 秒"
+    ],
+    "caution": "不要塌腰，腰痛时抬低一些"
+  },
+  {
+    "id": "sit-back-squat",
+    "name": "后坐深蹲",
+    "clip": "sit-back-squat",
+    "clipSeconds": 3.233,
+    "parts": [
+      "臀腿"
+    ],
+    "type": "main",
+    "level": 2,
+    "impact": "low",
+    "beatsPerRep": 8,
+    "defaultReps": 8,
+    "sided": false,
+    "cues": [
+      "臀部向后，像坐一张看不见的椅子",
+      "上身前倾，双臂前伸保持平衡"
+    ],
+    "caution": "只蹲到膝盖舒适的深度，用脚跟发力站起"
+  },
+  {
+    "id": "shallow-split-squat",
+    "name": "浅分腿蹲",
+    "clip": "shallow-split-squat",
+    "clipSeconds": 2.833,
+    "parts": [
+      "臀腿"
+    ],
+    "type": "main",
+    "level": 3,
+    "impact": "low",
+    "beatsPerRep": 8,
+    "defaultReps": 8,
+    "sided": true,
+    "cues": [
+      "一脚在前一脚在后，双脚不动",
+      "后脚跟抬起，身体小幅下沉"
+    ],
+    "caution": "只做小幅下沉，前膝不要超过脚尖"
+  },
+  {
+    "id": "reverse-lunge-knee-drive",
+    "name": "后撤步提膝",
+    "clip": "reverse-lunge-knee-drive",
+    "clipSeconds": 1.333,
+    "parts": [
+      "臀腿",
+      "全身"
+    ],
+    "type": "main",
+    "level": 3,
+    "impact": "low",
+    "beatsPerRep": 4,
+    "defaultReps": 8,
+    "sided": true,
+    "cues": [
+      "向后小退一步，膝盖微屈",
+      "后脚蹬地，把这侧膝盖向上提高"
+    ],
+    "caution": "步子小、下沉浅，前膝在脚踝正上方"
+  },
+  {
+    "id": "step-jack",
+    "name": "无跳开合步",
+    "clip": "step-jack",
+    "clipSeconds": 2.033,
+    "parts": [
+      "全身"
+    ],
+    "type": "main",
+    "level": 1,
+    "impact": "low",
+    "beatsPerRep": 4,
+    "defaultReps": 16,
+    "sided": false,
+    "cues": [
+      "像开合跳但不跳起",
+      "一脚向侧迈出同时举起双臂，再收回换边"
+    ],
+    "caution": ""
+  },
+  {
+    "id": "skier-swing",
+    "name": "滑雪摆臂",
+    "clip": "skier-swing",
+    "clipSeconds": 1.433,
+    "parts": [
+      "全身"
+    ],
+    "type": "main",
+    "level": 2,
+    "impact": "low",
+    "beatsPerRep": 4,
+    "defaultReps": 15,
+    "sided": false,
+    "cues": [
+      "双臂上举",
+      "屈膝前倾，双臂向后摆，再回到上举"
+    ],
+    "caution": "背部保持挺直，腰不好时幅度小一些"
+  },
+  {
+    "id": "standing-climber",
+    "name": "站姿登山",
+    "clip": "standing-climber",
+    "clipSeconds": 0.933,
+    "parts": [
+      "全身",
+      "腰腹"
+    ],
+    "type": "main",
+    "level": 3,
+    "impact": "low",
+    "beatsPerRep": 2,
+    "defaultReps": 16,
+    "sided": false,
+    "cues": [
+      "想象在爬梯子",
+      "一手向上够，同时抬起对侧膝盖，再交换"
+    ],
+    "caution": ""
+  },
+  {
+    "id": "trap-stretch",
+    "name": "斜方肌拉伸",
+    "clip": "trap-stretch",
+    "clipSeconds": 7.833,
+    "parts": [
+      "肩颈"
+    ],
+    "type": "stretch",
+    "level": 1,
+    "impact": "low",
+    "beatsPerRep": 8,
+    "defaultReps": 4,
+    "sided": true,
+    "cues": [
+      "头向一侧倾斜",
+      "另一侧手向下向外推，保持呼吸"
+    ],
+    "caution": ""
+  },
+  {
+    "id": "cross-body-stretch",
+    "name": "手臂交叉拉伸",
+    "clip": "cross-body-stretch",
+    "clipSeconds": 7.833,
+    "parts": [
+      "上肢",
+      "肩颈"
+    ],
+    "type": "stretch",
+    "level": 1,
+    "impact": "low",
+    "beatsPerRep": 8,
+    "defaultReps": 4,
+    "sided": true,
+    "cues": [
+      "一臂伸直横过胸前",
+      "另一手在肘上方把它拉近，肩膀下沉"
+    ],
+    "caution": ""
+  },
+  {
+    "id": "overhead-triceps-stretch",
+    "name": "肱三头肌拉伸",
+    "clip": "overhead-triceps-stretch",
+    "clipSeconds": 7.833,
+    "parts": [
+      "上肢"
+    ],
+    "type": "stretch",
+    "level": 1,
+    "impact": "low",
+    "beatsPerRep": 8,
+    "defaultReps": 4,
+    "sided": true,
+    "cues": [
+      "一臂上举屈肘，手落到脑后",
+      "另一手轻压手肘，头保持抬起"
+    ],
+    "caution": ""
+  },
+  {
+    "id": "chest-opener-clasp",
+    "name": "扣手开胸",
+    "clip": "chest-opener-clasp",
+    "clipSeconds": 3.933,
+    "parts": [
+      "胸背"
+    ],
+    "type": "stretch",
+    "level": 1,
+    "impact": "low",
+    "beatsPerRep": 4,
+    "defaultReps": 5,
+    "sided": false,
+    "cues": [
+      "双手在背后相扣",
+      "双肩向后向下，挺胸目视前方"
+    ],
+    "caution": ""
+  },
+  {
+    "id": "arms-back-chest-stretch",
+    "name": "双臂后展开胸",
+    "clip": "arms-back-chest-stretch",
+    "clipSeconds": 4.133,
+    "parts": [
+      "胸背",
+      "上肢"
+    ],
+    "type": "stretch",
+    "level": 1,
+    "impact": "low",
+    "beatsPerRep": 4,
+    "defaultReps": 5,
+    "sided": false,
+    "cues": [
+      "双臂向两侧打开，略高于肩",
+      "向后拉到胸前有拉伸感，保持呼吸"
+    ],
+    "caution": ""
+  },
+  {
+    "id": "standing-side-bend-reach",
+    "name": "站姿侧弯伸展",
+    "clip": "standing-side-bend-reach",
+    "clipSeconds": 7.233,
+    "parts": [
+      "腰腹"
+    ],
+    "type": "stretch",
+    "level": 1,
+    "impact": "low",
+    "beatsPerRep": 8,
+    "defaultReps": 6,
+    "sided": false,
+    "cues": [
+      "双脚与髋同宽",
+      "一臂上举向另一侧弯，另一手沿大腿下滑"
+    ],
+    "caution": ""
+  },
+  {
+    "id": "baby-cobra",
+    "name": "小眼镜蛇式",
+    "clip": "baby-cobra",
+    "clipSeconds": 4.133,
+    "parts": [
+      "腰腹",
+      "胸背"
+    ],
+    "type": "stretch",
+    "level": 1,
+    "impact": "low",
+    "beatsPerRep": 4,
+    "defaultReps": 6,
+    "sided": false,
+    "cues": [
+      "俯卧，双手放在胸旁",
+      "只抬起胸口，手肘贴近身体，肩膀远离耳朵"
+    ],
+    "caution": "只抬一点，腰部不要有压迫感"
+  },
+  {
+    "id": "supine-twist",
+    "name": "仰卧扭转",
+    "clip": "supine-twist",
+    "clipSeconds": 8.633,
+    "parts": [
+      "腰腹"
+    ],
+    "type": "stretch",
+    "level": 1,
+    "impact": "low",
+    "beatsPerRep": 16,
+    "defaultReps": 4,
+    "sided": false,
+    "cues": [
+      "仰卧，双臂向两侧打开，屈膝",
+      "双膝慢慢倒向一侧，肩膀贴地"
+    ],
+    "caution": "腰痛时双膝只倒一半"
+  },
+  {
+    "id": "standing-quad-stretch",
+    "name": "站姿股四头肌拉伸",
+    "clip": "standing-quad-stretch",
+    "clipSeconds": 4.633,
+    "parts": [
+      "臀腿"
+    ],
+    "type": "stretch",
+    "level": 1,
+    "impact": "low",
+    "beatsPerRep": 8,
+    "defaultReps": 4,
+    "sided": true,
+    "cues": [
+      "一手扶墙或椅子",
+      "屈膝向后抓住脚踝"
+    ],
+    "caution": "够不到时抓裤脚或用毛巾，不要用力拉"
+  },
+  {
+    "id": "standing-hamstring-stretch",
+    "name": "站姿腘绳肌拉伸",
+    "clip": "standing-hamstring-stretch",
+    "clipSeconds": 4.633,
+    "parts": [
+      "臀腿"
+    ],
+    "type": "stretch",
+    "level": 1,
+    "impact": "low",
+    "beatsPerRep": 8,
+    "defaultReps": 4,
+    "sided": true,
+    "cues": [
+      "一脚脚跟向前点地，脚尖朝上",
+      "后腿屈膝，背部挺直向前倾"
+    ],
+    "caution": ""
+  },
+  {
+    "id": "lunge-hip-flexor-stretch",
+    "name": "弓步髋屈肌拉伸",
+    "clip": "lunge-hip-flexor-stretch",
+    "clipSeconds": 4.633,
+    "parts": [
+      "臀腿"
+    ],
+    "type": "stretch",
+    "level": 1,
+    "impact": "low",
+    "beatsPerRep": 8,
+    "defaultReps": 4,
+    "sided": true,
+    "cues": [
+      "向前跨一大步，前膝微屈",
+      "骨盆后收，感受后腿前侧的拉伸"
+    ],
+    "caution": "前膝不要超过脚尖，背部挺直"
+  },
+  {
+    "id": "tall-reach-tiptoes",
+    "name": "踮脚伸展",
+    "clip": "tall-reach-tiptoes",
+    "clipSeconds": 3.433,
+    "parts": [
+      "全身"
+    ],
+    "type": "stretch",
+    "level": 1,
+    "impact": "low",
+    "beatsPerRep": 4,
+    "defaultReps": 8,
+    "sided": false,
+    "cues": [
+      "双臂举过头顶",
+      "踮起脚尖向上伸展，再慢慢落下"
+    ],
+    "caution": "站不稳时脚掌贴地即可"
+  },
+  {
+    "id": "child-pose",
+    "name": "婴儿式",
+    "clip": "child-pose",
+    "clipSeconds": 5.233,
+    "parts": [
+      "全身",
+      "胸背"
+    ],
+    "type": "stretch",
+    "level": 1,
+    "impact": "low",
+    "beatsPerRep": 8,
+    "defaultReps": 6,
+    "sided": false,
+    "cues": [
+      "跪坐在脚跟上",
+      "胸口贴向大腿，双臂向前伸展贴地"
+    ],
+    "caution": "膝盖不适时在臀部和脚跟间垫枕头"
+  },
+  {
+    "id": "standing-forward-fold-soft",
+    "name": "站姿前屈",
+    "clip": "standing-forward-fold-soft",
+    "clipSeconds": 6.233,
+    "parts": [
+      "全身",
+      "臀腿"
+    ],
+    "type": "stretch",
+    "level": 1,
+    "impact": "low",
+    "beatsPerRep": 8,
+    "defaultReps": 5,
+    "sided": false,
+    "cues": [
+      "膝盖微屈",
+      "从髋部前屈，让头和手臂自然下垂，再逐节卷起"
+    ],
+    "caution": "膝盖微屈可以保护腰部"
+  }
+]
