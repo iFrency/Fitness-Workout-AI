@@ -29,7 +29,8 @@ test('works offline after first visit', async ({ page }) => {
     await page.reload()
     await page.waitForFunction(() => navigator.serviceWorker.controller !== null)
   } finally {
-    server.httpServer.closeAllConnections?.()
+    const http = server.httpServer
+    if ('closeAllConnections' in http) http.closeAllConnections()
     await new Promise<void>(resolve => server.httpServer.close(() => resolve()))
   }
   await page.reload()
