@@ -89,6 +89,10 @@ export class AudioEngine {
     this.timer = setInterval(() => this.tick(), TICK_MS)
   }
 
+  setOptions(patch: Partial<RunOptions>): void {
+    if (this.run_) this.run_ = { ...this.run_, opts: { ...this.run_.opts, ...patch } }
+  }
+
   stop(): void {
     if (this.timer) clearInterval(this.timer)
     this.timer = null
