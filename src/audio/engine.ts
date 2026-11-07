@@ -5,6 +5,7 @@ import { VOICE_URL } from '../catalog/constants'
 import type { Plan } from '../planner/types'
 import type { TrainingSession } from '../player/session'
 import { timelineEnd, type Step } from '../player/timeline'
+import { Ducker } from './ducker'
 import { renderSounds } from './synth'
 
 export const DUCK_GAIN = 0.398
@@ -35,6 +36,7 @@ export class AudioEngine {
   private readonly master: GainNode
   private readonly musicGain: GainNode
   private readonly voiceGain: GainNode
+  private readonly ducker: Ducker
   private sounds: Record<SoundId, AudioBuffer> | null = null
   private readonly voices = new Map<VoiceId, AudioBuffer>()
   private readonly doneListeners = new Set<() => void>()
@@ -53,6 +55,7 @@ export class AudioEngine {
     this.musicGain.connect(this.master)
     this.voiceGain = ctx.createGain()
     this.voiceGain.connect(this.master)
+    this.ducker = new Ducker(this.musicGain.gain, DUCK_GAIN, DUCK_RELEASE)
   }
 
   /** Must be called inside a user gesture handler. */
@@ -99,6 +102,7 @@ export class AudioEngine {
     this.run_?.unsubscribe()
     this.run_ = null
     this.stopMusic()
+    this.ducker.reset(this.ctx.currentTime)
     this.silent?.pause()
   }
 
@@ -159,11 +163,7 @@ export class AudioEngine {
   private playVoice(id: VoiceId, at: number): void {
     const start = Math.max(this.ctx.currentTime, at)
     const duration = this.play(this.voices.get(id), start, this.voiceGain, 1, 1)
-    if (duration === 0) return
-    const gain = this.musicGain.gain
-    gain.setValueAtTime(DUCK_GAIN, start)
-    gain.setValueAtTime(DUCK_GAIN, start + duration)
-    gain.linearRampToValueAtTime(1, start + duration + DUCK_RELEASE)
+    if (duration > 0) this.ducker.duck(start, duration)
   }
 
   private startMusic(buffer: AudioBuffer): void {

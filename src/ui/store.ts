@@ -5,6 +5,7 @@ import { removeItem, replaceItem } from '../planner/editPlan'
 import { generatePlan } from '../planner/generatePlan'
 import type { Plan, PlanInput } from '../planner/types'
 import type { TrainingSession } from '../player/session'
+import type { Step } from '../player/timeline'
 import {
   DEFAULT_SETTINGS, appendRecord, loadSettings, saveSettings, type Settings, type WorkoutRecord,
 } from '../storage/storage'
@@ -31,7 +32,8 @@ interface AppState {
   replace(index: number, exercise: Exercise): void
   remove(index: number): void
   startTraining(): void
-  finishTraining(session: TrainingSession): Promise<void>
+  finishTraining(session: TrainingSession, steps: readonly Step[]): Promise<void>
+  reportMusicDecodeFailure(): void
   updateSettings(patch: Partial<Settings>): void
   go(page: Page): void
 }
@@ -72,18 +74,23 @@ export const useAppStore = create<AppState>((set, get) => ({
     if (plan && plan.items.length > 1) set({ plan: removeItem(plan, index) })
   },
   startTraining: () => set({ page: 'training' }),
-  async finishTraining(session) {
+  async finishTraining(session, steps) {
     const { plan } = get()
     if (!plan) return
+    const now = session.time()
+    const reached = (i: number) => steps.filter(s => s.kind === 'work' && s.itemIndex === i).every(s => s.end <= now + 1e-6)
     const record: WorkoutRecord = {
       id: crypto.randomUUID(),
       date: new Date().toISOString(),
       plan,
-      completedItems: plan.items.map((_, i) => !session.skippedItems().has(i)),
+      completedItems: plan.items.map((_, i) => reached(i) && !session.skippedItems().has(i)),
       actualSeconds: session.activeSeconds(),
     }
     const result = await appendRecord(record)
     set({ lastResult: { record, saved: result.ok }, page: 'done' })
+  },
+  reportMusicDecodeFailure() {
+    get().updateSettings({ useUserMusic: false })
   },
   updateSettings(patch) {
     const settings = { ...get().settings, ...patch }

@@ -59,6 +59,33 @@ it('notifies jump listeners on skip and resume', () => {
   expect(fn).toHaveBeenCalledTimes(2)
 })
 
+it('skip during a rest shortens the rest instead of skipping the upcoming exercise', () => {
+  const c = fake(); const s = new TrainingSession(steps, c); s.start()
+  const rest = steps.find(x => x.kind === 'rest')!
+  c.advance(rest.start + 1); s.skip()
+  const st = stateAt(steps, s.time())
+  expect(st.step.kind).toBe('work')
+  expect(st.step.itemIndex).toBe(rest.itemIndex)
+  expect(st.stepElapsed).toBeCloseTo(0)
+  expect(s.skippedItems().size).toBe(0)
+})
+
+it('skip during prepare starts the first exercise', () => {
+  const c = fake(); const s = new TrainingSession(steps, c); s.start()
+  c.advance(0.5); s.skip()
+  const st = stateAt(steps, s.time())
+  expect(st.step.kind).toBe('work')
+  expect(st.step.itemIndex).toBe(0)
+  expect(s.skippedItems().size).toBe(0)
+})
+
+it('skipping the last item while paused finishes instead of staying paused (Review Focus 3)', () => {
+  const c = fake(); const s = new TrainingSession(steps, c); s.start()
+  c.advance(timelineEnd(steps) - 1); s.pause(); s.skip()
+  expect(s.isPaused()).toBe(false)
+  expect(stateAt(steps, s.time()).done).toBe(true)
+})
+
 it('time is zero before start and clamps at the end', () => {
   const c = fake(); const s = new TrainingSession(steps, c)
   expect(s.time()).toBe(0)

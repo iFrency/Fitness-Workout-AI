@@ -53,6 +53,9 @@ button[aria-pressed='true'] { background: var(--hot); border-color: var(--hot); 
 .note { font-size: 13px; color: var(--muted); margin: 0; }
 
 .training { padding-top: 8px; gap: 12px; }
+.training-top { display: flex; align-items: center; gap: 10px; }
+.training-top .progress { flex: 1; }
+button.small { padding: 4px 10px; font-size: 13px; }
 .progress { height: 6px; background: var(--line); border-radius: 3px; overflow: hidden; }
 .progress div { height: 100%; background: var(--accent); transition: width 0.1s linear; }
 .stage { position: relative; height: 56vh; border-radius: var(--radius); overflow: hidden; background: radial-gradient(circle at 50% 30%, #3a2c24, #15110f 70%); }

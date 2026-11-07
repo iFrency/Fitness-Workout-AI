@@ -1,4 +1,5 @@
 import { AudioEngine } from '../audio/engine'
+import type { TrainingSession } from '../player/session'
 
 interface AudioHandle {
   readonly ctx: AudioContext
@@ -14,6 +15,18 @@ export function getAudio(): AudioHandle {
     handle = { ctx, engine: new AudioEngine(ctx) }
   }
   return handle
+}
+
+/**
+ * Resumes a paused session. Mobile browsers suspend the AudioContext in the background,
+ * and the session clock is that context's time, so it must be unlocked on every resume.
+ */
+export function resumeSession(
+  session: TrainingSession,
+  unlock: () => Promise<void> = () => getAudio().engine.unlock(),
+): void {
+  unlock().catch(err => console.warn('音频解锁失败', err))
+  session.resume()
 }
 
 export function speedFromUrl(): number {

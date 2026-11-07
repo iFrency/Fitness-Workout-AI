@@ -5,7 +5,7 @@ import type { Exercise } from '../../catalog/types'
 import type { Plan } from '../../planner/types'
 import { stateAt, timelineEnd, type TrainingState } from '../../player/timeline'
 import { Stage, type CameraPreset } from '../../stage/Stage'
-import { getAudio } from '../audio'
+import { getAudio, resumeSession } from '../audio'
 import { useAppStore } from '../store'
 import { useTrainingRun } from '../useTrainingRun'
 
@@ -38,8 +38,8 @@ export function Training() {
   const plan = useAppStore(s => s.plan)!
   const catalog = useAppStore(s => s.catalog)!
   const settings = useAppStore(s => s.settings)
-  const { finishTraining, updateSettings } = useAppStore.getState()
-  const run = useTrainingRun(plan, settings, s => void finishTraining(s))
+  const { finishTraining, updateSettings, reportMusicDecodeFailure } = useAppStore.getState()
+  const run = useTrainingRun(plan, settings, (s, steps) => void finishTraining(s, steps), reportMusicDecodeFailure)
   const [preset, setPreset] = useState<CameraPreset>('threeQuarter')
   const [, force] = useState(0)
   const byId = useMemo(() => new Map(catalog.map(e => [e.id, e])), [catalog])
@@ -47,9 +47,12 @@ export function Training() {
   const { session } = run
 
   const togglePause = () => {
-    if (session.isPaused()) session.resume()
+    if (session.isPaused()) resumeSession(session)
     else session.pause()
     force(n => n + 1)
+  }
+  const quit = () => {
+    if (window.confirm('确定结束本次训练吗？已完成的动作会被记录。')) void finishTraining(session, run.steps)
   }
   const setStyle = (mainStyle: StyleId) => {
     updateSettings({ mainStyle })
@@ -62,7 +65,10 @@ export function Training() {
 
   return (
     <main className="page training">
-      <div className="progress"><div style={{ width: `${(run.t / timelineEnd(run.steps)) * 100}%` }} /></div>
+      <div className="training-top">
+        <div className="progress"><div style={{ width: `${(run.t / timelineEnd(run.steps)) * 100}%` }} /></div>
+        <button type="button" className="ghost small" onClick={quit}>结束</button>
+      </div>
       <div className="stage">
         <Stage session={session} steps={run.steps} plan={plan} catalog={catalog} mirror={settings.mirror} preset={preset} />
         <div className="camera">

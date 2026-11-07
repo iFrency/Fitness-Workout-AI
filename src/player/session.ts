@@ -74,11 +74,30 @@ export class TrainingSession {
     return this.skipped
   }
 
+  /** During a rest or the prepare count-in, skip ends the pause; during work it skips the exercise. */
   skip(): void {
-    const current = stateAt(this.steps, this.time()).step.itemIndex
+    const state = stateAt(this.steps, this.time())
+    const current = state.step.itemIndex
+    if (state.step.kind !== 'work' && !state.done) {
+      const work = this.steps.find(s => s.kind === 'work' && s.itemIndex === current)
+      if (work) this.jumpTo(work.start)
+      return
+    }
     this.skipped = new Set(this.skipped).add(current)
     const next = this.steps.find(s => s.kind !== 'prepare' && s.itemIndex === current + 1)
-    this.jumpTo(next ? next.start : this.end)
+    if (next) this.jumpTo(next.start)
+    else this.finishNow()
+  }
+
+  /** Reaching the end while paused would leave the user stuck on the last exercise. */
+  private finishNow(): void {
+    if (this.paused) {
+      this.paused = false
+      this.anchor(this.end)
+      this.emit()
+    } else {
+      this.jumpTo(this.end)
+    }
   }
 
   prev(): void {

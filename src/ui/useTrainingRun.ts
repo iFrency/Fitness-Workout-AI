@@ -4,7 +4,7 @@ import type { Plan } from '../planner/types'
 import { TrainingSession } from '../player/session'
 import { buildTimeline, type Step } from '../player/timeline'
 import { loadUserMusic, type Settings } from '../storage/storage'
-import { getAudio, speedFromUrl } from './audio'
+import { getAudio, resumeSession, speedFromUrl } from './audio'
 
 const UI_REFRESH_MS = 100
 
@@ -26,7 +26,12 @@ async function loadMusic(ctx: AudioContext, settings: Settings): Promise<{ buffe
   return result.ok ? { buffer: result.buffer, failed: false } : { buffer: null, failed: true }
 }
 
-export function useTrainingRun(plan: Plan, settings: Settings, onDone: (s: TrainingSession) => void): TrainingRun {
+export function useTrainingRun(
+  plan: Plan,
+  settings: Settings,
+  onDone: (s: TrainingSession, steps: readonly Step[]) => void,
+  onMusicFailed: () => void,
+): TrainingRun {
   const [{ steps, session }] = useState(() => {
     const built = buildTimeline(plan)
     return { steps: built, session: new TrainingSession(built, { now: () => getAudio().ctx.currentTime }, speedFromUrl()) }
@@ -39,12 +44,15 @@ export function useTrainingRun(plan: Plan, settings: Settings, onDone: (s: Train
   useEffect(() => {
     let cancelled = false
     const { ctx, engine } = getAudio()
-    const offDone = engine.onDone(() => onDone(session))
+    const offDone = engine.onDone(() => onDone(session, steps))
     void (async () => {
       await engine.init()
       const music = await loadMusic(ctx, settings)
       if (cancelled) return
-      if (music.failed) setToast('此文件格式不支持')
+      if (music.failed) {
+        setToast('此文件格式不支持，已切回内置音乐')
+        onMusicFailed()
+      }
       engine.setVolume(settings.volume)
       session.start()
       engine.run(session, steps, plan, { mainStyle: settings.mainStyle, userMusic: music.buffer, clickWithUserMusic: settings.clickWithUserMusic })
@@ -62,8 +70,9 @@ export function useTrainingRun(plan: Plan, settings: Settings, onDone: (s: Train
   useEffect(() => {
     const timer = setInterval(() => setT(session.time()), UI_REFRESH_MS)
     const onVisibility = () => {
-      if (document.hidden && session.isStarted() && !session.isPaused()) {
-        session.pause()
+      // Show the overlay even if already paused: the tap on it is the gesture that re-unlocks audio.
+      if (document.hidden && session.isStarted()) {
+        if (!session.isPaused()) session.pause()
         setBackgroundPaused(true)
       }
     }
@@ -75,8 +84,7 @@ export function useTrainingRun(plan: Plan, settings: Settings, onDone: (s: Train
   }, [session])
 
   const resumeFromBackground = () => {
-    void getAudio().engine.unlock().catch(err => console.warn('音频解锁失败', err))
-    session.resume()
+    resumeSession(session)
     setBackgroundPaused(false)
   }
 
