@@ -16,6 +16,9 @@ const NUMBERS = ['一', '二', '三', '四', '五', '六', '七', '八', '九', 
 
 export const VOICE_TEXTS: Readonly<Record<VoiceId, string>> = {
   ...(Object.fromEntries(NUMBERS.map((t, i) => [`n${i + 1}`, `${t}！`])) as Record<`n${number}`, string>),
+  // "一！" and "五！" sounded odd on device; the user picked the variants with a pause.
+  n1: '一，',
+  n5: '五，',
   start: '开始！', switch: '换边！', rest: '休息一下', last3: '最后三次！', done: '完成，太棒了！', hey: '嘿！',
 } as Record<VoiceId, string>
 

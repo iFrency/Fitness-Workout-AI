@@ -6,3 +6,5 @@ playwright-report
 .superpowers
 .env.local
 .env.*.local
+tools/voice-audition/*.mp3
+tools/voice-audition/index.html
