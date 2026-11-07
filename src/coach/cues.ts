@@ -77,8 +77,21 @@ function countdown(step: Step, from: number): Candidate[] {
   return Array.from({ length: from }, (_, k) => fixed(`n${from - k}`, step.end - (from - k), P.countdown, step.end + 1))
 }
 
+type Line = readonly [string, number]
+
+/** Drops the lowest-priority lines (the earliest on a tie) until the rest fit before the deadline. */
+function fitLines(ctx: Ctx, start: number, deadline: number, lines: readonly Line[]): Line[] {
+  const kept = lines.filter(([clip]) => dur(ctx, clip) > 0)
+  const length = () => kept.reduce((sum, [clip]) => sum + dur(ctx, clip) + CUE_GAP_SECONDS, 0) - CUE_GAP_SECONDS
+  while (kept.length > 1 && start + length() > deadline + EPS) {
+    const lowest = kept.reduce((low, line, i) => (line[1] < kept[low][1] ? i : low), 0)
+    kept.splice(lowest, 1)
+  }
+  return kept
+}
+
 /** Lines played back-to-back from `start`, each placed after the previous one's duration. */
-function chain(ctx: Ctx, start: number, deadline: number, lines: readonly (readonly [string, number])[]): Candidate[] {
+function chain(ctx: Ctx, start: number, deadline: number, lines: readonly Line[]): Candidate[] {
   let at = start
   return lines.map(([clip, priority]) => {
     const c = flexible(clip, at, priority, deadline)
@@ -115,7 +128,7 @@ function pauseCues(ctx: Ctx, step: Step, index: number, rand: () => number): Can
   if (step.kind === 'rest' && item.round >= 2 && prevItem?.round !== item.round) lines.push([`round-${item.round}`, P.announce])
   if (step.kind === 'rest') lines.push([pick(rand, 'rest'), P.detail])
   lines.push([nextClipId(item.exerciseId), P.announce])
-  return [...chain(ctx, step.start, limit, lines), ...countdown(step, 3)]
+  return [...chain(ctx, step.start, limit, fitLines(ctx, step.start, limit, lines)), ...countdown(step, 3)]
 }
 
 export function buildCueSheet(steps: readonly Step[], plan: Plan, catalog: readonly Exercise[], manifest: VoiceManifest): readonly Cue[] {

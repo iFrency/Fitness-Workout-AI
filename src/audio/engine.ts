@@ -44,6 +44,7 @@ export class AudioEngine {
   private sounds: Record<SoundId, AudioBuffer> | null = null
   private readonly voices = new Map<string, AudioBuffer>()
   private loadedManifest: VoiceManifest = {}
+  private loading: Promise<void> | null = null
   private readonly doneListeners = new Set<() => void>()
   private silent: HTMLAudioElement | null = null
   private timer: ReturnType<typeof setInterval> | null = null
@@ -73,8 +74,13 @@ export class AudioEngine {
     await this.ctx.resume()
   }
 
-  async init(): Promise<void> {
-    if (this.sounds) return
+  /** Every caller awaits the same full load, so a run never starts with half-loaded voices. */
+  init(): Promise<void> {
+    this.loading ??= this.load()
+    return this.loading
+  }
+
+  private async load(): Promise<void> {
     this.sounds = await renderSounds(this.ctx.sampleRate)
     const manifest = await this.fetchManifest()
     await Promise.all(Object.keys(manifest).map(async id => {
