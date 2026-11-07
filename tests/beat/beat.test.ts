@@ -32,9 +32,10 @@ describe('beatEventsInWindow', () => {
     const b = beatEventsInWindow(steps, plan, 10, 20)
     expect(beatEventsInWindow(steps, plan, 0, 20)).toEqual([...a, ...b])
   })
-  it('prepare has 4 beats counting down', () => {
+  it('prepare beats count down to 1', () => {
     const ev = beatEventsInWindow(steps, plan, 0, steps[0].end)
-    expect(ev.map(e => e.beatsLeftInStep)).toEqual([4, 3, 2, 1])
+    expect(ev).toHaveLength(Math.round(steps[0].end / (60 / steps[0].bpm)))
+    expect(ev.slice(-3).map(e => e.beatsLeftInStep)).toEqual([3, 2, 1])
   })
 })
 

@@ -70,6 +70,16 @@ it('skip during a rest shortens the rest instead of skipping the upcoming exerci
   expect(s.skippedItems().size).toBe(0)
 })
 
+it('skip during a switch starts the right side (Review Focus 2)', () => {
+  const sw = steps.find(x => x.kind === 'switch')!
+  const c = fake(); const s = new TrainingSession(steps, c); s.start()
+  c.advance(sw.start + 1); s.skip()
+  const st = stateAt(steps, s.time())
+  expect(st.step.kind).toBe('work')
+  expect(st.step.side).toBe('right')
+  expect(s.skippedItems().size).toBe(0)
+})
+
 it('skip during prepare starts the first exercise', () => {
   const c = fake(); const s = new TrainingSession(steps, c); s.start()
   c.advance(0.5); s.skip()

@@ -1,6 +1,6 @@
 import type { Exercise } from '../catalog/types'
 import { computeTotal, eligible } from './generatePlan'
-import { MIN_REPS, fitBeats, itemSeconds } from './timing'
+import { fitBeats, repsForSeconds } from './timing'
 import type { Plan, PlanItem } from './types'
 
 function sharesPartOrFullBody(a: Exercise, b: Exercise): boolean {
@@ -16,25 +16,24 @@ export function replacementCandidates(plan: Plan, index: number, catalog: readon
   const item = plan.items[index]
   const original = catalog.find(e => e.id === item.exerciseId)
   if (!original) return []
-  const inPlan = new Set(plan.items.map(i => i.exerciseId))
+  const inRound = new Set(plan.items.filter(i => i.round === item.round).map(i => i.exerciseId))
   return catalog.filter(e =>
     e.type === item.segment &&
-    !inPlan.has(e.id) &&
+    !inRound.has(e.id) &&
     sharesPartOrFullBody(e, original) &&
     eligible(e, plan.input) &&
     fitBeats(e.clipSeconds, e.beatsPerRep, item.bpm) !== null,
   )
 }
 
+/** Swaps in another exercise for the same slot: same round, same target seconds. */
 export function replaceItem(plan: Plan, index: number, exercise: Exercise): Plan {
   const old = plan.items[index]
   const fit = fitBeats(exercise.clipSeconds, exercise.beatsPerRep, old.bpm)
   if (!fit) throw new Error('该动作无法匹配当前节拍')
-  const oldSeconds = itemSeconds(old.reps, old.beatsPerRep, old.bpm, old.sided)
-  const perRep = itemSeconds(1, fit.beatsPerRep, old.bpm, exercise.sided)
-  const reps = Math.min(exercise.defaultReps * 2, Math.max(MIN_REPS, Math.round(oldSeconds / perRep)))
   const next: PlanItem = {
-    ...old, exerciseId: exercise.id, reps, beatsPerRep: fit.beatsPerRep, timeScale: fit.timeScale, sided: exercise.sided,
+    ...old, exerciseId: exercise.id, beatsPerRep: fit.beatsPerRep, timeScale: fit.timeScale, sided: exercise.sided,
+    reps: repsForSeconds(old.workSeconds, fit.beatsPerRep, old.bpm),
   }
   return withItems(plan, plan.items.map((it, i) => (i === index ? next : it)))
 }

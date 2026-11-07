@@ -1,7 +1,7 @@
-import { BEATS_PER_BAR, repSeconds } from '../planner/timing'
+import { PREPARE_SECONDS, SWITCH_SECONDS, barsCeil, repSeconds } from '../planner/timing'
 import type { Plan, PlanItem } from '../planner/types'
 
-export type StepKind = 'prepare' | 'work' | 'rest'
+export type StepKind = 'prepare' | 'work' | 'rest' | 'switch'
 export type Side = 'left' | 'right' | null
 
 export interface Step {
@@ -26,7 +26,7 @@ export interface TrainingState {
   readonly stepRemaining: number
 }
 
-function pause(kind: 'prepare' | 'rest', item: PlanItem, itemIndex: number, start: number, seconds: number): Step {
+function pause(kind: 'prepare' | 'rest' | 'switch', item: PlanItem, itemIndex: number, start: number, seconds: number): Step {
   return { kind, itemIndex, start, end: start + seconds, bpm: item.bpm, side: null, reps: 0, beatsPerRep: 0, timeScale: 1 }
 }
 
@@ -37,12 +37,13 @@ function work(item: PlanItem, itemIndex: number, start: number, side: Side): Ste
 
 export function buildTimeline(plan: Plan): readonly Step[] {
   const first = plan.items[0]
-  const steps: Step[] = [pause('prepare', first, 0, 0, repSeconds(BEATS_PER_BAR, first.bpm))]
+  const steps: Step[] = [pause('prepare', first, 0, 0, barsCeil(PREPARE_SECONDS, first.bpm))]
   plan.items.forEach((item, index) => {
     const at = () => steps[steps.length - 1].end
     if (item.restBeforeSeconds > 0) steps.push(pause('rest', item, index, at(), item.restBeforeSeconds))
     if (item.sided) {
       steps.push(work(item, index, at(), 'left'))
+      steps.push(pause('switch', item, index, at(), barsCeil(SWITCH_SECONDS, item.bpm)))
       steps.push(work(item, index, at(), 'right'))
     } else {
       steps.push(work(item, index, at(), null))

@@ -83,12 +83,12 @@ export class TrainingSession {
     return this.skipped
   }
 
-  /** During a rest or the prepare count-in, skip ends the pause; during work it skips the exercise. */
+  /** During a rest, side switch or the prepare count-in, skip ends the pause; during work it skips the exercise. */
   skip(): void {
     const state = stateAt(this.steps, this.time())
     const current = state.step.itemIndex
     if (state.step.kind !== 'work' && !state.done) {
-      const work = this.steps.find(s => s.kind === 'work' && s.itemIndex === current)
+      const work = this.steps.find((s, i) => i > state.stepIndex && s.kind === 'work')
       if (work) this.jumpTo(work.start)
       return
     }

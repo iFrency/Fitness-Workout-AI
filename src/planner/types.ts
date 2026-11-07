@@ -16,6 +16,10 @@ export interface PlanItem {
   readonly timeScale: number
   readonly sided: boolean
   readonly restBeforeSeconds: number
+  /** 1-based main-circuit round; warmup and stretch items are round 1. */
+  readonly round: number
+  /** Target seconds per side; reps are derived from it. */
+  readonly workSeconds: number
 }
 
 export interface Plan {
@@ -24,4 +28,5 @@ export interface Plan {
   readonly items: readonly PlanItem[]
   readonly totalSeconds: number
   readonly shortfallSeconds: number
+  readonly rounds: number
 }
