@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
 import { decodeUserMusic } from '../audio/userMusic'
+import type { Exercise } from '../catalog/types'
+import { buildCueSheet } from '../coach/cues'
 import type { Plan } from '../planner/types'
 import { TrainingSession } from '../player/session'
 import { buildTimeline, timelineEnd, type Step } from '../player/timeline'
@@ -29,6 +31,7 @@ async function loadMusic(ctx: AudioContext, settings: Settings): Promise<{ buffe
 
 export function useTrainingRun(
   plan: Plan,
+  catalog: readonly Exercise[],
   settings: Settings,
   onDone: (s: TrainingSession, steps: readonly Step[]) => void,
   onMusicFailed: () => void,
@@ -64,7 +67,8 @@ export function useTrainingRun(
       } else {
         session.start()
       }
-      engine.run(session, steps, plan, { mainStyle: settings.mainStyle, userMusic: music.buffer, clickWithUserMusic: settings.clickWithUserMusic })
+      const cues = buildCueSheet(steps, plan, catalog, engine.manifest())
+      engine.run(session, steps, plan, { mainStyle: settings.mainStyle, userMusic: music.buffer, clickWithUserMusic: settings.clickWithUserMusic }, cues)
       setReady(true)
     })()
     return () => {

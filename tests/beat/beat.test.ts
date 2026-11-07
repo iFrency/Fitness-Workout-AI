@@ -1,7 +1,6 @@
 import { beatEventsInWindow, type BeatEvent } from '../../src/beat/events'
 import { hitsForEvent, styleForSegment } from '../../src/beat/patterns'
 import { scheduleWindow } from '../../src/beat/schedule'
-import { VOICE_IDS, voiceForEvent } from '../../src/beat/voiceCues'
 import { generatePlan } from '../../src/planner/generatePlan'
 import { buildTimeline } from '../../src/player/timeline'
 import { fixtureCatalog } from '../fixtures/catalog'
@@ -68,33 +67,20 @@ describe('hitsForEvent', () => {
   })
 })
 
-describe('voiceForEvent', () => {
-  it('voice priorities', () => {
-    expect(voiceForEvent({ ...restEvent, beatsLeftInStep: 2 })).toBe('n2')
-    expect(voiceForEvent({ ...restEvent, beatInStep: 0 })).toBe('rest')
-    expect(voiceForEvent({ ...workEvent, beatInStep: 0, side: 'right' })).toBe('switch')
-    expect(voiceForEvent({ ...workEvent, beatInStep: 0, beatInRep: 0 })).toBe('start')
-    expect(voiceForEvent({ ...workEvent, isRepEnd: true, repsLeft: 1 })).toBe('hey')
-    expect(voiceForEvent({ ...workEvent, isRepEnd: true, repIndex: 4, repsLeft: 5 })).toBe('n5')
-    expect(voiceForEvent({ ...workEvent, isRepEnd: true, repIndex: 20, repsLeft: 5 })).toBeNull()
-    expect(voiceForEvent({ ...workEvent, beatInRep: 0, beatInStep: 8, repsLeft: 3 })).toBe('last3')
-    expect(voiceForEvent(workEvent)).toBeNull()
-  })
-  it('VOICE_IDS has 26 entries', () => expect(VOICE_IDS).toHaveLength(26))
-})
-
 describe('scheduleWindow', () => {
   const opts = { mainStyle: 'guichu' as const, userMusic: false, clickWithUserMusic: false }
-  it('emits hits and voices with times inside the window', () => {
-    const s = scheduleWindow(steps, plan, 0, 30, opts)
+  const cues = [{ time: 1, clip: 'start', duration: 0.5, priority: 4 }, { time: 31, clip: 'n5', duration: 0.5, priority: 5 }]
+  it('emits hits inside the window and only the cue-sheet voices inside it', () => {
+    const s = scheduleWindow(steps, plan, 0, 30, opts, cues)
     expect(s.hits.length).toBeGreaterThan(0)
-    expect([...s.hits, ...s.voices].every(x => x.time >= 0 && x.time < 30)).toBe(true)
+    expect(s.hits.every(x => x.time >= 0 && x.time < 30)).toBe(true)
+    expect(s.voices).toEqual([{ time: 1, clip: 'start' }])
   })
-  it('user music mode keeps voices and only clicks when enabled', () => {
-    const off = scheduleWindow(steps, plan, 0, 30, { ...opts, userMusic: true })
+  it('user music mode keeps coach voices and only clicks when enabled', () => {
+    const off = scheduleWindow(steps, plan, 0, 30, { ...opts, userMusic: true }, cues)
     expect(off.hits).toHaveLength(0)
-    expect(off.voices.length).toBeGreaterThan(0)
-    const on = scheduleWindow(steps, plan, 0, 30, { ...opts, userMusic: true, clickWithUserMusic: true })
+    expect(off.voices).toHaveLength(1)
+    const on = scheduleWindow(steps, plan, 0, 30, { ...opts, userMusic: true, clickWithUserMusic: true }, cues)
     expect(on.hits.length).toBeGreaterThan(0)
     expect(on.hits.every(h => h.sound === 'tick' && h.gain === 0.3)).toBe(true)
   })

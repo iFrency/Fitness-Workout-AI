@@ -1,7 +1,7 @@
 import type { SoundId, StyleId } from '../beat/patterns'
 import { scheduleWindow } from '../beat/schedule'
-import { VOICE_IDS, type VoiceId } from '../beat/voiceCues'
-import { VOICE_URL } from '../catalog/constants'
+import { VOICE_MANIFEST_URL, VOICE_URL } from '../catalog/constants'
+import type { Cue, VoiceManifest } from '../coach/cues'
 import type { Plan } from '../planner/types'
 import type { TrainingSession } from '../player/session'
 import { timelineEnd, type Step } from '../player/timeline'
@@ -26,6 +26,7 @@ interface Run {
   readonly steps: readonly Step[]
   readonly plan: Plan
   readonly opts: RunOptions
+  readonly cues: readonly Cue[]
   readonly end: number
   lastTo: number
   done: boolean
@@ -41,7 +42,8 @@ export class AudioEngine {
   private readonly queued = new SourceTracker()
   private wasPaused = false
   private sounds: Record<SoundId, AudioBuffer> | null = null
-  private readonly voices = new Map<VoiceId, AudioBuffer>()
+  private readonly voices = new Map<string, AudioBuffer>()
+  private loadedManifest: VoiceManifest = {}
   private readonly doneListeners = new Set<() => void>()
   private silent: HTMLAudioElement | null = null
   private timer: ReturnType<typeof setInterval> | null = null
@@ -74,25 +76,43 @@ export class AudioEngine {
   async init(): Promise<void> {
     if (this.sounds) return
     this.sounds = await renderSounds(this.ctx.sampleRate)
-    await Promise.all(VOICE_IDS.map(async id => {
+    const manifest = await this.fetchManifest()
+    await Promise.all(Object.keys(manifest).map(async id => {
       try {
         const res = await fetch(VOICE_URL(id))
         if (!res.ok) throw new Error(`HTTP ${res.status}`)
         this.voices.set(id, await this.ctx.decodeAudioData(await res.arrayBuffer()))
       } catch (err: unknown) {
-        console.warn(`口令 ${id} 加载失败，将跳过`, err)
+        console.warn(`语音 ${id} 加载失败，将跳过`, err)
       }
     }))
+    this.loadedManifest = Object.fromEntries(Object.entries(manifest).filter(([id]) => this.voices.has(id)))
   }
 
-  run(session: TrainingSession, steps: readonly Step[], plan: Plan, opts: RunOptions): void {
+  /** Durations of the voice clips that actually loaded; the cue sheet is built from these. */
+  manifest(): VoiceManifest {
+    return this.loadedManifest
+  }
+
+  private async fetchManifest(): Promise<VoiceManifest> {
+    try {
+      const res = await fetch(VOICE_MANIFEST_URL)
+      if (!res.ok) throw new Error(`HTTP ${res.status}`)
+      return (await res.json()) as VoiceManifest
+    } catch (err: unknown) {
+      console.warn('语音清单加载失败，本次训练没有语音', err)
+      return {}
+    }
+  }
+
+  run(session: TrainingSession, steps: readonly Step[], plan: Plan, opts: RunOptions, cues: readonly Cue[]): void {
     this.stop()
     this.musicOffset = 0
     const unsubscribe = session.onJump(() => {
       this.silenceQueued()
       if (this.run_) this.run_.lastTo = session.time()
     })
-    this.run_ = { session, steps, plan, opts, end: timelineEnd(steps), lastTo: session.time(), done: false, unsubscribe }
+    this.run_ = { session, steps, plan, opts, cues, end: timelineEnd(steps), lastTo: session.time(), done: false, unsubscribe }
     this.timer = setInterval(() => this.tick(), TICK_MS)
   }
 
@@ -145,19 +165,23 @@ export class AudioEngine {
     if (to <= run.lastTo) return
     const scheduled = scheduleWindow(run.steps, run.plan, run.lastTo, to, {
       mainStyle: run.opts.mainStyle, userMusic: run.opts.userMusic !== null, clickWithUserMusic: run.opts.clickWithUserMusic,
-    })
+    }, run.cues)
     run.lastTo = to
     scheduled.hits.forEach(h => this.play(this.sounds?.[h.sound], run.session.clockTimeOf(h.time), this.musicGain, h.gain, h.rate))
-    scheduled.voices.forEach(v => this.playVoice(v.voice, run.session.clockTimeOf(v.time)))
+    scheduled.voices.forEach(v => this.playVoice(v.clip, run.session.clockTimeOf(v.time)))
   }
 
+  /** Plays the cues left at the very end (the closing line), then reports done once they have finished. */
   private finish(run: Run): void {
     run.done = true
-    this.playVoice('done', this.ctx.currentTime)
     this.stopMusic()
     if (this.timer) clearInterval(this.timer)
     this.timer = null
-    this.doneListeners.forEach(l => l())
+    const now = this.ctx.currentTime
+    const endsAt = run.cues
+      .filter(c => c.time >= run.lastTo)
+      .reduce((latest, c) => Math.max(latest, this.playVoice(c.clip, now) + now), now)
+    setTimeout(() => this.doneListeners.forEach(l => l()), (endsAt - now) * 1000)
   }
 
   private play(buffer: AudioBuffer | undefined, at: number, bus: AudioNode, gain: number, rate: number): number {
@@ -173,10 +197,12 @@ export class AudioEngine {
     return buffer.duration / rate
   }
 
-  private playVoice(id: VoiceId, at: number): void {
+  /** Returns the clip's duration (0 when it is missing). */
+  private playVoice(id: string, at: number): number {
     const start = Math.max(this.ctx.currentTime, at)
     const duration = this.play(this.voices.get(id), start, this.voiceGain, 1, 1)
     if (duration > 0) this.ducker.duck(start, duration)
+    return duration
   }
 
   private startMusic(buffer: AudioBuffer): void {

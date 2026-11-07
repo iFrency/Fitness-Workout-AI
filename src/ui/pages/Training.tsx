@@ -40,7 +40,7 @@ export function Training() {
   const settings = useAppStore(s => s.settings)
   const resumeFrom = useAppStore(s => s.resumeFrom)
   const { finishTraining, updateSettings, reportMusicDecodeFailure } = useAppStore.getState()
-  const run = useTrainingRun(plan, settings, (s, steps) => void finishTraining(s, steps), reportMusicDecodeFailure, resumeFrom)
+  const run = useTrainingRun(plan, catalog, settings, (s, steps) => void finishTraining(s, steps), reportMusicDecodeFailure, resumeFrom)
   const [preset, setPreset] = useState<CameraPreset>('threeQuarter')
   const [, force] = useState(0)
   const byId = useMemo(() => new Map(catalog.map(e => [e.id, e])), [catalog])
