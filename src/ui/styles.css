@@ -82,3 +82,7 @@ button.small { padding: 4px 10px; font-size: 13px; }
 .status .countdown { float: right; font-size: 40px; font-weight: 800; color: var(--accent); line-height: 1; }
 .status .side { color: var(--hot); font-weight: 700; }
 .status.pause { flex-direction: column; }
+.stage-canvas { position: absolute; inset: 0; }
+.pip { position: absolute; padding: 0; background: transparent; border: 2px solid var(--accent); border-radius: 12px; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45); }
+.pip span { position: absolute; top: 6px; left: 6px; padding: 1px 7px; border-radius: 999px; background: var(--accent); color: var(--accent-ink); font-size: 12px; font-weight: 700; }
+.pip:focus-visible { outline: 3px solid var(--hot); outline-offset: 2px; }

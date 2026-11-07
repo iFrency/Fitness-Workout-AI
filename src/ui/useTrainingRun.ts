@@ -7,6 +7,7 @@ import { TrainingSession } from '../player/session'
 import { buildTimeline, timelineEnd, type Step } from '../player/timeline'
 import { loadUserMusic, saveProgress, type Settings, type TrainingProgress } from '../storage/storage'
 import { getAudio, resumeSession, speedFromUrl } from './audio'
+import { browserWakeLockEnv, createWakeLock } from './wakeLock'
 
 const UI_REFRESH_MS = 100
 const SAVE_PROGRESS_MS = 5000
@@ -85,7 +86,13 @@ export function useTrainingRun(
       if (!session.isStarted() || session.time() >= timelineEnd(steps)) return
       void saveProgress({ plan, time: session.time(), skipped: [...session.skippedItems()], savedAt: new Date().toISOString() })
     }
-    const timer = setInterval(() => setT(session.time()), UI_REFRESH_MS)
+    const wakeLock = createWakeLock(browserWakeLockEnv())
+    // Keep the screen on while the workout is running; let it sleep when paused.
+    const timer = setInterval(() => {
+      setT(session.time())
+      if (session.isStarted() && !session.isPaused()) wakeLock.acquire()
+      else wakeLock.release()
+    }, UI_REFRESH_MS)
     const saver = setInterval(snapshot, SAVE_PROGRESS_MS)
     const onVisibility = () => {
       // Show the overlay even if already paused: the tap on it is the gesture that re-unlocks audio.
@@ -100,6 +107,7 @@ export function useTrainingRun(
     return () => {
       clearInterval(timer)
       clearInterval(saver)
+      wakeLock.release()
       document.removeEventListener('visibilitychange', onVisibility)
     }
   }, [session, steps, plan])

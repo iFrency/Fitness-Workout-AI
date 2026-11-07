@@ -18,7 +18,7 @@ const pwa = VitePWA({
     ],
   },
   workbox: {
-    globPatterns: ['**/*.{js,css,html,json,glb,png,mp3,wav,svg}'],
+    globPatterns: ['**/*.{js,css,html,json,glb,png,mp3,mp4,wav,svg}'],
     maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
     clientsClaim: true,
     skipWaiting: true,

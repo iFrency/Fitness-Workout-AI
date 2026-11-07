@@ -78,14 +78,8 @@ export function Training() {
         <button type="button" className="ghost small" onClick={quit}>结束</button>
       </div>
       <div className="stage">
-        <Stage session={session} steps={run.steps} plan={plan} catalog={catalog} mirror={settings.mirror} preset={preset} />
-        <div className="camera">
-          {(['threeQuarter', 'front', 'side'] as CameraPreset[]).map(p => (
-            <button key={p} type="button" aria-pressed={preset === p} onClick={() => setPreset(p)}>
-              {{ threeQuarter: '斜侧', front: '正面', side: '侧面' }[p]}
-            </button>
-          ))}
-        </div>
+        <Stage session={session} steps={run.steps} plan={plan} catalog={catalog} mirror={settings.mirror}
+          preset={preset} onSelectView={setPreset} />
       </div>
       {run.ready ? <StatusPanel state={state} plan={plan} byId={byId} /> : <div className="status"><strong>准备中</strong></div>}
       <div className="controls">

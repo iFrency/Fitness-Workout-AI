@@ -1,22 +1,19 @@
 import { ContactShadows, OrbitControls, useAnimations, useGLTF } from '@react-three/drei'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
-import { Component, Suspense, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
-import type { Group } from 'three'
+import { Component, Suspense, useEffect, useMemo, useRef, useState, type ReactNode, type RefObject } from 'react'
+import { Color, PerspectiveCamera, type Group } from 'three'
 import { IDLE_CLIP, MODEL_URL, THUMB_URL } from '../catalog/constants'
 import type { Exercise } from '../catalog/types'
 import type { Plan } from '../planner/types'
 import type { TrainingSession } from '../player/session'
 import { stateAt, type Step } from '../player/timeline'
+import { CAMERA_POSITIONS, VIEW_LABELS, insetRects, viewOrder, type CameraPreset, type Rect } from './pip'
 import { blendWeight, computePose, shouldMirror, type ClipInfo } from './pose'
 import { hasWebGL } from './webgl'
 
-export type CameraPreset = 'threeQuarter' | 'front' | 'side'
-export const CAMERA_POSITIONS: Readonly<Record<CameraPreset, [number, number, number]>> = {
-  threeQuarter: [2.2, 1.4, 2.6],
-  front: [0, 1.2, 3.2],
-  side: [3.2, 1.2, 0],
-}
+export { CAMERA_POSITIONS, type CameraPreset } from './pip'
 const LOOK_AT: [number, number, number] = [0, 0.9, 0]
+const INSET_CLEAR = new Color('#1d1612')
 
 export interface StageProps {
   readonly session: TrainingSession
@@ -25,6 +22,8 @@ export interface StageProps {
   readonly catalog: readonly Exercise[]
   readonly mirror: boolean
   readonly preset: CameraPreset
+  /** Called when the user taps an inset to make it the main view. */
+  readonly onSelectView: (preset: CameraPreset) => void
 }
 
 function useClipOf(plan: Plan, catalog: readonly Exercise[]): (i: number) => ClipInfo {
@@ -68,6 +67,70 @@ function Mannequin({ session, steps, plan, catalog, mirror }: Omit<StageProps, '
   return <group ref={group}><primitive object={scene} /></group>
 }
 
+/** Renders the main camera full size, then the two other fixed views into the bottom-corner insets. */
+function PipRenderer({ main }: { main: CameraPreset }) {
+  const cameras = useMemo(() => {
+    const make = (p: CameraPreset) => {
+      const c = new PerspectiveCamera(40, 3 / 4, 0.1, 50)
+      c.position.set(...CAMERA_POSITIONS[p])
+      c.lookAt(...LOOK_AT)
+      return c
+    }
+    return { threeQuarter: make('threeQuarter'), front: make('front'), side: make('side') }
+  }, [])
+  useFrame(({ gl, scene, camera, size }) => {
+    const { insets } = viewOrder(main)
+    gl.autoClear = false
+    gl.setScissorTest(false)
+    gl.setViewport(0, 0, size.width, size.height)
+    gl.setClearColor(INSET_CLEAR, 0)
+    gl.clear()
+    gl.render(scene, camera)
+    gl.setClearColor(INSET_CLEAR, 1)
+    insetRects(size.width, size.height).forEach((r, i) => {
+      const cam = cameras[insets[i]]
+      cam.aspect = r.width / r.height
+      cam.updateProjectionMatrix()
+      gl.setViewport(r.x, r.y, r.width, r.height)
+      gl.setScissor(r.x, r.y, r.width, r.height)
+      gl.setScissorTest(true)
+      gl.clear()
+      gl.render(scene, cam)
+    })
+    gl.setScissorTest(false)
+    gl.setViewport(0, 0, size.width, size.height)
+  }, 1)
+  return null
+}
+
+/** Tap targets drawn over the insets; positions come from the same insetRects as the renderer. */
+export function InsetButtons({ rects, preset, onSelect }: { rects: readonly Rect[]; preset: CameraPreset; onSelect: (p: CameraPreset) => void }) {
+  const { insets } = viewOrder(preset)
+  return (
+    <>
+      {rects.map((r, i) => (
+        <button key={insets[i]} type="button" className="pip" aria-label={`切换到${VIEW_LABELS[insets[i]]}视角`}
+          style={{ left: r.x, bottom: r.y, width: r.width, height: r.height }} onClick={() => onSelect(insets[i])}>
+          <span>{VIEW_LABELS[insets[i]]}</span>
+        </button>
+      ))}
+    </>
+  )
+}
+
+function useBoxSize(): [RefObject<HTMLDivElement>, { width: number; height: number }] {
+  const ref = useRef<HTMLDivElement>(null)
+  const [size, setSize] = useState({ width: 0, height: 0 })
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+    const observer = new ResizeObserver(([entry]) => setSize({ width: entry.contentRect.width, height: entry.contentRect.height }))
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [])
+  return [ref, size]
+}
+
 function CameraRig({ preset }: { preset: CameraPreset }) {
   const camera = useThree(s => s.camera)
   useEffect(() => {
@@ -93,6 +156,7 @@ export function Stage(props: StageProps) {
   const [failed, setFailed] = useState(false)
   const webgl = useMemo(hasWebGL, [])
   const clipOf = useClipOf(props.plan, props.catalog)
+  const [boxRef, box] = useBoxSize()
 
   if (!webgl) {
     const state = stateAt(props.steps, props.session.time())
@@ -112,16 +176,20 @@ export function Stage(props: StageProps) {
     )
   }
   return (
-    <Canvas dpr={[1, 2]} camera={{ fov: 40, position: CAMERA_POSITIONS[props.preset] }}>
-      <ambientLight intensity={0.8} />
-      <directionalLight position={[3, 5, 4]} intensity={1.6} />
-      <LoadBoundary key={attempt} onError={onError}>
-        <Suspense fallback={null}>
-          <Mannequin {...props} />
-        </Suspense>
-      </LoadBoundary>
-      <ContactShadows position={[0, 0, 0]} opacity={0.4} scale={4} blur={2.5} />
-      <CameraRig preset={props.preset} />
-    </Canvas>
+    <div className="stage-canvas" ref={boxRef}>
+      <Canvas dpr={[1, 2]} camera={{ fov: 40, position: CAMERA_POSITIONS[props.preset] }}>
+        <ambientLight intensity={0.8} />
+        <directionalLight position={[3, 5, 4]} intensity={1.6} />
+        <LoadBoundary key={attempt} onError={onError}>
+          <Suspense fallback={null}>
+            <Mannequin {...props} />
+          </Suspense>
+        </LoadBoundary>
+        <ContactShadows position={[0, 0, 0]} opacity={0.4} scale={4} blur={2.5} />
+        <CameraRig preset={props.preset} />
+        <PipRenderer main={props.preset} />
+      </Canvas>
+      {box.width > 0 && <InsetButtons rects={insetRects(box.width, box.height)} preset={props.preset} onSelect={props.onSelectView} />}
+    </div>
   )
 }
