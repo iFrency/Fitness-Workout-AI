@@ -1,27 +1,20 @@
 /**
- * Generates the 26 voice cue mp3 files with Doubao TTS (seed-tts-2.0, voice "Vivi 2.0").
- * Usage: DOUBAO_TTS_API_KEY=<key> npx tsx scripts/gen-voice.ts
- * The key is read from the environment only and never written to disk.
+ * Generates every coach voice clip with Doubao TTS (seed-tts-2.0, voice "Vivi 2.0") and writes
+ * public/assets/voice/manifest.json ({ id: seconds }).
+ * Usage: DOUBAO_TTS_API_KEY=<key> npx tsx scripts/gen-voice.ts [--force]
+ * Existing clips are kept unless --force is given. The key is read from the environment only.
  */
-import { mkdirSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs'
 import { pathToFileURL } from 'node:url'
-import { VOICE_IDS, type VoiceId } from '../src/beat/voiceCues'
+import { parseCatalog } from '../src/catalog/types'
+import { allPhrases } from '../src/coach/phrases'
+import { mp3Duration } from './mp3'
 
 const ENDPOINT = 'https://openspeech.bytedance.com/api/v3/tts/unidirectional'
 const RESOURCE_ID = 'seed-tts-2.0'
 const SPEAKER = 'zh_female_vv_uranus_bigtts'
 const OUT_DIR = 'public/assets/voice'
-const NUMBERS = ['一', '二', '三', '四', '五', '六', '七', '八', '九', '十',
-  '十一', '十二', '十三', '十四', '十五', '十六', '十七', '十八', '十九', '二十']
-
-export const VOICE_TEXTS: Readonly<Record<VoiceId, string>> = {
-  ...(Object.fromEntries(NUMBERS.map((t, i) => [`n${i + 1}`, `${t}！`])) as Record<`n${number}`, string>),
-  // "一！" and "五！" sounded odd on device; the user picked the variants with a pause.
-  n1: '一，',
-  n5: '五，',
-  start: '开始！', switch: '换边！', rest: '休息一下', last3: '最后三次！', done: '完成，太棒了！', hey: '嘿！',
-} as Record<VoiceId, string>
-
+const CATALOG_PATH = 'public/assets/catalog/exercises.json'
 const SUCCESS_CODES = new Set([0, 20000000])
 
 export function parseTtsStream(body: string): Uint8Array {
@@ -49,12 +42,26 @@ export async function synthesize(apiKey: string, text: string): Promise<Uint8Arr
 async function main(): Promise<void> {
   const apiKey = process.env.DOUBAO_TTS_API_KEY
   if (!apiKey) throw new Error('缺少环境变量 DOUBAO_TTS_API_KEY')
+  const force = process.argv.includes('--force')
+  const phrases = allPhrases(parseCatalog(JSON.parse(readFileSync(CATALOG_PATH, 'utf8'))))
   mkdirSync(OUT_DIR, { recursive: true })
-  for (const id of VOICE_IDS) {
-    const audio = await synthesize(apiKey, VOICE_TEXTS[id])
-    writeFileSync(`${OUT_DIR}/${id}.mp3`, audio)
-    console.log(`${id}: ${audio.byteLength} bytes`)
+  const manifest: Record<string, number> = {}
+  for (const [id, text] of Object.entries(phrases)) {
+    const path = `${OUT_DIR}/${id}.mp3`
+    if (force || !existsSync(path)) {
+      writeFileSync(path, await synthesize(apiKey, text))
+      console.log(`generated ${id}`)
+    }
+    manifest[id] = Math.round(mp3Duration(readFileSync(path)) * 1000) / 1000
   }
+  for (const file of readdirSync(OUT_DIR)) {
+    if (file.endsWith('.mp3') && !(file.slice(0, -4) in phrases)) {
+      rmSync(`${OUT_DIR}/${file}`)
+      console.log(`removed ${file}`)
+    }
+  }
+  writeFileSync(`${OUT_DIR}/manifest.json`, `${JSON.stringify(manifest, null, 2)}\n`)
+  console.log(`manifest: ${Object.keys(manifest).length} clips`)
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {

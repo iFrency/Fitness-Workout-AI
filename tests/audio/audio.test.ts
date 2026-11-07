@@ -1,8 +1,9 @@
 import { SOUND_RECIPES } from '../../src/audio/synth'
 import { decodeUserMusic } from '../../src/audio/userMusic'
 import type { SoundId } from '../../src/beat/patterns'
-import { VOICE_IDS } from '../../src/beat/voiceCues'
-import { VOICE_TEXTS, parseTtsStream } from '../../scripts/gen-voice'
+import { allPhrases } from '../../src/coach/phrases'
+import { parseTtsStream } from '../../scripts/gen-voice'
+import { fixtureCatalog } from '../fixtures/catalog'
 
 it('returns decode error for non-audio blobs (Review Focus 5)', async () => {
   const ctx = { decodeAudioData: vi.fn().mockRejectedValue(new DOMException('bad')) } as unknown as BaseAudioContext
@@ -20,8 +21,8 @@ it('has a recipe for every SoundId lasting at most 1.5s', () => {
   ids.forEach(id => expect(SOUND_RECIPES[id].duration).toBeLessThanOrEqual(1.5))
 })
 
-it('has a text for every voice id', () => {
-  VOICE_IDS.forEach(id => expect(VOICE_TEXTS[id].length).toBeGreaterThan(0))
+it('has a non-empty text for every coach phrase', () => {
+  Object.values(allPhrases(fixtureCatalog)).forEach(text => expect(text.length).toBeGreaterThan(0))
 })
 
 it('joins base64 audio chunks from the TTS stream', () => {
