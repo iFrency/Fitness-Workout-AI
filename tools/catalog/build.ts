@@ -9,28 +9,11 @@ import { NodeIO } from '@gltf-transform/core'
 import { ALL_EXTENSIONS } from '@gltf-transform/extensions'
 import { meshopt, prune, resample } from '@gltf-transform/functions'
 import { MeshoptDecoder, MeshoptEncoder } from 'meshoptimizer'
-import { parseCatalog, type Exercise, type Level } from '../../src/catalog/types'
-import { bpmFor, fitBeats } from '../../src/planner/timing'
+import { parseCatalog, type Exercise } from '../../src/catalog/types'
+import { bpmsFor, pickBeats } from './exercise'
 import { IDLE_ID, SELECTION, type Row } from './selection'
 
 interface SourceExercise { id: string; amount_en: string }
-
-function bpmsFor(type: Row[3], level: Level): number[] {
-  if (type !== 'main') return [bpmFor(type, 1)]
-  return ([1, 2, 3] as Level[]).filter(l => l >= level).map(l => bpmFor('main', l))
-}
-
-/** Picks beatsPerRep (1,2,4,8,16) that fits every tempo and keeps playback speed closest to 1. */
-function pickBeats(clipSeconds: number, bpms: number[]): number {
-  const score = (b: number) => {
-    const scales = bpms.map(bpm => fitBeats(clipSeconds, b, bpm))
-    if (scales.some(s => s === null || s.beatsPerRep !== b)) return Infinity
-    return Math.max(...scales.map(s => Math.abs(Math.log(s!.timeScale))))
-  }
-  const best = [1, 2, 4, 8, 16].reduce((a, b) => (score(b) < score(a) ? b : a))
-  if (score(best) === Infinity) throw new Error(`无法为时长 ${clipSeconds}s 选出拍数`)
-  return best
-}
 
 function defaultReps(amount: string, clipSeconds: number): number {
   const n = Number(amount.match(/\d+/)?.[0] ?? 8)
