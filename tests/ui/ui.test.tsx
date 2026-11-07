@@ -3,7 +3,9 @@ import userEvent from '@testing-library/user-event'
 import { generatePlan, computeTotal } from '../../src/planner/generatePlan'
 import type { Plan } from '../../src/planner/types'
 import { DEFAULT_SETTINGS } from '../../src/storage/storage'
-import { formatDuration, repsLabel } from '../../src/ui/format'
+import { buildTimeline, stateAt } from '../../src/player/timeline'
+import { formatDuration, secondsLabel } from '../../src/ui/format'
+import { StatusPanel } from '../../src/ui/pages/Training'
 import { Home } from '../../src/ui/pages/Home'
 import { Preview } from '../../src/ui/pages/Preview'
 import { useAppStore } from '../../src/ui/store'
@@ -21,10 +23,29 @@ beforeEach(() => {
   useAppStore.setState({ catalog: fixtureCatalog, settings: accepted, plan: null, page: 'home', input: { parts: [], minutes: 10, level: 1 } })
 })
 
-it('formats durations and reps', () => {
+it('formats durations', () => {
   expect(formatDuration(65.4)).toBe('01:05')
-  expect(repsLabel(8, true)).toBe('左右各 8 次')
-  expect(repsLabel(8, false)).toBe('8 次')
+})
+
+it('secondsLabel', () => {
+  expect(secondsLabel(30.4, false)).toBe('30 秒')
+  expect(secondsLabel(30, true)).toBe('左右各 30 秒')
+})
+
+it('rest panel shows a countdown and the next exercise', () => {
+  const plan = generatePlan({ parts: ['全身'], minutes: 10, level: 2 }, fixtureCatalog, 1)
+  const steps = buildTimeline(plan)
+  const rest = steps.find(s => s.kind === 'rest')!
+  const byId = new Map(fixtureCatalog.map(e => [e.id, e]))
+  render(<StatusPanel state={stateAt(steps, rest.start + 1)} plan={plan} byId={byId} />)
+  expect(screen.getByTestId('countdown')).toHaveTextContent(String(Math.ceil(rest.end - rest.start - 1)))
+  expect(screen.getByText(/下一个：/)).toBeInTheDocument()
+})
+
+it('Preview groups main items by round', () => {
+  useAppStore.setState({ plan: generatePlan({ parts: ['肩颈'], minutes: 30, level: 1 }, fixtureCatalog, 1), page: 'preview' })
+  render(<Preview />)
+  expect(screen.getByText('主训 · 第 2 轮')).toBeInTheDocument()
 })
 
 it('Home disables generate until a part is chosen', async () => {

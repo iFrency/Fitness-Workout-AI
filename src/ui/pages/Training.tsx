@@ -11,23 +11,30 @@ import { useTrainingRun } from '../useTrainingRun'
 
 const SIDE_LABEL = { left: '左侧', right: '右侧' } as const
 
-function StatusPanel({ state, plan, byId }: { state: TrainingState; plan: Plan; byId: Map<string, Exercise> }) {
+const PAUSE_TITLE = { prepare: '准备', rest: '休息一下', switch: '换边' } as const
+
+interface StatusPanelProps {
+  readonly state: TrainingState
+  readonly plan: Plan
+  readonly byId: ReadonlyMap<string, Exercise>
+}
+
+export function StatusPanel({ state, plan, byId }: StatusPanelProps) {
   const ex = byId.get(plan.items[state.step.itemIndex].exerciseId)!
-  if (state.step.kind === 'prepare') return <div className="status"><strong>准备</strong><span>{ex.name}</span></div>
-  if (state.step.kind === 'rest') {
+  const countdown = <span className="countdown" data-testid="countdown">{Math.ceil(state.stepRemaining)}</span>
+  if (state.step.kind !== 'work') {
     return (
-      <div className="status rest">
-        <strong>休息一下</strong>
-        <span>下一个：{ex.name}</span>
-        <img src={THUMB_URL(ex.clip)} alt="" className="thumb" />
+      <div className="status pause">
+        <div><strong>{PAUSE_TITLE[state.step.kind]}</strong>{countdown}</div>
+        {state.step.kind !== 'switch' && <span>下一个：{ex.name}</span>}
+        {state.step.kind === 'rest' && <img src={THUMB_URL(ex.clip)} alt="" className="thumb" />}
       </div>
     )
   }
-  const side = state.step.side ? `${SIDE_LABEL[state.step.side]} ` : ''
+  const side = state.step.side ? SIDE_LABEL[state.step.side] : ''
   return (
     <div className="status">
-      <strong>{ex.name}</strong>
-      <span className="count">{side}第 {state.repIndex + 1} / {state.step.reps} 次</span>
+      <div><strong>{ex.name}</strong> <span className="side">{side}</span>{countdown}</div>
       <p className="cue">{ex.cues[state.repIndex % ex.cues.length]}</p>
       {ex.caution && <p className="caution">{ex.caution}</p>}
     </div>

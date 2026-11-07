@@ -1,11 +1,33 @@
 import { useMemo, useState } from 'react'
 import type { Exercise, SegmentType } from '../../catalog/types'
 import { replacementCandidates } from '../../planner/editPlan'
+import { itemActualSeconds } from '../../planner/generatePlan'
+import type { Plan } from '../../planner/types'
 import { getAudio } from '../audio'
-import { SEGMENT_LABELS, formatDuration, repsLabel } from '../format'
+import { SEGMENT_LABELS, formatDuration, secondsLabel } from '../format'
 import { useAppStore } from '../store'
 
-const SEGMENTS: readonly SegmentType[] = ['warmup', 'main', 'stretch']
+interface Group {
+  readonly key: string
+  readonly title: string
+  readonly segment: SegmentType
+  readonly round: number
+}
+
+/** Warmup, then main split into rounds when it repeats, then stretch. */
+function groupsOf(plan: Plan): Group[] {
+  const mains = Array.from({ length: plan.rounds }, (_, k): Group => ({
+    key: `main-${k + 1}`,
+    title: plan.rounds > 1 ? `${SEGMENT_LABELS.main} · 第 ${k + 1} 轮` : SEGMENT_LABELS.main,
+    segment: 'main',
+    round: k + 1,
+  }))
+  return [
+    { key: 'warmup', title: SEGMENT_LABELS.warmup, segment: 'warmup', round: 1 },
+    ...mains,
+    { key: 'stretch', title: SEGMENT_LABELS.stretch, segment: 'stretch', round: 1 },
+  ]
+}
 
 export function Preview() {
   const plan = useAppStore(s => s.plan)
@@ -33,12 +55,12 @@ export function Preview() {
       {plan.shortfallSeconds > 0 && (
         <p className="notice">可选动作不足，本方案约 {formatDuration(plan.totalSeconds)}。可以增加部位或缩短时长。</p>
       )}
-      {SEGMENTS.map(segment => (
-        <section key={segment}>
-          <h2>{SEGMENT_LABELS[segment]}</h2>
+      {groupsOf(plan).map(group => (
+        <section key={group.key}>
+          <h2>{group.title}</h2>
           <ul className="items">
             {plan.items.map((item, index) => {
-              if (item.segment !== segment) return null
+              if (item.segment !== group.segment || item.round !== group.round) return null
               const ex = byId.get(item.exerciseId)!
               const candidates = replacing === index ? replacementCandidates(plan, index, catalog) : []
               return (
@@ -46,7 +68,7 @@ export function Preview() {
                   <div className="row">
                     <div>
                       <strong>{ex.name}</strong>
-                      <span className="meta">{repsLabel(item.reps, item.sided)}</span>
+                      <span className="meta">{secondsLabel(itemActualSeconds(item) / (item.sided ? 2 : 1), item.sided)}</span>
                       {ex.caution && <p className="caution">{ex.caution}</p>}
                     </div>
                     <div className="actions">
