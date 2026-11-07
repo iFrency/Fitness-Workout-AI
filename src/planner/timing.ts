@@ -47,6 +47,27 @@ export function fitBeats(
 }
 
 export function restSeconds(level: Level, bpm: number): number {
+  return barsCeil(REST_BY_LEVEL[level], bpm)
+}
+
+export const WORK_SECONDS: Readonly<Record<SegmentType, Readonly<Record<Level, number>>>> = {
+  warmup: { 1: 30, 2: 30, 3: 30 },
+  main: { 1: 30, 2: 40, 3: 45 },
+  stretch: { 1: 30, 2: 30, 3: 30 },
+}
+export const SWITCH_SECONDS = 5
+export const PREPARE_SECONDS = 8
+
+export function workSecondsFor(segment: SegmentType, level: Level): number {
+  return WORK_SECONDS[segment][level]
+}
+
+export function repsForSeconds(seconds: number, beatsPerRep: number, bpm: number): number {
+  return Math.max(1, Math.round(seconds / repSeconds(beatsPerRep, bpm)))
+}
+
+/** Rounds a duration up to whole 4-beat bars so pauses end on a downbeat. */
+export function barsCeil(seconds: number, bpm: number): number {
   const bar = repSeconds(BEATS_PER_BAR, bpm)
-  return Math.ceil(REST_BY_LEVEL[level] / bar - EPSILON) * bar
+  return Math.ceil(seconds / bar - EPSILON) * bar
 }

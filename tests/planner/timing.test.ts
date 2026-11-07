@@ -1,5 +1,24 @@
 import type { Level } from '../../src/catalog/types'
-import { bpmFor, fitBeats, itemSeconds, restSeconds } from '../../src/planner/timing'
+import {
+  barsCeil, bpmFor, fitBeats, itemSeconds, repsForSeconds, restSeconds, workSecondsFor,
+} from '../../src/planner/timing'
+
+it('work seconds table', () => {
+  expect(workSecondsFor('main', 1)).toBe(30)
+  expect(workSecondsFor('main', 3)).toBe(45)
+  expect(workSecondsFor('stretch', 3)).toBe(30)
+})
+
+it('repsForSeconds rounds to whole reps with a minimum of 1', () => {
+  expect(repsForSeconds(30, 4, 120)).toBe(15)
+  expect(repsForSeconds(30, 4, 110)).toBe(14)
+  expect(repsForSeconds(0.5, 4, 120)).toBe(1)
+})
+
+it('barsCeil rounds up to whole bars', () => {
+  expect(barsCeil(5, 120)).toBeCloseTo(6)
+  expect(barsCeil(8, 100)).toBeCloseTo(9.6)
+})
 
 it('bpm table', () => {
   expect(bpmFor('warmup', 3)).toBe(100)
