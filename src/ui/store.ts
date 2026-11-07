@@ -7,8 +7,12 @@ import type { Plan, PlanInput } from '../planner/types'
 import type { TrainingSession } from '../player/session'
 import type { Step } from '../player/timeline'
 import {
-  DEFAULT_SETTINGS, appendRecord, loadSettings, saveSettings, type Settings, type WorkoutRecord,
+  DEFAULT_SETTINGS, appendRecord, clearProgress, loadProgress, loadSettings, saveSettings,
+  type Settings, type TrainingProgress, type WorkoutRecord,
 } from '../storage/storage'
+
+/** Saved progress older than this is treated as abandoned. */
+const RESUME_WINDOW_MS = 2 * 60 * 60 * 1000
 
 export type Page = 'home' | 'preview' | 'training' | 'done'
 
@@ -25,7 +29,14 @@ interface AppState {
   readonly input: PlanInput
   readonly plan: Plan | null
   readonly lastResult: LastResult | null
+  /** An unfinished workout found at start-up, offered on the home page. */
+  readonly savedProgress: TrainingProgress | null
+  /** The saved position the training page should restore instead of starting from zero. */
+  readonly resumeFrom: TrainingProgress | null
   boot(): Promise<void>
+  checkSavedProgress(): Promise<void>
+  resumeSavedProgress(): void
+  discardSavedProgress(): void
   setInput(patch: Partial<PlanInput>): void
   generate(): void
   regenerate(): void
@@ -46,6 +57,22 @@ export const useAppStore = create<AppState>((set, get) => ({
   input: { parts: [], minutes: 10, level: 1 },
   plan: null,
   lastResult: null,
+  savedProgress: null,
+  resumeFrom: null,
+
+  async checkSavedProgress() {
+    const progress = await loadProgress()
+    const fresh = progress !== null && Date.now() - Date.parse(progress.savedAt) < RESUME_WINDOW_MS
+    set({ savedProgress: fresh ? progress : null })
+  },
+  resumeSavedProgress() {
+    const { savedProgress } = get()
+    if (savedProgress) set({ plan: savedProgress.plan, resumeFrom: savedProgress, savedProgress: null, page: 'training' })
+  },
+  discardSavedProgress() {
+    set({ savedProgress: null })
+    void clearProgress()
+  },
 
   async boot() {
     try {
@@ -73,7 +100,7 @@ export const useAppStore = create<AppState>((set, get) => ({
     const { plan } = get()
     if (plan && plan.items.length > 1) set({ plan: removeItem(plan, index) })
   },
-  startTraining: () => set({ page: 'training' }),
+  startTraining: () => set({ page: 'training', resumeFrom: null }),
   async finishTraining(session, steps) {
     const { plan } = get()
     if (!plan) return
@@ -87,7 +114,8 @@ export const useAppStore = create<AppState>((set, get) => ({
       actualSeconds: session.activeSeconds(),
     }
     const result = await appendRecord(record)
-    set({ lastResult: { record, saved: result.ok }, page: 'done' })
+    await clearProgress()
+    set({ lastResult: { record, saved: result.ok }, page: 'done', resumeFrom: null })
   },
   reportMusicDecodeFailure() {
     get().updateSettings({ useUserMusic: false })

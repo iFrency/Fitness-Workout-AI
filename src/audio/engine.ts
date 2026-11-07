@@ -6,6 +6,7 @@ import type { Plan } from '../planner/types'
 import type { TrainingSession } from '../player/session'
 import { timelineEnd, type Step } from '../player/timeline'
 import { Ducker } from './ducker'
+import { SourceTracker } from './sourceTracker'
 import { renderSounds } from './synth'
 
 export const DUCK_GAIN = 0.398
@@ -37,6 +38,8 @@ export class AudioEngine {
   private readonly musicGain: GainNode
   private readonly voiceGain: GainNode
   private readonly ducker: Ducker
+  private readonly queued = new SourceTracker()
+  private wasPaused = false
   private sounds: Record<SoundId, AudioBuffer> | null = null
   private readonly voices = new Map<VoiceId, AudioBuffer>()
   private readonly doneListeners = new Set<() => void>()
@@ -86,6 +89,7 @@ export class AudioEngine {
     this.stop()
     this.musicOffset = 0
     const unsubscribe = session.onJump(() => {
+      this.silenceQueued()
       if (this.run_) this.run_.lastTo = session.time()
     })
     this.run_ = { session, steps, plan, opts, end: timelineEnd(steps), lastTo: session.time(), done: false, unsubscribe }
@@ -102,8 +106,13 @@ export class AudioEngine {
     this.run_?.unsubscribe()
     this.run_ = null
     this.stopMusic()
-    this.ducker.reset(this.ctx.currentTime)
+    this.silenceQueued()
     this.silent?.pause()
+  }
+
+  private silenceQueued(): void {
+    this.queued.stopAll()
+    this.ducker.reset(this.ctx.currentTime)
   }
 
   setVolume(v: number): void {
@@ -119,9 +128,12 @@ export class AudioEngine {
     const run = this.run_
     if (!run || run.done) return
     if (run.session.isPaused()) {
+      if (!this.wasPaused) this.silenceQueued()
+      this.wasPaused = true
       this.stopMusic()
       return
     }
+    this.wasPaused = false
     if (run.opts.userMusic && !this.musicSource) this.startMusic(run.opts.userMusic)
     const t = run.session.time()
     if (t >= run.end) {
@@ -157,6 +169,7 @@ export class AudioEngine {
     g.gain.value = gain
     src.connect(g).connect(bus)
     src.start(Math.max(this.ctx.currentTime, at))
+    this.queued.track(src)
     return buffer.duration / rate
   }
 

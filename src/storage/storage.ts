@@ -69,6 +69,26 @@ export async function appendRecord(record: WorkoutRecord): Promise<StoreResult<v
   })
 }
 
+export interface TrainingProgress {
+  readonly plan: Plan
+  readonly time: number
+  readonly skipped: readonly number[]
+  readonly savedAt: string
+}
+
+export function saveProgress(progress: TrainingProgress): Promise<StoreResult<void>> {
+  return attempt('保存训练进度', () => idb.set('progress', progress, kv()))
+}
+
+export async function loadProgress(): Promise<TrainingProgress | null> {
+  const r = await attempt('读取训练进度', () => idb.get<TrainingProgress>('progress', kv()))
+  return r.ok ? (r.value ?? null) : null
+}
+
+export function clearProgress(): Promise<StoreResult<void>> {
+  return attempt('清除训练进度', () => idb.del('progress', kv()))
+}
+
 export function saveUserMusic(blob: Blob, name: string): Promise<StoreResult<void>> {
   return attempt('保存自选音乐', () => idb.set('userMusic', { blob, name } satisfies StoredMusic, kv()))
 }

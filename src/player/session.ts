@@ -33,6 +33,15 @@ export class TrainingSession {
     this.anchor(0)
   }
 
+  /** Restores a saved position; the session starts paused so the user's tap can unlock audio. */
+  startAt(t: number, skipped: readonly number[]): void {
+    this.started = true
+    this.paused = true
+    this.anchorTime = Math.min(this.end, Math.max(0, t))
+    this.anchorClock = this.clock.now()
+    this.skipped = new Set(skipped)
+  }
+
   pause(): void {
     if (!this.started || this.paused) return
     this.anchorTime = this.time()

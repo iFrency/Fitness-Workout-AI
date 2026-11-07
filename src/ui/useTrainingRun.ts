@@ -2,11 +2,12 @@ import { useEffect, useState } from 'react'
 import { decodeUserMusic } from '../audio/userMusic'
 import type { Plan } from '../planner/types'
 import { TrainingSession } from '../player/session'
-import { buildTimeline, type Step } from '../player/timeline'
-import { loadUserMusic, type Settings } from '../storage/storage'
+import { buildTimeline, timelineEnd, type Step } from '../player/timeline'
+import { loadUserMusic, saveProgress, type Settings, type TrainingProgress } from '../storage/storage'
 import { getAudio, resumeSession, speedFromUrl } from './audio'
 
 const UI_REFRESH_MS = 100
+const SAVE_PROGRESS_MS = 5000
 
 export interface TrainingRun {
   readonly steps: readonly Step[]
@@ -31,10 +32,13 @@ export function useTrainingRun(
   settings: Settings,
   onDone: (s: TrainingSession, steps: readonly Step[]) => void,
   onMusicFailed: () => void,
+  resumeFrom: TrainingProgress | null,
 ): TrainingRun {
   const [{ steps, session }] = useState(() => {
     const built = buildTimeline(plan)
-    return { steps: built, session: new TrainingSession(built, { now: () => getAudio().ctx.currentTime }, speedFromUrl()) }
+    // Bind the clock to this context, so a replaced engine can never move this session's time.
+    const { ctx } = getAudio()
+    return { steps: built, session: new TrainingSession(built, { now: () => ctx.currentTime }, speedFromUrl()) }
   })
   const [t, setT] = useState(0)
   const [ready, setReady] = useState(false)
@@ -54,7 +58,12 @@ export function useTrainingRun(
         onMusicFailed()
       }
       engine.setVolume(settings.volume)
-      session.start()
+      if (resumeFrom) {
+        session.startAt(resumeFrom.time, resumeFrom.skipped)
+        setBackgroundPaused(true)
+      } else {
+        session.start()
+      }
       engine.run(session, steps, plan, { mainStyle: settings.mainStyle, userMusic: music.buffer, clickWithUserMusic: settings.clickWithUserMusic })
       setReady(true)
     })()
@@ -68,20 +77,28 @@ export function useTrainingRun(
   }, [])
 
   useEffect(() => {
+    const snapshot = () => {
+      if (!session.isStarted() || session.time() >= timelineEnd(steps)) return
+      void saveProgress({ plan, time: session.time(), skipped: [...session.skippedItems()], savedAt: new Date().toISOString() })
+    }
     const timer = setInterval(() => setT(session.time()), UI_REFRESH_MS)
+    const saver = setInterval(snapshot, SAVE_PROGRESS_MS)
     const onVisibility = () => {
       // Show the overlay even if already paused: the tap on it is the gesture that re-unlocks audio.
       if (document.hidden && session.isStarted()) {
         if (!session.isPaused()) session.pause()
         setBackgroundPaused(true)
+        // iOS may discard a background page; save now so the workout can be resumed.
+        snapshot()
       }
     }
     document.addEventListener('visibilitychange', onVisibility)
     return () => {
       clearInterval(timer)
+      clearInterval(saver)
       document.removeEventListener('visibilitychange', onVisibility)
     }
-  }, [session])
+  }, [session, steps, plan])
 
   const resumeFromBackground = () => {
     resumeSession(session)

@@ -32,7 +32,7 @@ export function parseTtsStream(body: string): Uint8Array {
   return Buffer.concat(chunks)
 }
 
-async function synthesize(apiKey: string, text: string): Promise<Uint8Array> {
+export async function synthesize(apiKey: string, text: string): Promise<Uint8Array> {
   const response = await fetch(ENDPOINT, {
     method: 'POST',
     headers: { 'X-Api-Key': apiKey, 'X-Api-Resource-Id': RESOURCE_ID, 'Content-Type': 'application/json' },

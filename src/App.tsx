@@ -12,7 +12,7 @@ export function App() {
   const boot = useAppStore(s => s.boot)
 
   useEffect(() => {
-    void boot()
+    void boot().then(() => useAppStore.getState().checkSavedProgress())
   }, [boot])
 
   if (loadError) {

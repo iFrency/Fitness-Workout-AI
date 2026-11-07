@@ -86,6 +86,19 @@ it('skipping the last item while paused finishes instead of staying paused (Revi
   expect(stateAt(steps, s.time()).done).toBe(true)
 })
 
+it('startAt restores a saved position paused, with its skipped items', () => {
+  const c = fake(); const s = new TrainingSession(steps, c)
+  s.startAt(30, [1])
+  expect(s.isStarted()).toBe(true)
+  expect(s.isPaused()).toBe(true)
+  expect(s.time()).toBeCloseTo(30)
+  expect([...s.skippedItems()]).toEqual([1])
+  c.advance(5)
+  expect(s.time()).toBeCloseTo(30)
+  s.resume(); c.advance(2)
+  expect(s.time()).toBeCloseTo(32)
+})
+
 it('time is zero before start and clamps at the end', () => {
   const c = fake(); const s = new TrainingSession(steps, c)
   expect(s.time()).toBe(0)

@@ -3,7 +3,8 @@ import { PARTS, type Level } from '../../catalog/types'
 import { MINUTES_OPTIONS } from '../../planner/timing'
 import { Disclaimer } from '../components/Disclaimer'
 import { SettingsSheet } from '../components/SettingsSheet'
-import { LEVEL_LABELS } from '../format'
+import { getAudio } from '../audio'
+import { LEVEL_LABELS, formatDuration } from '../format'
 import { useAppStore } from '../store'
 
 export function Home() {
@@ -11,6 +12,12 @@ export function Home() {
   const setInput = useAppStore(s => s.setInput)
   const generate = useAppStore(s => s.generate)
   const accepted = useAppStore(s => s.settings.disclaimerAccepted)
+  const saved = useAppStore(s => s.savedProgress)
+  const { resumeSavedProgress, discardSavedProgress } = useAppStore.getState()
+  const onResume = () => {
+    void getAudio().engine.unlock().catch(err => console.warn('音频解锁失败', err))
+    resumeSavedProgress()
+  }
   const [showSettings, setShowSettings] = useState(false)
 
   const togglePart = (part: (typeof PARTS)[number]) =>
@@ -22,6 +29,15 @@ export function Home() {
         <h1>魔性健身</h1>
         <button type="button" className="ghost" onClick={() => setShowSettings(true)}>设置</button>
       </header>
+      {saved && (
+        <section className="notice resume">
+          <p>还有一次训练没练完（已练到 {formatDuration(saved.time)}）。</p>
+          <div className="actions">
+            <button type="button" className="primary" onClick={onResume}>继续上次训练</button>
+            <button type="button" onClick={discardSavedProgress}>放弃</button>
+          </div>
+        </section>
+      )}
       <section>
         <h2>练哪里</h2>
         <div className="chips">

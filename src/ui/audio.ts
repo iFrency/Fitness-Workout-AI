@@ -17,6 +17,16 @@ export function getAudio(): AudioHandle {
   return handle
 }
 
+/** Stops and releases the engine. Vite hot updates call this so a stale engine never keeps counting. */
+export function disposeAudio(): void {
+  if (!handle) return
+  handle.engine.stop()
+  handle.ctx.close().catch(err => console.warn('关闭音频上下文失败', err))
+  handle = null
+}
+
+if (import.meta.hot) import.meta.hot.dispose(disposeAudio)
+
 /**
  * Resumes a paused session. Mobile browsers suspend the AudioContext in the background,
  * and the session clock is that context's time, so it must be unlocked on every resume.

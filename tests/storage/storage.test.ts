@@ -2,7 +2,8 @@ import 'fake-indexeddb/auto'
 import * as idb from 'idb-keyval'
 import { generatePlan } from '../../src/planner/generatePlan'
 import {
-  DEFAULT_SETTINGS, appendRecord, listRecords, loadSettings, loadUserMusic, saveSettings, saveUserMusic,
+  DEFAULT_SETTINGS, appendRecord, clearProgress, listRecords, loadProgress, loadSettings, loadUserMusic,
+  saveProgress, saveSettings, saveUserMusic,
   type WorkoutRecord,
 } from '../../src/storage/storage'
 import { fixtureCatalog } from '../fixtures/catalog'
@@ -37,6 +38,14 @@ it('round-trips user music', async () => {
   await saveUserMusic(new Blob(['abc']), 'song.mp3')
   const m = await loadUserMusic()
   expect(m?.name).toBe('song.mp3')
+})
+
+it('saves, loads and clears training progress', async () => {
+  const snapshot = { plan, time: 42.5, skipped: [2], savedAt: '2026-11-07T08:00:00.000Z' }
+  await saveProgress(snapshot)
+  expect(await loadProgress()).toEqual(snapshot)
+  await clearProgress()
+  expect(await loadProgress()).toBeNull()
 })
 
 it('reports failure instead of throwing when IndexedDB is unavailable', async () => {
