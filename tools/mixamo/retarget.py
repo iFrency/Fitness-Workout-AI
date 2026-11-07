@@ -82,6 +82,7 @@ class Retargeter:
         self.bs_rest = basis(th['armL'] - th['armR'], th['neck'] - th['spine'])
         self.k = (th['legL'] - th['footL']).length / (self.sr('LeftUpLeg') - self.sr('LeftFoot')).length
         self.hips_rest = self.sr('Hips')
+        self.prev_q = {}
 
     def sw(self, name: str) -> Vector:
         return self.src.matrix_world @ self.src.pose.bones[P + name].head
@@ -123,6 +124,11 @@ class Retargeter:
             pos = pb.head.copy()
         pb.matrix = Matrix.Translation(pos) @ (q @ self.rest_q[name]).to_matrix().to_4x4()
         bpy.context.view_layer.update()
+        # Keep each bone's quaternion on the same hemisphere as the previous frame.
+        prev = self.prev_q.get(name)
+        if prev is not None and pb.rotation_quaternion.dot(prev) < 0:
+            pb.rotation_quaternion = -pb.rotation_quaternion
+        self.prev_q[name] = pb.rotation_quaternion.copy()
         pb.keyframe_insert('rotation_quaternion', frame=bpy.context.scene.frame_current)
         if name == 'hips':
             pb.keyframe_insert('location', frame=bpy.context.scene.frame_current)
@@ -210,6 +216,7 @@ def render_sheet(tgt, src, f0: int, f1: int, path: str) -> None:
 
 
 def export_glb(tgt, src, keep, path: str) -> None:
+    # Keys sit at source frame numbers; the exporter slides the clip to start at time 0.
     # Drop the FBX armature, its meshes and every action except the new one.
     for o in [src, *src.children_recursive]:
         bpy.data.objects.remove(o, do_unlink=True)
@@ -218,7 +225,8 @@ def export_glb(tgt, src, keep, path: str) -> None:
             bpy.data.actions.remove(a)
     for o in bpy.data.objects:
         o.select_set(o == tgt or o.parent == tgt)
-    bpy.ops.export_scene.gltf(filepath=path, use_selection=True, export_animation_mode='ACTIONS')
+    bpy.ops.export_scene.gltf(filepath=path, use_selection=True, export_animation_mode='ACTIONS',
+                              export_anim_slide_to_zero=True)
 
 
 def main() -> None:
