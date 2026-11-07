@@ -12,7 +12,7 @@ export const FIXED_PHRASES: Readonly<Record<string, string>> = {
   n1: '一，',
   n2: '二！',
   n3: '三！',
-  n4: '四！',
+  n4: '四，',
   n5: '五，',
 }
 
