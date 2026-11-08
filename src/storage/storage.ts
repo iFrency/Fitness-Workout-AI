@@ -69,7 +69,19 @@ export function saveSettings(s: Settings): Promise<StoreResult<void>> {
 export async function listRecords(): Promise<StoreResult<readonly WorkoutRecord[]>> {
   const r = await attempt('读取记录', () => idb.get<WorkoutRecord[]>('records', kv()))
   if (!r.ok) return r
-  const records = (r.value ?? []).map(rec => ({ ...rec, plan: normalizePlan(rec.plan) }))
+  const stored: unknown = r.value ?? []
+  if (!Array.isArray(stored)) {
+    console.error('本地存储失败: 读取记录', new Error('记录格式不正确'))
+    return { ok: false }
+  }
+  const records = stored.flatMap((rec: WorkoutRecord): WorkoutRecord[] => {
+    try {
+      return [{ ...rec, plan: normalizePlan(rec.plan) }]
+    } catch (error: unknown) {
+      console.error('跳过损坏的训练记录', error)
+      return []
+    }
+  })
   return { ok: true, value: records.sort((a, b) => b.date.localeCompare(a.date)) }
 }
 

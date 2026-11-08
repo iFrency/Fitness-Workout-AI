@@ -79,3 +79,19 @@ it('listRecords normalizes legacy records', async () => {
   const r = await listRecords()
   expect(r.ok && r.value[0].plan.input.mode).toBe('shape')
 })
+
+it('listRecords skips malformed records and keeps the good ones', async () => {
+  const silence = vi.spyOn(console, 'error').mockImplementation(() => undefined)
+  const good = rec('2026-11-01T10:00:00.000Z')
+  await idb.set('records', [{ ...good, plan: null }, good, null, { ...good, plan: { input: 5 } }], idb.createStore('moxing-fitness', 'kv'))
+  const r = await listRecords()
+  expect(r.ok && r.value.map(x => x.id)).toEqual([good.id])
+  silence.mockRestore()
+})
+
+it('listRecords reports failure when the stored value is not an array', async () => {
+  const silence = vi.spyOn(console, 'error').mockImplementation(() => undefined)
+  await idb.set('records', { not: 'an array' }, idb.createStore('moxing-fitness', 'kv'))
+  expect(await listRecords()).toEqual({ ok: false })
+  silence.mockRestore()
+})
