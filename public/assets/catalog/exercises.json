@@ -1139,5 +1139,107 @@
       "从髋部前屈，让头和手臂自然下垂，再逐节卷起"
     ],
     "caution": "膝盖微屈可以保护腰部"
+  },
+  {
+    "id": "jumping-jacks",
+    "name": "开合跳",
+    "clip": "jumping-jacks",
+    "clipSeconds": 1.067,
+    "parts": [
+      "全身"
+    ],
+    "type": "main",
+    "level": 2,
+    "impact": "high",
+    "beatsPerRep": 2,
+    "defaultReps": 8,
+    "sided": false,
+    "cues": [
+      "双脚并拢站直，双臂自然下垂",
+      "跳起时双脚分开、双臂上举，再跳回并拢"
+    ],
+    "caution": "膝盖不适时改为无跳开合步"
+  },
+  {
+    "id": "high-knees",
+    "name": "高抬腿",
+    "clip": "high-knees",
+    "clipSeconds": 5.667,
+    "parts": [
+      "全身",
+      "臀腿"
+    ],
+    "type": "main",
+    "level": 2,
+    "impact": "high",
+    "beatsPerRep": 16,
+    "defaultReps": 8,
+    "sided": false,
+    "cues": [
+      "身体挺直，目视前方，双臂屈肘",
+      "快速交替抬膝到髋部高度，手臂反向摆动"
+    ],
+    "caution": "落地用前脚掌，膝盖不适时改为原地踏步"
+  },
+  {
+    "id": "burpee",
+    "name": "波比跳",
+    "clip": "burpee",
+    "clipSeconds": 3.133,
+    "parts": [
+      "全身"
+    ],
+    "type": "main",
+    "level": 3,
+    "impact": "high",
+    "beatsPerRep": 8,
+    "defaultReps": 8,
+    "sided": false,
+    "cues": [
+      "双脚与肩同宽站直",
+      "下蹲双手撑地，双脚后跳成俯撑，再收脚跳起"
+    ],
+    "caution": "膝盖或腰部不适时，改为后撤步，不跳"
+  },
+  {
+    "id": "air-squat",
+    "name": "深蹲",
+    "clip": "air-squat",
+    "clipSeconds": 1.867,
+    "parts": [
+      "臀腿"
+    ],
+    "type": "main",
+    "level": 1,
+    "impact": "low",
+    "beatsPerRep": 4,
+    "defaultReps": 8,
+    "sided": false,
+    "cues": [
+      "双脚与肩同宽，双臂前伸",
+      "臀部向后向下坐，再用脚跟发力站起"
+    ],
+    "caution": "膝盖对准脚尖，不要内扣"
+  },
+  {
+    "id": "push-up",
+    "name": "俯卧撑",
+    "clip": "push-up",
+    "clipSeconds": 1.533,
+    "parts": [
+      "胸背",
+      "上肢"
+    ],
+    "type": "main",
+    "level": 3,
+    "impact": "low",
+    "beatsPerRep": 4,
+    "defaultReps": 8,
+    "sided": false,
+    "cues": [
+      "双手撑地略宽于肩，身体成一条直线",
+      "屈肘下降到胸口接近地面，再撑起"
+    ],
+    "caution": "做不了时改为跪姿，不要塌腰"
   }
 ]

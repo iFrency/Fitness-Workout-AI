@@ -22,7 +22,7 @@ export const MIXAMO_SELECTION: readonly MixamoRow[] = [
     caution: '膝盖不适时改为无跳开合步',
   },
   {
-    id: 'high-knees', fbx: 'High Knees.fbx', name: '高抬腿', parts: ['全身', '臀腿'], type: 'main', level: 2,
+    id: 'high-knees', fbx: 'Hign Knees.fbx', name: '高抬腿', parts: ['全身', '臀腿'], type: 'main', level: 2,
     impact: 'high', sided: false, cues: ['身体挺直，目视前方，双臂屈肘', '快速交替抬膝到髋部高度，手臂反向摆动'],
     caution: '落地用前脚掌，膝盖不适时改为原地踏步',
   },
@@ -40,10 +40,5 @@ export const MIXAMO_SELECTION: readonly MixamoRow[] = [
     id: 'push-up', fbx: 'Push Up.fbx', name: '俯卧撑', parts: ['胸背', '上肢'], type: 'main', level: 3,
     impact: 'low', sided: false, cues: ['双手撑地略宽于肩，身体成一条直线', '屈肘下降到胸口接近地面，再撑起'],
     caution: '做不了时改为跪姿，不要塌腰',
-  },
-  {
-    id: 'stair-run', fbx: 'Running Up Stairs.fbx', name: '原地爬楼梯', parts: ['全身', '臀腿'], type: 'main', level: 1,
-    impact: 'low', sided: false, cues: ['身体微微前倾，双臂屈肘', '像爬楼梯一样交替高抬膝，手臂反向摆动'],
-    caution: '',
   },
 ]

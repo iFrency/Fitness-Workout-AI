@@ -201,5 +201,20 @@
   "cue-child-pose-1": 3.456,
   "next-standing-forward-fold-soft": 2.256,
   "cue-standing-forward-fold-soft-0": 1.248,
-  "cue-standing-forward-fold-soft-1": 5.232
+  "cue-standing-forward-fold-soft-1": 5.232,
+  "next-jumping-jacks": 1.464,
+  "cue-jumping-jacks-0": 3.072,
+  "cue-jumping-jacks-1": 3.864,
+  "next-high-knees": 1.632,
+  "cue-high-knees-0": 3.24,
+  "cue-high-knees-1": 4.44,
+  "next-burpee": 1.632,
+  "cue-burpee-0": 2.04,
+  "cue-burpee-1": 4.848,
+  "next-air-squat": 1.848,
+  "cue-air-squat-0": 2.664,
+  "cue-air-squat-1": 3.456,
+  "next-push-up": 1.872,
+  "cue-push-up-0": 3.864,
+  "cue-push-up-1": 3.456
 }
