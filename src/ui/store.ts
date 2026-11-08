@@ -1,6 +1,10 @@
 import { create } from 'zustand'
 import { loadCatalog } from '../catalog/loadCatalog'
 import type { Exercise } from '../catalog/types'
+import { compileRoutine } from '../dance/compileRoutine'
+import { replaceMove } from '../dance/editRoutine'
+import { generateRoutine } from '../dance/generateRoutine'
+import type { DanceInput, MoveRef } from '../dance/types'
 import { removeItem, replaceItem } from '../planner/editPlan'
 import { generatePlan } from '../planner/generatePlan'
 import type { Plan, ShapeInput } from '../planner/types'
@@ -26,7 +30,8 @@ interface AppState {
   readonly catalog: readonly Exercise[] | null
   readonly loadError: string | null
   readonly settings: Settings
-  readonly input: ShapeInput
+  readonly shapeInput: ShapeInput
+  readonly danceInput: DanceInput
   readonly plan: Plan | null
   readonly lastResult: LastResult | null
   /** An unfinished workout found at start-up, offered on the home page. */
@@ -37,10 +42,12 @@ interface AppState {
   checkSavedProgress(): Promise<void>
   resumeSavedProgress(): void
   discardSavedProgress(): void
-  setInput(patch: Partial<ShapeInput>): void
+  setShapeInput(patch: Partial<ShapeInput>): void
+  setDanceInput(patch: Partial<DanceInput>): void
   generate(): void
   regenerate(): void
   replace(index: number, exercise: Exercise): void
+  replaceDance(ref: MoveRef, exercise: Exercise): void
   remove(index: number): void
   startTraining(): void
   finishTraining(session: TrainingSession, steps: readonly Step[]): Promise<void>
@@ -54,7 +61,8 @@ export const useAppStore = create<AppState>((set, get) => ({
   catalog: null,
   loadError: null,
   settings: DEFAULT_SETTINGS,
-  input: { mode: 'shape', parts: [], minutes: 10, level: 1 },
+  shapeInput: { mode: 'shape', parts: [], minutes: 10, level: 1 },
+  danceInput: { mode: 'dance', minutes: 15, level: 1, quiet: true },
   plan: null,
   lastResult: null,
   savedProgress: null,
@@ -83,22 +91,37 @@ export const useAppStore = create<AppState>((set, get) => ({
       set({ loadError: error instanceof Error ? error.message : '动作库加载失败' })
     }
   },
-  setInput: patch => set(s => ({ input: { ...s.input, ...patch } })),
+  setShapeInput: patch => set(s => ({ shapeInput: { ...s.shapeInput, ...patch } })),
+  setDanceInput: patch => set(s => {
+    const next = { ...s.danceInput, ...patch }
+    return { danceInput: next.level === 1 ? { ...next, quiet: true } : next }
+  }),
   generate() {
-    const { input, catalog } = get()
-    if (catalog) set({ plan: generatePlan(input, catalog, Date.now() % 2 ** 31), page: 'preview' })
+    const { shapeInput, danceInput, settings, catalog } = get()
+    if (!catalog) return
+    const seed = Date.now() % 2 ** 31
+    const plan = settings.homeMode === 'dance'
+      ? compileRoutine(generateRoutine(danceInput, catalog, seed), catalog)
+      : generatePlan(shapeInput, catalog, seed)
+    set({ plan, page: 'preview' })
   },
   regenerate() {
     const { plan, catalog } = get()
-    if (plan && catalog && plan.input.mode === 'shape') set({ plan: generatePlan(plan.input, catalog, plan.seed + 1) })
+    if (!plan || !catalog) return
+    if (plan.input.mode === 'shape') set({ plan: generatePlan(plan.input, catalog, plan.seed + 1) })
+    else if (plan.routine) set({ plan: compileRoutine(generateRoutine(plan.routine.input, catalog, plan.routine.seed + 1), catalog) })
   },
   replace(index, exercise) {
     const { plan } = get()
     if (plan) set({ plan: replaceItem(plan, index, exercise) })
   },
+  replaceDance(ref, exercise) {
+    const { plan, catalog } = get()
+    if (plan?.routine && catalog) set({ plan: compileRoutine(replaceMove(plan.routine, ref, exercise.id), catalog) })
+  },
   remove(index) {
     const { plan } = get()
-    if (plan && plan.items.length > 1) set({ plan: removeItem(plan, index) })
+    if (plan && plan.input.mode === 'shape' && plan.items.length > 1) set({ plan: removeItem(plan, index) })
   },
   startTraining: () => set({ page: 'training', resumeFrom: null }),
   async finishTraining(session, steps) {

@@ -7,9 +7,19 @@ import { getAudio } from '../audio'
 import { LEVEL_LABELS, formatDuration } from '../format'
 import { useAppStore } from '../store'
 
+const DANCE_MINUTES = [10, 15, 20, 30] as const
+const HOME_TABS = [
+  { mode: 'dance', label: '燃脂跳操' },
+  { mode: 'shape', label: '部位塑形' },
+] as const
+
 export function Home() {
-  const input = useAppStore(s => s.input)
-  const setInput = useAppStore(s => s.setInput)
+  const input = useAppStore(s => s.shapeInput)
+  const setInput = useAppStore(s => s.setShapeInput)
+  const danceInput = useAppStore(s => s.danceInput)
+  const setDanceInput = useAppStore(s => s.setDanceInput)
+  const homeMode = useAppStore(s => s.settings.homeMode)
+  const updateSettings = useAppStore(s => s.updateSettings)
   const generate = useAppStore(s => s.generate)
   const accepted = useAppStore(s => s.settings.disclaimerAccepted)
   const saved = useAppStore(s => s.savedProgress)
@@ -38,31 +48,72 @@ export function Home() {
           </div>
         </section>
       )}
-      <section>
-        <h2>练哪里</h2>
-        <div className="chips">
-          {PARTS.map(part => (
-            <button key={part} type="button" aria-pressed={input.parts.includes(part)} onClick={() => togglePart(part)}>{part}</button>
-          ))}
-        </div>
-      </section>
-      <section>
-        <h2>练多久</h2>
-        <div className="chips">
-          {MINUTES_OPTIONS.map(m => (
-            <button key={m} type="button" aria-pressed={input.minutes === m} onClick={() => setInput({ minutes: m })}>{m} 分钟</button>
-          ))}
-        </div>
-      </section>
-      <section>
-        <h2>难度</h2>
-        <div className="chips">
-          {([1, 2, 3] as Level[]).map(l => (
-            <button key={l} type="button" aria-pressed={input.level === l} onClick={() => setInput({ level: l })}>{LEVEL_LABELS[l]}</button>
-          ))}
-        </div>
-      </section>
-      <button type="button" className="primary big" disabled={input.parts.length === 0} onClick={generate}>生成方案</button>
+      <div className="tabs" role="tablist">
+        {HOME_TABS.map(t => (
+          <button key={t.mode} type="button" role="tab" aria-selected={homeMode === t.mode} onClick={() => updateSettings({ homeMode: t.mode })}>{t.label}</button>
+        ))}
+      </div>
+      {homeMode === 'dance' ? (
+        <>
+          <section>
+            <h2>练多久</h2>
+            <div className="chips">
+              {DANCE_MINUTES.map(m => (
+                <button key={m} type="button" aria-pressed={danceInput.minutes === m} onClick={() => setDanceInput({ minutes: m })}>{m} 分钟</button>
+              ))}
+            </div>
+          </section>
+          <section>
+            <h2>难度</h2>
+            <div className="chips">
+              {([1, 2, 3] as Level[]).map(l => (
+                <button key={l} type="button" aria-pressed={danceInput.level === l} onClick={() => setDanceInput({ level: l })}>{LEVEL_LABELS[l]}</button>
+              ))}
+            </div>
+          </section>
+          <section>
+            <label className="switch">
+              <input
+                type="checkbox"
+                checked={danceInput.quiet}
+                disabled={danceInput.level === 1}
+                onChange={e => setDanceInput({ quiet: e.target.checked })}
+              />
+              安静模式（不跳）
+            </label>
+            <p className="hint">适合办公室和楼下有邻居</p>
+          </section>
+          <button type="button" className="primary big" onClick={generate}>生成方案</button>
+        </>
+      ) : (
+        <>
+        <section>
+          <h2>练哪里</h2>
+          <div className="chips">
+            {PARTS.map(part => (
+              <button key={part} type="button" aria-pressed={input.parts.includes(part)} onClick={() => togglePart(part)}>{part}</button>
+            ))}
+          </div>
+        </section>
+        <section>
+          <h2>练多久</h2>
+          <div className="chips">
+            {MINUTES_OPTIONS.map(m => (
+              <button key={m} type="button" aria-pressed={input.minutes === m} onClick={() => setInput({ minutes: m })}>{m} 分钟</button>
+            ))}
+          </div>
+        </section>
+        <section>
+          <h2>难度</h2>
+          <div className="chips">
+            {([1, 2, 3] as Level[]).map(l => (
+              <button key={l} type="button" aria-pressed={input.level === l} onClick={() => setInput({ level: l })}>{LEVEL_LABELS[l]}</button>
+            ))}
+          </div>
+        </section>
+        <button type="button" className="primary big" disabled={input.parts.length === 0} onClick={generate}>生成方案</button>
+        </>
+      )}
       {!accepted && <Disclaimer />}
       {showSettings && <SettingsSheet onClose={() => setShowSettings(false)} />}
     </main>

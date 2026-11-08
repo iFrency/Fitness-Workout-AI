@@ -33,6 +33,11 @@ button[aria-pressed='true'] { background: var(--hot); border-color: var(--hot); 
 .chips { display: flex; flex-wrap: wrap; gap: 8px; }
 .chips button { min-width: 72px; }
 
+.tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.tabs button[aria-selected='true'] { background: var(--hot); border-color: var(--hot); color: #fff; font-weight: 700; }
+.switch { display: flex; align-items: center; gap: 8px; }
+.hint { color: var(--muted); font-size: 13px; margin: 4px 0 0; }
+
 .notice { background: #3b2a12; border: 1px solid #7a5520; padding: 10px 12px; border-radius: var(--radius); margin: 0; }
 .caution { color: #ffb36b; font-size: 13px; margin: 4px 0 0; }
 .meta { color: var(--muted); margin-left: 8px; font-size: 14px; }

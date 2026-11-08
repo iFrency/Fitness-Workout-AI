@@ -20,7 +20,7 @@ function onePlan(): Plan {
 }
 
 beforeEach(() => {
-  useAppStore.setState({ catalog: fixtureCatalog, settings: accepted, plan: null, page: 'home', input: { mode: 'shape', parts: [], minutes: 10, level: 1 } })
+  useAppStore.setState({ catalog: fixtureCatalog, settings: { ...accepted, homeMode: 'dance' }, plan: null, page: 'home', shapeInput: { mode: 'shape', parts: [], minutes: 10, level: 1 } })
 })
 
 it('formats durations', () => {
@@ -50,9 +50,28 @@ it('Preview groups main items by round', () => {
 
 it('Home disables generate until a part is chosen', async () => {
   render(<Home />)
+  await userEvent.click(screen.getByRole('tab', { name: '部位塑形' }))
   expect(screen.getByRole('button', { name: '生成方案' })).toBeDisabled()
   await userEvent.click(screen.getByRole('button', { name: '腰腹' }))
   expect(screen.getByRole('button', { name: '生成方案' })).toBeEnabled()
+})
+
+it('home shows the dance panel by default and switches to 部位塑形', async () => {
+  render(<Home />)
+  expect(screen.getByRole('tab', { name: '燃脂跳操' })).toHaveAttribute('aria-selected', 'true')
+  expect(screen.getByRole('checkbox', { name: '安静模式（不跳）' })).toBeInTheDocument()
+  expect(screen.queryByRole('button', { name: '腰腹' })).toBeNull()
+  await userEvent.click(screen.getByRole('tab', { name: '部位塑形' }))
+  expect(screen.getByRole('tab', { name: '部位塑形' })).toHaveAttribute('aria-selected', 'true')
+  expect(screen.getByRole('button', { name: '腰腹' })).toBeInTheDocument()
+})
+
+it('quiet switch is checked and disabled at 入门', () => {
+  render(<Home />)
+  const box = screen.getByRole('checkbox', { name: '安静模式（不跳）' })
+  expect(box).toBeChecked()
+  expect(box).toBeDisabled()
+  expect(screen.getByText('适合办公室和楼下有邻居')).toBeInTheDocument()
 })
 
 it('Home shows the disclaimer until accepted', () => {
