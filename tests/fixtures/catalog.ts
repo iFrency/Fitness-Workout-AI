@@ -15,6 +15,7 @@ export function makeExercise(overrides: Partial<Exercise> = {}): Exercise {
     sided: false,
     cues: ['保持呼吸'],
     caution: '',
+    pools: ['shape'],
     ...overrides,
   }
 }

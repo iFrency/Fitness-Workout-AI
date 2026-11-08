@@ -1,8 +1,8 @@
 import type { Part } from '../../src/catalog/types'
-import { generatePlan, itemActualSeconds } from '../../src/planner/generatePlan'
+import { eligible, generatePlan, itemActualSeconds } from '../../src/planner/generatePlan'
 import { repSeconds, workSecondsFor } from '../../src/planner/timing'
 import type { PlanInput } from '../../src/planner/types'
-import { fixtureCatalog } from '../fixtures/catalog'
+import { fixtureCatalog, makeExercise } from '../fixtures/catalog'
 
 const input = (p: Partial<PlanInput> = {}): PlanInput => ({ parts: ['腰腹'], minutes: 10, level: 1, ...p })
 const byId = new Map(fixtureCatalog.map(e => [e.id, e]))
@@ -75,4 +75,8 @@ it('alternates parts when two are chosen', () => {
 
 it('throws on empty parts', () => {
   expect(() => generatePlan(input({ parts: [] }), fixtureCatalog, 1)).toThrow('至少选择一个部位')
+})
+
+it('eligible excludes dance-only moves', () => {
+  expect(eligible(makeExercise({ pools: ['dance'], danceTier: 2 }), input({ parts: ['全身'], level: 3 }))).toBe(false)
 })

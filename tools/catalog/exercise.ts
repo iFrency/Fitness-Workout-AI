@@ -23,6 +23,6 @@ export function fromMixamoRow(row: MixamoRow, clipSeconds: number): Exercise {
   return {
     id: row.id, name: row.name, clip: row.id, clipSeconds, parts: [...row.parts], type: row.type,
     level: row.level, impact: row.impact, beatsPerRep: pickBeats(clipSeconds, bpmsFor(row.type, row.level)),
-    defaultReps: 8, sided: row.sided, cues: [...row.cues], caution: row.caution,
+    defaultReps: 8, sided: row.sided, cues: [...row.cues], caution: row.caution, pools: ['shape'],
   }
 }

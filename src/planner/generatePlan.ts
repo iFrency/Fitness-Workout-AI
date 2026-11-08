@@ -16,6 +16,7 @@ export function matchesParts(exercise: Exercise, parts: readonly Part[]): boolea
 }
 
 export function eligible(exercise: Exercise, input: PlanInput): boolean {
+  if (!exercise.pools.includes('shape')) return false
   if (exercise.level > input.level) return false
   if (input.level === 1 && exercise.impact === 'high') return false
   return matchesParts(exercise, input.parts)
