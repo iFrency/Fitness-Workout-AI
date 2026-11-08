@@ -15,6 +15,8 @@ const RESOURCE_ID = 'seed-tts-2.0'
 const SPEAKER = 'zh_female_vv_uranus_bigtts'
 const OUT_DIR = 'public/assets/voice'
 const CATALOG_PATH = 'public/assets/catalog/exercises.json'
+/** Doubao speech_rate (-50..100) for clips that must be short; other clips keep the default rate. */
+export const SPEECH_RATE: Readonly<Record<string, number>> = { c5: 100, c6: 100, c7: 100, c8: 100 }
 const SUCCESS_CODES = new Set([0, 20000000])
 
 export function parseTtsStream(body: string): Uint8Array {
@@ -28,11 +30,11 @@ export function parseTtsStream(body: string): Uint8Array {
   return Buffer.concat(chunks)
 }
 
-export async function synthesize(apiKey: string, text: string): Promise<Uint8Array> {
+export async function synthesize(apiKey: string, text: string, speechRate?: number): Promise<Uint8Array> {
   const response = await fetch(ENDPOINT, {
     method: 'POST',
     headers: { 'X-Api-Key': apiKey, 'X-Api-Resource-Id': RESOURCE_ID, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ req_params: { text, speaker: SPEAKER, audio_params: { format: 'mp3', sample_rate: 24000 } } }),
+    body: JSON.stringify({ req_params: { text, speaker: SPEAKER, audio_params: { format: 'mp3', sample_rate: 24000, ...(speechRate === undefined ? {} : { speech_rate: speechRate }) } } }),
   })
   const body = await response.text()
   if (!response.ok) throw new Error(`TTS 请求失败 ${response.status}: ${body.slice(0, 200)}`)
@@ -49,7 +51,7 @@ async function main(): Promise<void> {
   for (const [id, text] of Object.entries(phrases)) {
     const path = `${OUT_DIR}/${id}.mp3`
     if (force || !existsSync(path)) {
-      writeFileSync(path, await synthesize(apiKey, text))
+      writeFileSync(path, await synthesize(apiKey, text, SPEECH_RATE[id]))
       console.log(`generated ${id}`)
     }
     manifest[id] = Math.round(mp3Duration(readFileSync(path)) * 1000) / 1000

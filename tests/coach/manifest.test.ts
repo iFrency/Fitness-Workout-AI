@@ -2,7 +2,7 @@ import { readFileSync } from 'node:fs'
 import { CUE_GAP_SECONDS, buildCueSheet } from '../../src/coach/cues'
 import { generatePlan } from '../../src/planner/generatePlan'
 import { buildTimeline } from '../../src/player/timeline'
-import { allPhrases } from '../../src/coach/phrases'
+import { COUNT_CLIPS, allPhrases } from '../../src/coach/phrases'
 import { parseCatalog } from '../../src/catalog/types'
 
 const manifest = JSON.parse(readFileSync('public/assets/voice/manifest.json', 'utf8')) as Record<string, number>
@@ -28,4 +28,8 @@ it('with real clip lengths, every rest and the prepare step still announce the n
 
 it('the manifest covers every phrase with a positive duration', () => {
   Object.keys(allPhrases(catalog)).forEach(id => expect(manifest[id], id).toBeGreaterThan(0))
+})
+
+it('count clips are at most 0.40 s', () => {
+  COUNT_CLIPS.forEach(id => expect(manifest[id], id).toBeLessThanOrEqual(0.4))
 })
