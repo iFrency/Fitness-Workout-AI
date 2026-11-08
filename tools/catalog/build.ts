@@ -3,6 +3,7 @@
  * from a local desk-break checkout (MIT, Shlomy Reshef).
  * Usage: npx tsx tools/catalog/build.ts <path-to-desk-break> [--mixamo <retargeted-dir>]
  * With --mixamo, retargeted Mixamo clips (<dir>/<id>.glb) are merged into the mannequin and appended to the catalog.
+ * The committed assets include the Mixamo moves, so rebuilding them needs --mixamo; without it those moves are dropped.
  */
 import { copyFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
@@ -32,9 +33,12 @@ function parseArgs(argv: readonly string[]): Args {
   if (flag >= 0 && (argv[flag + 1] === undefined || argv[flag + 1].startsWith('--'))) {
     throw new Error('--mixamo 后面需要跟重新绑定目录')
   }
+  const unknown = argv.find((a, i) => a.startsWith('--') && i !== flag)
+  if (unknown) throw new Error(`未知参数: ${unknown}`)
+  const positional = argv.filter((a, i) => !a.startsWith('--') && (flag < 0 || i !== flag + 1))
+  if (positional.length > 1) throw new Error(`多余的参数: ${positional.slice(1).join(' ')}`)
   const mixamoDir = flag >= 0 ? argv[flag + 1] : undefined
-  const src = argv.find((a, i) => !a.startsWith('--') && i !== flag + 1) ?? '../_vendor/desk-break'
-  return { src, mixamoDir }
+  return { src: positional[0] ?? '../_vendor/desk-break', mixamoDir }
 }
 
 async function mergeMixamoClips(io: NodeIO, doc: Document, dir: string, durations: Map<string, number>): Promise<void> {

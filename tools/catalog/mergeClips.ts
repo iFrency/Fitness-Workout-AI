@@ -3,7 +3,8 @@ import type { Accessor, Document, Node } from '@gltf-transform/core'
 /**
  * Copies the animation named clipName from source into target, mapping channels
  * to target nodes by node name. Returns the clip duration in seconds.
- * All checks run before anything is created, so a failure leaves target untouched.
+ * Node-name checks run before anything is created; a malformed source channel can still
+ * throw after the new animation exists, so discard target on any error.
  */
 export function mergeClip(target: Document, source: Document, clipName: string): number {
   const srcAnim = source.getRoot().listAnimations().find(a => a.getName() === clipName)
