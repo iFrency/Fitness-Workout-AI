@@ -1,4 +1,4 @@
-import type { Level, Part, SegmentType } from '../../src/catalog/types'
+import type { DanceTier, Level, Part, SegmentType } from '../../src/catalog/types'
 
 /** One row: id (desk-break clip id), Chinese name, parts, type, level, sided, cues, caution. */
 export type Row = readonly [string, string, readonly Part[], SegmentType, Level, boolean, readonly string[], string]
@@ -71,3 +71,56 @@ export const SELECTION: readonly Row[] = [
   ['child-pose', '婴儿式', ['全身', '胸背'], 'stretch', 1, false, ['跪坐在脚跟上', '胸口贴向大腿，双臂向前伸展贴地'], '膝盖不适时在臀部和脚跟间垫枕头'],
   ['standing-forward-fold-soft', '站姿前屈', ['全身', '臀腿'], 'stretch', 1, false, ['膝盖微屈', '从髋部前屈，让头和手臂自然下垂，再逐节卷起'], '膝盖微屈可以保护腰部'],
 ]
+
+/** Dance-mode tempos the pool must fit at; tier 1 (cool-down) also runs at 96 and 100. */
+export const DANCE_BPMS: readonly number[] = [96, 100, 110, 114, 118, 122, 124, 126, 128, 130, 132, 134, 136]
+
+/** One dance row: id (desk-break clip id), Chinese name, level, tier, cues, caution. All are standing, low-impact, non-sided. */
+export type DanceRow = readonly [string, string, Level, DanceTier, readonly string[], string]
+
+export const DANCE_SELECTION: readonly DanceRow[] = [
+  // tier 3: climax
+  ['fast-feet-small', '快速小碎步', 1, 3, ['膝盖放松，身体微微前倾', '前脚掌快速小步踏地，屈肘的双臂跟着摆动'], ''],
+  ['power-walk-arms-up', '踏步推举', 1, 3, ['原地踏步，双拳放在肩旁', '每两步双臂向上推举一次，再放回肩旁'], ''],
+  ['boxer-shuffle', '拳击步', 1, 3, ['膝盖放松，双拳护在下巴前', '重心左右转移，交替抬起脚跟，步子小而轻'], ''],
+  ['half-jack-arms', '半开合推举', 1, 3, ['双脚不动，膝盖放松', '双臂从体侧举过头顶再放下，每次举臂微屈膝'], ''],
+  ['jab-cross-step', '直拳转体步', 2, 3, ['一脚稍前，膝盖放松', '前手出拳后后手出拳，后脚脚尖带动转体'], ''],
+  ['skater-step-no-hop', '滑冰步', 2, 3, ['像滑冰一样向侧迈步，不跳起', '另一腿向斜后方伸出，上身微前倾，双臂摆动'], '膝盖对准脚尖，不要内扣'],
+  ['dance-running-man-step', '跑男步', 2, 3, ['一膝向前抬起', '落下后该脚向后退一小步，换腿，双臂像跑步一样摆动'], '不跳起，膝盖不适时抬低一些'],
+  ['dance-pump-it', '举拳律动', 2, 3, ['一只拳头向上高举', '每拍向下拉再向上推，膝盖跟着轻弹'], ''],
+  // tier 2: building
+  ['grapevine', '葡萄藤步', 1, 2, ['向侧迈一步', '另一脚在后交叉，再侧迈并拢，然后反方向'], ''],
+  ['heel-dig-punch', '点跟出拳', 1, 2, ['脚跟向前点地，脚尖朝上', '同时对侧手向前出拳，随节奏左右交替'], ''],
+  ['standing-uppercuts', '上勾拳', 1, 2, ['膝盖放松，双拳护在下巴前', '一拳由下向上击出并微微转体，左右交替'], ''],
+  ['lateral-shuffle-low', '低位侧滑步', 1, 2, ['屈膝，身体微微前倾', '向一侧快速滑三步不交叉，再滑回'], '膝盖不适时不要蹲得太低'],
+  ['low-front-kick', '低位前踢', 2, 2, ['双拳护在下巴前', '小腿向前低踢并控制住，收回后换腿'], '踢出时膝盖不要锁死'],
+  ['cross-knee-tap', '交叉碰膝', 1, 2, ['一臂斜向上举', '对侧膝盖抬向身体中线，手向下去碰，再换边'], ''],
+  ['butt-kick-walk', '后踢腿走', 1, 2, ['身体站直', '屈膝让脚跟靠近臀部，左右交替，手臂摆动'], '膝盖不适时只屈一半'],
+  ['dance-two-step', '两步舞', 1, 2, ['向左迈步，另一脚并拢', '再向右迈步并拢，膝盖放松，手臂随节拍摆动'], ''],
+  ['dance-cabbage-patch', '卷心菜舞', 1, 2, ['双拳放在胸前，手肘向外', '双拳在身前平着画圈，像搅大锅，身体跟着摇'], ''],
+  ['dance-raise-the-roof', '举屋顶', 1, 2, ['掌心朝天，放在肩旁', '向上推两下，像托起屋顶，膝盖随节拍轻弹'], ''],
+  ['dance-sprinkler', '草坪喷水器', 1, 2, ['一手放在脑后', '另一臂向前伸直，上身一顿一顿地转动'], ''],
+  ['dance-disco-point', '迪斯科指天', 1, 2, ['手指斜向上指', '手臂沿斜线落到身体另一侧，髋部跟着动，每 8 拍换手'], ''],
+  ['dance-carlton', '卡尔顿舞', 2, 2, ['屈臂并拢摆向一侧', '同侧小步迈出，再换边，保持微笑'], ''],
+  ['dance-ymca', 'YMCA 舞', 1, 2, ['Y：双臂向上向外伸直，M：指尖放头顶', 'C：双臂弯向一侧，A：双手在头顶合拢'], ''],
+  ['dance-hitchhike', '搭车舞', 1, 2, ['向侧迈步，拇指指向肩后', '眼睛跟着拇指，回正后换边'], ''],
+  ['funny-chicken-dance', '小鸡舞', 1, 2, ['双手夹在腋下，像翅膀', '扇动四下，再微微屈膝扭屁股'], '膝盖敏感时只微微屈膝'],
+  ['funny-air-guitar', '空气吉他', 1, 2, ['双脚分开，身体微微后仰', '一手握琴颈，另一手上下扫弦，头跟着点'], ''],
+  ['funny-sumo-stomp', '相扑踏步', 2, 2, ['双脚分开，双手扶在大腿上', '一腿向侧抬起，身体向另一侧倾，重重踏下再换边'], '膝盖敏感时抬腿要低，不要深蹲'],
+  // tier 1: easy
+  ['twist-march', '转体踏步', 1, 1, ['双臂屈肘放在胸前', '抬起一侧膝盖并向它转体，左右交替'], ''],
+  ['march-arm-circles', '踏步绕臂', 1, 1, ['原地踏步', '双臂侧平举画小圈，中途换方向'], ''],
+  ['dance-bounce-groove', '弹跳律动', 1, 1, ['双脚与肩同宽，膝盖放松', '每拍微屈膝点头，手臂放松随身体摆动'], ''],
+  ['dance-side-sway', '左右摇摆', 1, 1, ['重心从一只脚移到另一只脚', '另一侧膝盖微屈，肩膀和手臂跟着摆'], ''],
+  ['dance-heel-tap', '点脚跟', 1, 1, ['一脚向前点脚跟，脚尖朝上', '收回后换脚，对侧手向前指，跟着节拍'], ''],
+  ['dance-the-swim', '游泳舞', 1, 1, ['一臂向前向上，另一臂向下向后', '交替像自由泳，头微微侧转像在换气'], ''],
+  ['dance-overhead-clap', '头顶拍手', 1, 1, ['双臂向两侧打开再举向上方', '每拍在头顶拍手，膝盖轻轻弹动'], '肩膀不适时改在面前拍手'],
+  ['funny-t-rex-arms', '霸王龙手', 1, 1, ['手肘夹紧，小手垂在身前', '重重踏步并吼一声，什么都够不到'], ''],
+  ['funny-hot-floor', '地板是岩浆', 1, 1, ['双脚快速交替抬起', '双臂高高挥动，边喊烫烫烫'], '膝盖敏感时只抬脚跟'],
+]
+
+/** Existing shape-pool moves that also join the dance pool (their shape beatsPerRep is unchanged). */
+export const DUAL_POOL: Readonly<Record<string, DanceTier>> = {
+  'jumping-jacks': 3, burpee: 3, 'standing-climber': 3, 'skier-swing': 3, 'overhead-punches': 3,
+  'step-jack': 2, punches: 2, 'march-in-place': 1, 'step-touch-clap': 1,
+}

@@ -12,10 +12,10 @@ import { ALL_EXTENSIONS } from '@gltf-transform/extensions'
 import { meshopt, prune, resample } from '@gltf-transform/functions'
 import { MeshoptDecoder, MeshoptEncoder } from 'meshoptimizer'
 import { parseCatalog, type Exercise } from '../../src/catalog/types'
-import { bpmsFor, fromMixamoRow, pickBeats } from './exercise'
+import { bpmsFor, fromDanceRow, fromMixamoRow, pickBeats, withDualPool } from './exercise'
 import { mergeClip } from './mergeClips'
 import { MIXAMO_SELECTION } from './mixamoSelection'
-import { IDLE_ID, SELECTION, type Row } from './selection'
+import { DANCE_SELECTION, IDLE_ID, SELECTION, type Row } from './selection'
 
 interface SourceExercise { id: string; amount_en: string }
 
@@ -56,7 +56,7 @@ async function main({ src, mixamoDir }: Args): Promise<void> {
   })
   const lib = join(src, 'library')
   const doc = await io.read(join(lib, 'exercises.glb'))
-  const keep = new Set([...SELECTION.map(r => r[0]), IDLE_ID])
+  const keep = new Set([...SELECTION.map(r => r[0]), ...DANCE_SELECTION.map(r => r[0]), IDLE_ID])
   const durations = new Map<string, number>()
   for (const anim of doc.getRoot().listAnimations()) {
     if (!keep.has(anim.getName())) anim.dispose()
@@ -70,14 +70,19 @@ async function main({ src, mixamoDir }: Args): Promise<void> {
   const source = new Map((JSON.parse(readFileSync(join(lib, 'exercises.json'), 'utf8')).exercises as SourceExercise[]).map(e => [e.id, e]))
   const deskBreak: Exercise[] = SELECTION.map(([id, name, parts, type, level, sided, cues, caution]) => {
     const clipSeconds = Math.round(durations.get(id)! * 1000) / 1000
-    return {
+    return withDualPool({
       id, name, clip: id, clipSeconds, parts: [...parts], type, level, impact: 'low' as const,
       beatsPerRep: pickBeats(clipSeconds, bpmsFor(type, level)),
       defaultReps: defaultReps(source.get(id)!.amount_en, clipSeconds), sided, cues: [...cues], caution,
-    }
+      pools: ['shape'],
+    })
+  })
+  const dance: Exercise[] = DANCE_SELECTION.map(row => {
+    const clipSeconds = Math.round(durations.get(row[0])! * 1000) / 1000
+    return fromDanceRow(row, clipSeconds, defaultReps(source.get(row[0])!.amount_en, clipSeconds))
   })
   const mixamo = mixamoDir ? MIXAMO_SELECTION.map(r => fromMixamoRow(r, durations.get(r.id)!)) : []
-  const catalog = [...deskBreak, ...mixamo]
+  const catalog = [...deskBreak, ...dance, ...mixamo]
   parseCatalog(catalog)
   mkdirSync('public/assets/catalog', { recursive: true })
   writeFileSync('public/assets/catalog/exercises.json', `${JSON.stringify(catalog, null, 2)}\n`)

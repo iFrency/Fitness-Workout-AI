@@ -17,7 +17,12 @@
       "身体挺直，目视前方",
       "交替抬膝，手臂与腿反向摆动"
     ],
-    "caution": ""
+    "caution": "",
+    "pools": [
+      "shape",
+      "dance"
+    ],
+    "danceTier": 1
   },
   {
     "id": "arm-circles-small",
@@ -38,7 +43,10 @@
       "双臂侧平举到肩高",
       "在空中画小圈，中途换方向"
     ],
-    "caution": ""
+    "caution": "",
+    "pools": [
+      "shape"
+    ]
   },
   {
     "id": "shoulder-rolls-back",
@@ -58,7 +66,10 @@
       "双肩先向上耸起",
       "向后绕并夹紧肩胛，再缓慢放下"
     ],
-    "caution": ""
+    "caution": "",
+    "pools": [
+      "shape"
+    ]
   },
   {
     "id": "standing-hip-circles",
@@ -79,7 +90,10 @@
       "双脚与肩同宽，双手叉腰",
       "髋部缓慢画大圈，做完换方向"
     ],
-    "caution": ""
+    "caution": "",
+    "pools": [
+      "shape"
+    ]
   },
   {
     "id": "torso-circles",
@@ -99,7 +113,10 @@
       "双手叉腰，膝盖微屈",
       "上身向前、侧、后、另一侧画圈"
     ],
-    "caution": "向后时幅度要小，不要用力后仰"
+    "caution": "向后时幅度要小，不要用力后仰",
+    "pools": [
+      "shape"
+    ]
   },
   {
     "id": "standing-cat-cow",
@@ -119,7 +136,10 @@
       "屈膝，双手扶在大腿上",
       "拱背收下巴，再挺胸抬头"
     ],
-    "caution": "膝盖不适时只微微弯曲"
+    "caution": "膝盖不适时只微微弯曲",
+    "pools": [
+      "shape"
+    ]
   },
   {
     "id": "step-touch-clap",
@@ -139,7 +159,12 @@
       "向一侧迈步",
       "另一脚并拢点地并拍手，再换方向"
     ],
-    "caution": ""
+    "caution": "",
+    "pools": [
+      "shape",
+      "dance"
+    ],
+    "danceTier": 1
   },
   {
     "id": "t-arms-trunk-rotation",
@@ -160,7 +185,10 @@
       "双臂侧平举到肩高",
       "上身和头转向一侧，髋部朝前不动"
     ],
-    "caution": ""
+    "caution": "",
+    "pools": [
+      "shape"
+    ]
   },
   {
     "id": "front-leg-swing",
@@ -180,7 +208,10 @@
       "一手扶椅背或墙",
       "伸直一条腿前后小幅摆动，背部挺直"
     ],
-    "caution": ""
+    "caution": "",
+    "pools": [
+      "shape"
+    ]
   },
   {
     "id": "neck-side-tilt",
@@ -200,7 +231,10 @@
       "双肩放松下沉",
       "耳朵靠向肩膀，肩膀不要抬起"
     ],
-    "caution": ""
+    "caution": "",
+    "pools": [
+      "shape"
+    ]
   },
   {
     "id": "shoulder-shrugs",
@@ -220,7 +254,10 @@
       "双臂自然下垂",
       "双肩向耳朵耸起，停一秒再放下"
     ],
-    "caution": ""
+    "caution": "",
+    "pools": [
+      "shape"
+    ]
   },
   {
     "id": "chin-tuck",
@@ -240,7 +277,10 @@
       "目视正前方",
       "头部水平向后收，像做出双下巴"
     ],
-    "caution": ""
+    "caution": "",
+    "pools": [
+      "shape"
+    ]
   },
   {
     "id": "scapular-squeeze",
@@ -261,7 +301,10 @@
       "屈肘贴住身体两侧",
       "夹紧肩胛、打开胸口，停留后放松"
     ],
-    "caution": ""
+    "caution": "",
+    "pools": [
+      "shape"
+    ]
   },
   {
     "id": "w-squeeze",
@@ -282,7 +325,10 @@
       "双肘抬到肩高，前臂朝上",
       "手肘向下向后拉成 W 形并夹紧肩胛"
     ],
-    "caution": ""
+    "caution": "",
+    "pools": [
+      "shape"
+    ]
   },
   {
     "id": "y-raise",
@@ -303,7 +349,10 @@
       "双臂伸直向上外举成 Y 形",
       "拇指朝上，缓慢放下"
     ],
-    "caution": ""
+    "caution": "",
+    "pools": [
+      "shape"
+    ]
   },
   {
     "id": "biceps-curl",
@@ -323,7 +372,10 @@
       "手肘贴紧身体两侧",
       "屈肘把手举到肩前，再缓慢放下"
     ],
-    "caution": ""
+    "caution": "",
+    "pools": [
+      "shape"
+    ]
   },
   {
     "id": "lateral-raise",
@@ -344,7 +396,10 @@
       "手肘微屈",
       "双臂向两侧举到肩高，再缓慢放下"
     ],
-    "caution": ""
+    "caution": "",
+    "pools": [
+      "shape"
+    ]
   },
   {
     "id": "front-raise",
@@ -364,7 +419,10 @@
       "双臂伸直放在大腿前",
       "举到肩高后缓慢放下，不要甩"
     ],
-    "caution": ""
+    "caution": "",
+    "pools": [
+      "shape"
+    ]
   },
   {
     "id": "triceps-kickback",
@@ -384,7 +442,10 @@
       "微屈膝，背部挺直前倾",
       "手肘贴身朝后，前臂向后伸直再弯回"
     ],
-    "caution": ""
+    "caution": "",
+    "pools": [
+      "shape"
+    ]
   },
   {
     "id": "punches",
@@ -405,7 +466,12 @@
       "膝盖放松，双手护在下巴前",
       "左右手交替向前出拳，手肘不要锁死"
     ],
-    "caution": ""
+    "caution": "",
+    "pools": [
+      "shape",
+      "dance"
+    ],
+    "danceTier": 2
   },
   {
     "id": "overhead-punches",
@@ -426,7 +492,12 @@
       "双拳放在肩旁",
       "左右手交替向上冲拳，收紧腹部"
     ],
-    "caution": "不要塌腰后仰"
+    "caution": "不要塌腰后仰",
+    "pools": [
+      "shape",
+      "dance"
+    ],
+    "danceTier": 3
   },
   {
     "id": "pull-aparts",
@@ -446,7 +517,10 @@
       "双臂在胸前平举到肩高",
       "向两侧打开并夹紧肩胛，再慢慢收回"
     ],
-    "caution": ""
+    "caution": "",
+    "pools": [
+      "shape"
+    ]
   },
   {
     "id": "standing-snow-angel",
@@ -467,7 +541,10 @@
       "从 W 姿势开始，前臂朝上",
       "双臂向上滑到接近伸直，再收回夹背"
     ],
-    "caution": ""
+    "caution": "",
+    "pools": [
+      "shape"
+    ]
   },
   {
     "id": "hinge-reverse-fly",
@@ -487,7 +564,10 @@
       "从髋部前倾，双臂自然下垂",
       "双臂向两侧打开夹紧肩胛，再缓慢放下"
     ],
-    "caution": ""
+    "caution": "",
+    "pools": [
+      "shape"
+    ]
   },
   {
     "id": "hinge-y-raise",
@@ -508,7 +588,10 @@
       "背部挺直从髋前倾，膝盖放松",
       "双臂伸直向前外举成 Y 形，再缓慢放下"
     ],
-    "caution": "腰部疲劳时身体抬高一些"
+    "caution": "腰部疲劳时身体抬高一些",
+    "pools": [
+      "shape"
+    ]
   },
   {
     "id": "prone-superman",
@@ -529,7 +612,10 @@
       "俯卧，双臂向前伸直",
       "手臂、胸口和腿稍微抬离地面，停 2 秒"
     ],
-    "caution": "不要用力抬高，腰痛时只抬手臂"
+    "caution": "不要用力抬高，腰痛时只抬手臂",
+    "pools": [
+      "shape"
+    ]
   },
   {
     "id": "standing-side-crunch",
@@ -549,7 +635,10 @@
       "双手放在脑后",
       "一侧膝盖向外抬起，同侧手肘向下靠近"
     ],
-    "caution": ""
+    "caution": "",
+    "pools": [
+      "shape"
+    ]
   },
   {
     "id": "standing-bicycle-crunch",
@@ -569,7 +658,10 @@
       "双手放脑后，手肘打开",
       "抬起一侧膝盖，用对侧手肘去碰"
     ],
-    "caution": ""
+    "caution": "",
+    "pools": [
+      "shape"
+    ]
   },
   {
     "id": "standing-cross-crunch",
@@ -589,7 +681,10 @@
       "双手放在脑后",
       "抬膝同时转体，让对侧手肘向下迎上"
     ],
-    "caution": ""
+    "caution": "",
+    "pools": [
+      "shape"
+    ]
   },
   {
     "id": "dead-bug",
@@ -609,7 +704,10 @@
       "仰卧，双臂朝上，屈膝抬腿成直角",
       "一侧手臂向后、对侧腿向前伸，腰贴地"
     ],
-    "caution": "腰部吃力时只动腿不动手"
+    "caution": "腰部吃力时只动腿不动手",
+    "pools": [
+      "shape"
+    ]
   },
   {
     "id": "knee-plank",
@@ -629,7 +727,10 @@
       "前臂撑地，手肘在肩膀正下方",
       "膝盖着地，头到膝成一条直线，收紧腹部"
     ],
-    "caution": "腰痛时降低臀部或停止"
+    "caution": "腰痛时降低臀部或停止",
+    "pools": [
+      "shape"
+    ]
   },
   {
     "id": "plank-full",
@@ -650,7 +751,10 @@
       "双手在肩膀正下方，双腿向后伸直",
       "头到脚跟成一条直线，臀部不塌不翘"
     ],
-    "caution": "手腕不适时改用前臂或跪姿"
+    "caution": "手腕不适时改用前臂或跪姿",
+    "pools": [
+      "shape"
+    ]
   },
   {
     "id": "mini-squat",
@@ -670,7 +774,10 @@
       "双脚与肩同宽，双臂前伸",
       "像坐高椅子一样稍微下蹲"
     ],
-    "caution": "膝盖对准脚尖，不要内扣"
+    "caution": "膝盖对准脚尖，不要内扣",
+    "pools": [
+      "shape"
+    ]
   },
   {
     "id": "calf-raise",
@@ -690,7 +797,10 @@
       "扶椅背保持平衡",
       "慢慢踮起脚尖，再缓慢落下脚跟"
     ],
-    "caution": ""
+    "caution": "",
+    "pools": [
+      "shape"
+    ]
   },
   {
     "id": "side-leg-raise",
@@ -710,7 +820,10 @@
       "一手扶椅背",
       "一条腿伸直向侧抬起，脚尖朝前，再缓慢放下"
     ],
-    "caution": ""
+    "caution": "",
+    "pools": [
+      "shape"
+    ]
   },
   {
     "id": "glute-bridge",
@@ -731,7 +844,10 @@
       "仰卧屈膝，双手放在地上",
       "脚跟发力抬臀，肩到膝成一条直线，停 2 秒"
     ],
-    "caution": "不要塌腰，腰痛时抬低一些"
+    "caution": "不要塌腰，腰痛时抬低一些",
+    "pools": [
+      "shape"
+    ]
   },
   {
     "id": "sit-back-squat",
@@ -751,7 +867,10 @@
       "臀部向后，像坐一张看不见的椅子",
       "上身前倾，双臂前伸保持平衡"
     ],
-    "caution": "只蹲到膝盖舒适的深度，用脚跟发力站起"
+    "caution": "只蹲到膝盖舒适的深度，用脚跟发力站起",
+    "pools": [
+      "shape"
+    ]
   },
   {
     "id": "shallow-split-squat",
@@ -771,7 +890,10 @@
       "一脚在前一脚在后，双脚不动",
       "后脚跟抬起，身体小幅下沉"
     ],
-    "caution": "只做小幅下沉，前膝不要超过脚尖"
+    "caution": "只做小幅下沉，前膝不要超过脚尖",
+    "pools": [
+      "shape"
+    ]
   },
   {
     "id": "reverse-lunge-knee-drive",
@@ -792,7 +914,10 @@
       "向后小退一步，膝盖微屈",
       "后脚蹬地，把这侧膝盖向上提高"
     ],
-    "caution": "步子小、下沉浅，前膝在脚踝正上方"
+    "caution": "步子小、下沉浅，前膝在脚踝正上方",
+    "pools": [
+      "shape"
+    ]
   },
   {
     "id": "step-jack",
@@ -812,7 +937,12 @@
       "像开合跳但不跳起",
       "一脚向侧迈出同时举起双臂，再收回换边"
     ],
-    "caution": ""
+    "caution": "",
+    "pools": [
+      "shape",
+      "dance"
+    ],
+    "danceTier": 2
   },
   {
     "id": "skier-swing",
@@ -832,7 +962,12 @@
       "双臂上举",
       "屈膝前倾，双臂向后摆，再回到上举"
     ],
-    "caution": "背部保持挺直，腰不好时幅度小一些"
+    "caution": "背部保持挺直，腰不好时幅度小一些",
+    "pools": [
+      "shape",
+      "dance"
+    ],
+    "danceTier": 3
   },
   {
     "id": "standing-climber",
@@ -853,7 +988,12 @@
       "想象在爬梯子",
       "一手向上够，同时抬起对侧膝盖，再交换"
     ],
-    "caution": ""
+    "caution": "",
+    "pools": [
+      "shape",
+      "dance"
+    ],
+    "danceTier": 3
   },
   {
     "id": "trap-stretch",
@@ -873,7 +1013,10 @@
       "头向一侧倾斜",
       "另一侧手向下向外推，保持呼吸"
     ],
-    "caution": ""
+    "caution": "",
+    "pools": [
+      "shape"
+    ]
   },
   {
     "id": "cross-body-stretch",
@@ -894,7 +1037,10 @@
       "一臂伸直横过胸前",
       "另一手在肘上方把它拉近，肩膀下沉"
     ],
-    "caution": ""
+    "caution": "",
+    "pools": [
+      "shape"
+    ]
   },
   {
     "id": "overhead-triceps-stretch",
@@ -914,7 +1060,10 @@
       "一臂上举屈肘，手落到脑后",
       "另一手轻压手肘，头保持抬起"
     ],
-    "caution": ""
+    "caution": "",
+    "pools": [
+      "shape"
+    ]
   },
   {
     "id": "chest-opener-clasp",
@@ -934,7 +1083,10 @@
       "双手在背后相扣",
       "双肩向后向下，挺胸目视前方"
     ],
-    "caution": ""
+    "caution": "",
+    "pools": [
+      "shape"
+    ]
   },
   {
     "id": "arms-back-chest-stretch",
@@ -955,7 +1107,10 @@
       "双臂向两侧打开，略高于肩",
       "向后拉到胸前有拉伸感，保持呼吸"
     ],
-    "caution": ""
+    "caution": "",
+    "pools": [
+      "shape"
+    ]
   },
   {
     "id": "standing-side-bend-reach",
@@ -975,7 +1130,10 @@
       "双脚与髋同宽",
       "一臂上举向另一侧弯，另一手沿大腿下滑"
     ],
-    "caution": ""
+    "caution": "",
+    "pools": [
+      "shape"
+    ]
   },
   {
     "id": "baby-cobra",
@@ -996,7 +1154,10 @@
       "俯卧，双手放在胸旁",
       "只抬起胸口，手肘贴近身体，肩膀远离耳朵"
     ],
-    "caution": "只抬一点，腰部不要有压迫感"
+    "caution": "只抬一点，腰部不要有压迫感",
+    "pools": [
+      "shape"
+    ]
   },
   {
     "id": "supine-twist",
@@ -1016,7 +1177,10 @@
       "仰卧，双臂向两侧打开，屈膝",
       "双膝慢慢倒向一侧，肩膀贴地"
     ],
-    "caution": "腰痛时双膝只倒一半"
+    "caution": "腰痛时双膝只倒一半",
+    "pools": [
+      "shape"
+    ]
   },
   {
     "id": "standing-quad-stretch",
@@ -1036,7 +1200,10 @@
       "一手扶墙或椅子",
       "屈膝向后抓住脚踝"
     ],
-    "caution": "够不到时抓裤脚或用毛巾，不要用力拉"
+    "caution": "够不到时抓裤脚或用毛巾，不要用力拉",
+    "pools": [
+      "shape"
+    ]
   },
   {
     "id": "standing-hamstring-stretch",
@@ -1056,7 +1223,10 @@
       "一脚脚跟向前点地，脚尖朝上",
       "后腿屈膝，背部挺直向前倾"
     ],
-    "caution": ""
+    "caution": "",
+    "pools": [
+      "shape"
+    ]
   },
   {
     "id": "lunge-hip-flexor-stretch",
@@ -1076,7 +1246,10 @@
       "向前跨一大步，前膝微屈",
       "骨盆后收，感受后腿前侧的拉伸"
     ],
-    "caution": "前膝不要超过脚尖，背部挺直"
+    "caution": "前膝不要超过脚尖，背部挺直",
+    "pools": [
+      "shape"
+    ]
   },
   {
     "id": "tall-reach-tiptoes",
@@ -1096,7 +1269,10 @@
       "双臂举过头顶",
       "踮起脚尖向上伸展，再慢慢落下"
     ],
-    "caution": "站不稳时脚掌贴地即可"
+    "caution": "站不稳时脚掌贴地即可",
+    "pools": [
+      "shape"
+    ]
   },
   {
     "id": "child-pose",
@@ -1117,7 +1293,10 @@
       "跪坐在脚跟上",
       "胸口贴向大腿，双臂向前伸展贴地"
     ],
-    "caution": "膝盖不适时在臀部和脚跟间垫枕头"
+    "caution": "膝盖不适时在臀部和脚跟间垫枕头",
+    "pools": [
+      "shape"
+    ]
   },
   {
     "id": "standing-forward-fold-soft",
@@ -1138,7 +1317,850 @@
       "膝盖微屈",
       "从髋部前屈，让头和手臂自然下垂，再逐节卷起"
     ],
-    "caution": "膝盖微屈可以保护腰部"
+    "caution": "膝盖微屈可以保护腰部",
+    "pools": [
+      "shape"
+    ]
+  },
+  {
+    "id": "fast-feet-small",
+    "name": "快速小碎步",
+    "clip": "fast-feet-small",
+    "clipSeconds": 0.533,
+    "parts": [
+      "全身"
+    ],
+    "type": "main",
+    "level": 1,
+    "impact": "low",
+    "beatsPerRep": 1,
+    "defaultReps": 16,
+    "sided": false,
+    "cues": [
+      "膝盖放松，身体微微前倾",
+      "前脚掌快速小步踏地，屈肘的双臂跟着摆动"
+    ],
+    "caution": "",
+    "pools": [
+      "dance"
+    ],
+    "danceTier": 3
+  },
+  {
+    "id": "power-walk-arms-up",
+    "name": "踏步推举",
+    "clip": "power-walk-arms-up",
+    "clipSeconds": 1.033,
+    "parts": [
+      "全身"
+    ],
+    "type": "main",
+    "level": 1,
+    "impact": "low",
+    "beatsPerRep": 2,
+    "defaultReps": 16,
+    "sided": false,
+    "cues": [
+      "原地踏步，双拳放在肩旁",
+      "每两步双臂向上推举一次，再放回肩旁"
+    ],
+    "caution": "",
+    "pools": [
+      "dance"
+    ],
+    "danceTier": 3
+  },
+  {
+    "id": "boxer-shuffle",
+    "name": "拳击步",
+    "clip": "boxer-shuffle",
+    "clipSeconds": 0.733,
+    "parts": [
+      "全身"
+    ],
+    "type": "main",
+    "level": 1,
+    "impact": "low",
+    "beatsPerRep": 2,
+    "defaultReps": 16,
+    "sided": false,
+    "cues": [
+      "膝盖放松，双拳护在下巴前",
+      "重心左右转移，交替抬起脚跟，步子小而轻"
+    ],
+    "caution": "",
+    "pools": [
+      "dance"
+    ],
+    "danceTier": 3
+  },
+  {
+    "id": "half-jack-arms",
+    "name": "半开合推举",
+    "clip": "half-jack-arms",
+    "clipSeconds": 0.933,
+    "parts": [
+      "全身"
+    ],
+    "type": "main",
+    "level": 1,
+    "impact": "low",
+    "beatsPerRep": 2,
+    "defaultReps": 16,
+    "sided": false,
+    "cues": [
+      "双脚不动，膝盖放松",
+      "双臂从体侧举过头顶再放下，每次举臂微屈膝"
+    ],
+    "caution": "",
+    "pools": [
+      "dance"
+    ],
+    "danceTier": 3
+  },
+  {
+    "id": "jab-cross-step",
+    "name": "直拳转体步",
+    "clip": "jab-cross-step",
+    "clipSeconds": 0.833,
+    "parts": [
+      "全身"
+    ],
+    "type": "main",
+    "level": 2,
+    "impact": "low",
+    "beatsPerRep": 2,
+    "defaultReps": 16,
+    "sided": false,
+    "cues": [
+      "一脚稍前，膝盖放松",
+      "前手出拳后后手出拳，后脚脚尖带动转体"
+    ],
+    "caution": "",
+    "pools": [
+      "dance"
+    ],
+    "danceTier": 3
+  },
+  {
+    "id": "skater-step-no-hop",
+    "name": "滑冰步",
+    "clip": "skater-step-no-hop",
+    "clipSeconds": 1.433,
+    "parts": [
+      "全身"
+    ],
+    "type": "main",
+    "level": 2,
+    "impact": "low",
+    "beatsPerRep": 4,
+    "defaultReps": 10,
+    "sided": false,
+    "cues": [
+      "像滑冰一样向侧迈步，不跳起",
+      "另一腿向斜后方伸出，上身微前倾，双臂摆动"
+    ],
+    "caution": "膝盖对准脚尖，不要内扣",
+    "pools": [
+      "dance"
+    ],
+    "danceTier": 3
+  },
+  {
+    "id": "dance-running-man-step",
+    "name": "跑男步",
+    "clip": "dance-running-man-step",
+    "clipSeconds": 2.533,
+    "parts": [
+      "全身"
+    ],
+    "type": "main",
+    "level": 2,
+    "impact": "low",
+    "beatsPerRep": 4,
+    "defaultReps": 16,
+    "sided": false,
+    "cues": [
+      "一膝向前抬起",
+      "落下后该脚向后退一小步，换腿，双臂像跑步一样摆动"
+    ],
+    "caution": "不跳起，膝盖不适时抬低一些",
+    "pools": [
+      "dance"
+    ],
+    "danceTier": 3
+  },
+  {
+    "id": "dance-pump-it",
+    "name": "举拳律动",
+    "clip": "dance-pump-it",
+    "clipSeconds": 1.2,
+    "parts": [
+      "全身"
+    ],
+    "type": "main",
+    "level": 2,
+    "impact": "low",
+    "beatsPerRep": 2,
+    "defaultReps": 16,
+    "sided": false,
+    "cues": [
+      "一只拳头向上高举",
+      "每拍向下拉再向上推，膝盖跟着轻弹"
+    ],
+    "caution": "",
+    "pools": [
+      "dance"
+    ],
+    "danceTier": 3
+  },
+  {
+    "id": "grapevine",
+    "name": "葡萄藤步",
+    "clip": "grapevine",
+    "clipSeconds": 4.033,
+    "parts": [
+      "全身"
+    ],
+    "type": "main",
+    "level": 1,
+    "impact": "low",
+    "beatsPerRep": 8,
+    "defaultReps": 8,
+    "sided": false,
+    "cues": [
+      "向侧迈一步",
+      "另一脚在后交叉，再侧迈并拢，然后反方向"
+    ],
+    "caution": "",
+    "pools": [
+      "dance"
+    ],
+    "danceTier": 2
+  },
+  {
+    "id": "heel-dig-punch",
+    "name": "点跟出拳",
+    "clip": "heel-dig-punch",
+    "clipSeconds": 1.033,
+    "parts": [
+      "全身"
+    ],
+    "type": "main",
+    "level": 1,
+    "impact": "low",
+    "beatsPerRep": 2,
+    "defaultReps": 16,
+    "sided": false,
+    "cues": [
+      "脚跟向前点地，脚尖朝上",
+      "同时对侧手向前出拳，随节奏左右交替"
+    ],
+    "caution": "",
+    "pools": [
+      "dance"
+    ],
+    "danceTier": 2
+  },
+  {
+    "id": "standing-uppercuts",
+    "name": "上勾拳",
+    "clip": "standing-uppercuts",
+    "clipSeconds": 0.933,
+    "parts": [
+      "全身"
+    ],
+    "type": "main",
+    "level": 1,
+    "impact": "low",
+    "beatsPerRep": 2,
+    "defaultReps": 16,
+    "sided": false,
+    "cues": [
+      "膝盖放松，双拳护在下巴前",
+      "一拳由下向上击出并微微转体，左右交替"
+    ],
+    "caution": "",
+    "pools": [
+      "dance"
+    ],
+    "danceTier": 2
+  },
+  {
+    "id": "lateral-shuffle-low",
+    "name": "低位侧滑步",
+    "clip": "lateral-shuffle-low",
+    "clipSeconds": 1.633,
+    "parts": [
+      "全身"
+    ],
+    "type": "main",
+    "level": 1,
+    "impact": "low",
+    "beatsPerRep": 4,
+    "defaultReps": 16,
+    "sided": false,
+    "cues": [
+      "屈膝，身体微微前倾",
+      "向一侧快速滑三步不交叉，再滑回"
+    ],
+    "caution": "膝盖不适时不要蹲得太低",
+    "pools": [
+      "dance"
+    ],
+    "danceTier": 2
+  },
+  {
+    "id": "low-front-kick",
+    "name": "低位前踢",
+    "clip": "low-front-kick",
+    "clipSeconds": 2.033,
+    "parts": [
+      "全身"
+    ],
+    "type": "main",
+    "level": 2,
+    "impact": "low",
+    "beatsPerRep": 4,
+    "defaultReps": 10,
+    "sided": false,
+    "cues": [
+      "双拳护在下巴前",
+      "小腿向前低踢并控制住，收回后换腿"
+    ],
+    "caution": "踢出时膝盖不要锁死",
+    "pools": [
+      "dance"
+    ],
+    "danceTier": 2
+  },
+  {
+    "id": "cross-knee-tap",
+    "name": "交叉碰膝",
+    "clip": "cross-knee-tap",
+    "clipSeconds": 2.233,
+    "parts": [
+      "全身"
+    ],
+    "type": "main",
+    "level": 1,
+    "impact": "low",
+    "beatsPerRep": 4,
+    "defaultReps": 10,
+    "sided": false,
+    "cues": [
+      "一臂斜向上举",
+      "对侧膝盖抬向身体中线，手向下去碰，再换边"
+    ],
+    "caution": "",
+    "pools": [
+      "dance"
+    ],
+    "danceTier": 2
+  },
+  {
+    "id": "butt-kick-walk",
+    "name": "后踢腿走",
+    "clip": "butt-kick-walk",
+    "clipSeconds": 1.033,
+    "parts": [
+      "全身"
+    ],
+    "type": "main",
+    "level": 1,
+    "impact": "low",
+    "beatsPerRep": 2,
+    "defaultReps": 16,
+    "sided": false,
+    "cues": [
+      "身体站直",
+      "屈膝让脚跟靠近臀部，左右交替，手臂摆动"
+    ],
+    "caution": "膝盖不适时只屈一半",
+    "pools": [
+      "dance"
+    ],
+    "danceTier": 2
+  },
+  {
+    "id": "dance-two-step",
+    "name": "两步舞",
+    "clip": "dance-two-step",
+    "clipSeconds": 2.633,
+    "parts": [
+      "全身"
+    ],
+    "type": "main",
+    "level": 1,
+    "impact": "low",
+    "beatsPerRep": 4,
+    "defaultReps": 16,
+    "sided": false,
+    "cues": [
+      "向左迈步，另一脚并拢",
+      "再向右迈步并拢，膝盖放松，手臂随节拍摆动"
+    ],
+    "caution": "",
+    "pools": [
+      "dance"
+    ],
+    "danceTier": 2
+  },
+  {
+    "id": "dance-cabbage-patch",
+    "name": "卷心菜舞",
+    "clip": "dance-cabbage-patch",
+    "clipSeconds": 1.233,
+    "parts": [
+      "全身"
+    ],
+    "type": "main",
+    "level": 1,
+    "impact": "low",
+    "beatsPerRep": 2,
+    "defaultReps": 16,
+    "sided": false,
+    "cues": [
+      "双拳放在胸前，手肘向外",
+      "双拳在身前平着画圈，像搅大锅，身体跟着摇"
+    ],
+    "caution": "",
+    "pools": [
+      "dance"
+    ],
+    "danceTier": 2
+  },
+  {
+    "id": "dance-raise-the-roof",
+    "name": "举屋顶",
+    "clip": "dance-raise-the-roof",
+    "clipSeconds": 0.667,
+    "parts": [
+      "全身"
+    ],
+    "type": "main",
+    "level": 1,
+    "impact": "low",
+    "beatsPerRep": 1,
+    "defaultReps": 16,
+    "sided": false,
+    "cues": [
+      "掌心朝天，放在肩旁",
+      "向上推两下，像托起屋顶，膝盖随节拍轻弹"
+    ],
+    "caution": "",
+    "pools": [
+      "dance"
+    ],
+    "danceTier": 2
+  },
+  {
+    "id": "dance-sprinkler",
+    "name": "草坪喷水器",
+    "clip": "dance-sprinkler",
+    "clipSeconds": 1.3,
+    "parts": [
+      "全身"
+    ],
+    "type": "main",
+    "level": 1,
+    "impact": "low",
+    "beatsPerRep": 2,
+    "defaultReps": 8,
+    "sided": false,
+    "cues": [
+      "一手放在脑后",
+      "另一臂向前伸直，上身一顿一顿地转动"
+    ],
+    "caution": "",
+    "pools": [
+      "dance"
+    ],
+    "danceTier": 2
+  },
+  {
+    "id": "dance-disco-point",
+    "name": "迪斯科指天",
+    "clip": "dance-disco-point",
+    "clipSeconds": 1.2,
+    "parts": [
+      "全身"
+    ],
+    "type": "main",
+    "level": 1,
+    "impact": "low",
+    "beatsPerRep": 2,
+    "defaultReps": 8,
+    "sided": false,
+    "cues": [
+      "手指斜向上指",
+      "手臂沿斜线落到身体另一侧，髋部跟着动，每 8 拍换手"
+    ],
+    "caution": "",
+    "pools": [
+      "dance"
+    ],
+    "danceTier": 2
+  },
+  {
+    "id": "dance-carlton",
+    "name": "卡尔顿舞",
+    "clip": "dance-carlton",
+    "clipSeconds": 1.2,
+    "parts": [
+      "全身"
+    ],
+    "type": "main",
+    "level": 2,
+    "impact": "low",
+    "beatsPerRep": 2,
+    "defaultReps": 16,
+    "sided": false,
+    "cues": [
+      "屈臂并拢摆向一侧",
+      "同侧小步迈出，再换边，保持微笑"
+    ],
+    "caution": "",
+    "pools": [
+      "dance"
+    ],
+    "danceTier": 2
+  },
+  {
+    "id": "dance-ymca",
+    "name": "YMCA 舞",
+    "clip": "dance-ymca",
+    "clipSeconds": 4.633,
+    "parts": [
+      "全身"
+    ],
+    "type": "main",
+    "level": 1,
+    "impact": "low",
+    "beatsPerRep": 8,
+    "defaultReps": 4,
+    "sided": false,
+    "cues": [
+      "Y：双臂向上向外伸直，M：指尖放头顶",
+      "C：双臂弯向一侧，A：双手在头顶合拢"
+    ],
+    "caution": "",
+    "pools": [
+      "dance"
+    ],
+    "danceTier": 2
+  },
+  {
+    "id": "dance-hitchhike",
+    "name": "搭车舞",
+    "clip": "dance-hitchhike",
+    "clipSeconds": 2.433,
+    "parts": [
+      "全身"
+    ],
+    "type": "main",
+    "level": 1,
+    "impact": "low",
+    "beatsPerRep": 4,
+    "defaultReps": 8,
+    "sided": false,
+    "cues": [
+      "向侧迈步，拇指指向肩后",
+      "眼睛跟着拇指，回正后换边"
+    ],
+    "caution": "",
+    "pools": [
+      "dance"
+    ],
+    "danceTier": 2
+  },
+  {
+    "id": "funny-chicken-dance",
+    "name": "小鸡舞",
+    "clip": "funny-chicken-dance",
+    "clipSeconds": 1.233,
+    "parts": [
+      "全身"
+    ],
+    "type": "main",
+    "level": 1,
+    "impact": "low",
+    "beatsPerRep": 2,
+    "defaultReps": 4,
+    "sided": false,
+    "cues": [
+      "双手夹在腋下，像翅膀",
+      "扇动四下，再微微屈膝扭屁股"
+    ],
+    "caution": "膝盖敏感时只微微屈膝",
+    "pools": [
+      "dance"
+    ],
+    "danceTier": 2
+  },
+  {
+    "id": "funny-air-guitar",
+    "name": "空气吉他",
+    "clip": "funny-air-guitar",
+    "clipSeconds": 1.233,
+    "parts": [
+      "全身"
+    ],
+    "type": "main",
+    "level": 1,
+    "impact": "low",
+    "beatsPerRep": 2,
+    "defaultReps": 16,
+    "sided": false,
+    "cues": [
+      "双脚分开，身体微微后仰",
+      "一手握琴颈，另一手上下扫弦，头跟着点"
+    ],
+    "caution": "",
+    "pools": [
+      "dance"
+    ],
+    "danceTier": 2
+  },
+  {
+    "id": "funny-sumo-stomp",
+    "name": "相扑踏步",
+    "clip": "funny-sumo-stomp",
+    "clipSeconds": 3.033,
+    "parts": [
+      "全身"
+    ],
+    "type": "main",
+    "level": 2,
+    "impact": "low",
+    "beatsPerRep": 8,
+    "defaultReps": 6,
+    "sided": false,
+    "cues": [
+      "双脚分开，双手扶在大腿上",
+      "一腿向侧抬起，身体向另一侧倾，重重踏下再换边"
+    ],
+    "caution": "膝盖敏感时抬腿要低，不要深蹲",
+    "pools": [
+      "dance"
+    ],
+    "danceTier": 2
+  },
+  {
+    "id": "twist-march",
+    "name": "转体踏步",
+    "clip": "twist-march",
+    "clipSeconds": 1.133,
+    "parts": [
+      "全身"
+    ],
+    "type": "main",
+    "level": 1,
+    "impact": "low",
+    "beatsPerRep": 2,
+    "defaultReps": 16,
+    "sided": false,
+    "cues": [
+      "双臂屈肘放在胸前",
+      "抬起一侧膝盖并向它转体，左右交替"
+    ],
+    "caution": "",
+    "pools": [
+      "dance"
+    ],
+    "danceTier": 1
+  },
+  {
+    "id": "march-arm-circles",
+    "name": "踏步绕臂",
+    "clip": "march-arm-circles",
+    "clipSeconds": 1.633,
+    "parts": [
+      "全身"
+    ],
+    "type": "main",
+    "level": 1,
+    "impact": "low",
+    "beatsPerRep": 4,
+    "defaultReps": 16,
+    "sided": false,
+    "cues": [
+      "原地踏步",
+      "双臂侧平举画小圈，中途换方向"
+    ],
+    "caution": "",
+    "pools": [
+      "dance"
+    ],
+    "danceTier": 1
+  },
+  {
+    "id": "dance-bounce-groove",
+    "name": "弹跳律动",
+    "clip": "dance-bounce-groove",
+    "clipSeconds": 1.3,
+    "parts": [
+      "全身"
+    ],
+    "type": "main",
+    "level": 1,
+    "impact": "low",
+    "beatsPerRep": 2,
+    "defaultReps": 16,
+    "sided": false,
+    "cues": [
+      "双脚与肩同宽，膝盖放松",
+      "每拍微屈膝点头，手臂放松随身体摆动"
+    ],
+    "caution": "",
+    "pools": [
+      "dance"
+    ],
+    "danceTier": 1
+  },
+  {
+    "id": "dance-side-sway",
+    "name": "左右摇摆",
+    "clip": "dance-side-sway",
+    "clipSeconds": 1.367,
+    "parts": [
+      "全身"
+    ],
+    "type": "main",
+    "level": 1,
+    "impact": "low",
+    "beatsPerRep": 2,
+    "defaultReps": 16,
+    "sided": false,
+    "cues": [
+      "重心从一只脚移到另一只脚",
+      "另一侧膝盖微屈，肩膀和手臂跟着摆"
+    ],
+    "caution": "",
+    "pools": [
+      "dance"
+    ],
+    "danceTier": 1
+  },
+  {
+    "id": "dance-heel-tap",
+    "name": "点脚跟",
+    "clip": "dance-heel-tap",
+    "clipSeconds": 2.433,
+    "parts": [
+      "全身"
+    ],
+    "type": "main",
+    "level": 1,
+    "impact": "low",
+    "beatsPerRep": 4,
+    "defaultReps": 16,
+    "sided": false,
+    "cues": [
+      "一脚向前点脚跟，脚尖朝上",
+      "收回后换脚，对侧手向前指，跟着节拍"
+    ],
+    "caution": "",
+    "pools": [
+      "dance"
+    ],
+    "danceTier": 1
+  },
+  {
+    "id": "dance-the-swim",
+    "name": "游泳舞",
+    "clip": "dance-the-swim",
+    "clipSeconds": 1.3,
+    "parts": [
+      "全身"
+    ],
+    "type": "main",
+    "level": 1,
+    "impact": "low",
+    "beatsPerRep": 2,
+    "defaultReps": 16,
+    "sided": false,
+    "cues": [
+      "一臂向前向上，另一臂向下向后",
+      "交替像自由泳，头微微侧转像在换气"
+    ],
+    "caution": "",
+    "pools": [
+      "dance"
+    ],
+    "danceTier": 1
+  },
+  {
+    "id": "dance-overhead-clap",
+    "name": "头顶拍手",
+    "clip": "dance-overhead-clap",
+    "clipSeconds": 1.233,
+    "parts": [
+      "全身"
+    ],
+    "type": "main",
+    "level": 1,
+    "impact": "low",
+    "beatsPerRep": 2,
+    "defaultReps": 16,
+    "sided": false,
+    "cues": [
+      "双臂向两侧打开再举向上方",
+      "每拍在头顶拍手，膝盖轻轻弹动"
+    ],
+    "caution": "肩膀不适时改在面前拍手",
+    "pools": [
+      "dance"
+    ],
+    "danceTier": 1
+  },
+  {
+    "id": "funny-t-rex-arms",
+    "name": "霸王龙手",
+    "clip": "funny-t-rex-arms",
+    "clipSeconds": 2.433,
+    "parts": [
+      "全身"
+    ],
+    "type": "main",
+    "level": 1,
+    "impact": "low",
+    "beatsPerRep": 4,
+    "defaultReps": 10,
+    "sided": false,
+    "cues": [
+      "手肘夹紧，小手垂在身前",
+      "重重踏步并吼一声，什么都够不到"
+    ],
+    "caution": "",
+    "pools": [
+      "dance"
+    ],
+    "danceTier": 1
+  },
+  {
+    "id": "funny-hot-floor",
+    "name": "地板是岩浆",
+    "clip": "funny-hot-floor",
+    "clipSeconds": 0.4,
+    "parts": [
+      "全身"
+    ],
+    "type": "main",
+    "level": 1,
+    "impact": "low",
+    "beatsPerRep": 1,
+    "defaultReps": 16,
+    "sided": false,
+    "cues": [
+      "双脚快速交替抬起",
+      "双臂高高挥动，边喊烫烫烫"
+    ],
+    "caution": "膝盖敏感时只抬脚跟",
+    "pools": [
+      "dance"
+    ],
+    "danceTier": 1
   },
   {
     "id": "jumping-jacks",
@@ -1158,7 +2180,12 @@
       "双脚并拢站直，双臂自然下垂",
       "跳起时双脚分开、双臂上举，再跳回并拢"
     ],
-    "caution": "膝盖不适时改为无跳开合步"
+    "caution": "膝盖不适时改为无跳开合步",
+    "pools": [
+      "shape",
+      "dance"
+    ],
+    "danceTier": 3
   },
   {
     "id": "high-knees",
@@ -1179,7 +2206,10 @@
       "身体挺直，目视前方，双臂屈肘",
       "快速交替抬膝到髋部高度，手臂反向摆动"
     ],
-    "caution": "落地用前脚掌，膝盖不适时改为原地踏步"
+    "caution": "落地用前脚掌，膝盖不适时改为原地踏步",
+    "pools": [
+      "shape"
+    ]
   },
   {
     "id": "burpee",
@@ -1199,7 +2229,12 @@
       "双脚与肩同宽站直",
       "下蹲双手撑地，双脚后跳成俯撑，再收脚跳起"
     ],
-    "caution": "膝盖或腰部不适时，改为后撤步，不跳"
+    "caution": "膝盖或腰部不适时，改为后撤步，不跳",
+    "pools": [
+      "shape",
+      "dance"
+    ],
+    "danceTier": 3
   },
   {
     "id": "air-squat",
@@ -1219,7 +2254,10 @@
       "双脚与肩同宽，双臂前伸",
       "臀部向后向下坐，再用脚跟发力站起"
     ],
-    "caution": "膝盖对准脚尖，不要内扣"
+    "caution": "膝盖对准脚尖，不要内扣",
+    "pools": [
+      "shape"
+    ]
   },
   {
     "id": "push-up",
@@ -1240,6 +2278,9 @@
       "双手撑地略宽于肩，身体成一条直线",
       "屈肘下降到胸口接近地面，再撑起"
     ],
-    "caution": "做不了时改为跪姿，不要塌腰"
+    "caution": "做不了时改为跪姿，不要塌腰",
+    "pools": [
+      "shape"
+    ]
   }
 ]

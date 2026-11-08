@@ -3,9 +3,15 @@ import { pathToFileURL } from 'node:url'
 import { IDLE_CLIP } from '../src/catalog/constants'
 import { PARTS, parseCatalog, type Exercise, type Level, type Part, type SegmentType } from '../src/catalog/types'
 import { bpmFor, fitBeats } from '../src/planner/timing'
+import { danceBpmsFor, pickBeats } from '../tools/catalog/exercise'
 
 const MAX_GLB_BYTES = 3 * 1024 * 1024
 const DURATION_TOLERANCE = 0.05
+const MIN_MOVES = 40
+const MAX_MOVES = 120
+const EIGHT_COUNT_UNITS: readonly number[] = [1, 2, 4, 8]
+const MIN_CLIMAX_MOVES = 6
+const MIN_BEGINNER_PER_TIER = 4
 
 interface GltfJson {
   animations?: { name?: string; samplers: { input: number }[] }[]
@@ -39,8 +45,44 @@ function clipErrors(catalog: readonly Exercise[], clips: Map<string, number>): s
     else if (Math.abs(seconds - e.clipSeconds) > DURATION_TOLERANCE) {
       errors.push(`动作 ${e.id} 的 clipSeconds ${e.clipSeconds} 与 GLB 时长 ${seconds.toFixed(3)} 不符`)
     }
+    if (!e.pools.includes('shape')) continue
     for (const bpm of bpmsFor(e)) {
       if (!fitBeats(e.clipSeconds, e.beatsPerRep, bpm)) errors.push(`动作 ${e.id} 在 ${bpm} BPM 下无法对齐节拍`)
+    }
+  }
+  return errors
+}
+
+/** Dance moves must land on an eight-count unit (1, 2, 4 or 8 beats) at every tempo of their tier. */
+function danceBeatErrors(catalog: readonly Exercise[]): string[] {
+  const errors: string[] = []
+  for (const e of catalog) {
+    if (!e.pools.includes('dance') || e.danceTier === undefined) continue
+    const dualPool = e.pools.includes('shape')
+    for (const bpm of danceBpmsFor(e.danceTier)) {
+      let beats: number | null
+      if (dualPool) {
+        try { beats = pickBeats(e.clipSeconds, [bpm]) } catch { beats = null }
+      } else {
+        beats = fitBeats(e.clipSeconds, e.beatsPerRep, bpm)?.beatsPerRep ?? null
+      }
+      if (beats === null || !EIGHT_COUNT_UNITS.includes(beats)) {
+        errors.push(`动作 ${e.id} 在 ${bpm} BPM 下拍数 ${beats ?? '无法对齐'}，不是八拍制`)
+      }
+    }
+  }
+  return errors
+}
+
+/** Pool-size checks apply once a catalog has a dance pool at all; a shape-only catalog has no dance mode. */
+function dancePoolErrors(catalog: readonly Exercise[]): string[] {
+  if (!catalog.some(e => e.pools.includes('dance'))) return []
+  const errors: string[] = []
+  const dance = catalog.filter(e => e.pools.includes('dance') && e.impact === 'low')
+  if (dance.filter(e => e.danceTier === 3).length < MIN_CLIMAX_MOVES) errors.push('低冲击高潮动作少于 6 条')
+  for (const tier of [1, 2, 3] as const) {
+    if (dance.filter(e => e.danceTier === tier && e.level === 1).length < MIN_BEGINNER_PER_TIER) {
+      errors.push(`入门可用的强度 ${tier} 动作少于 4 条`)
     }
   }
   return errors
@@ -65,9 +107,12 @@ function coverageErrors(catalog: readonly Exercise[]): string[] {
 
 export function validateCatalog(catalog: readonly Exercise[], clips: Map<string, number>, glbBytes: number): string[] {
   const errors: string[] = []
-  if (catalog.length < 40 || catalog.length > 80) errors.push(`动作数 ${catalog.length} 不在 40 到 80 之间`)
+  if (catalog.length < MIN_MOVES || catalog.length > MAX_MOVES) errors.push(`动作数 ${catalog.length} 不在 ${MIN_MOVES} 到 ${MAX_MOVES} 之间`)
   if (glbBytes >= MAX_GLB_BYTES) errors.push(`GLB 大小 ${(glbBytes / 1048576).toFixed(2)}MB，应小于 3MB`)
-  return [...errors, ...clipErrors(catalog, clips), ...coverageErrors(catalog)]
+  return [
+    ...errors, ...clipErrors(catalog, clips), ...danceBeatErrors(catalog),
+    ...coverageErrors(catalog.filter(e => e.pools.includes('shape'))), ...dancePoolErrors(catalog),
+  ]
 }
 
 function main(): void {
