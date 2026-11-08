@@ -1,10 +1,10 @@
-import { PARTS, type Exercise, type Part, type SegmentType } from '../catalog/types'
+import { PARTS, type Exercise, type Level, type Part, type SegmentType } from '../catalog/types'
 import { mulberry32, shuffle } from './rng'
 import {
   SEGMENT_SHARE, SWITCH_SECONDS, TOLERANCE_SECONDS, barsCeil, bpmFor, fitBeats, repSeconds,
   repsForSeconds, restSeconds, workSecondsFor,
 } from './timing'
-import type { Plan, PlanInput, PlanItem } from './types'
+import type { Plan, PlanItem, ShapeInput } from './types'
 
 const MAX_ROUNDS = 3
 const WORK_ADJUST_MIN = 0.5
@@ -15,7 +15,7 @@ export function matchesParts(exercise: Exercise, parts: readonly Part[]): boolea
   return exercise.parts.some(p => parts.includes(p))
 }
 
-export function eligible(exercise: Exercise, input: PlanInput): boolean {
+export function eligible(exercise: Exercise, input: ShapeInput): boolean {
   if (!exercise.pools.includes('shape')) return false
   if (exercise.level > input.level) return false
   if (input.level === 1 && exercise.impact === 'high') return false
@@ -37,7 +37,7 @@ export function computeTotal(items: readonly PlanItem[]): number {
 }
 
 interface SegmentContext {
-  readonly input: PlanInput
+  readonly input: ShapeInput
   readonly segment: SegmentType
   readonly candidates: readonly Exercise[]
   readonly rotation: readonly Part[]
@@ -48,7 +48,7 @@ function sharesPart(a: Exercise, b: Exercise | undefined): boolean {
   return b !== undefined && a.parts.some(p => b.parts.includes(p))
 }
 
-export function toItem(e: Exercise, segment: SegmentType, input: PlanInput, restBefore: number, round = 1): PlanItem {
+export function toItem(e: Exercise, segment: SegmentType, input: { readonly level: Level }, restBefore: number, round = 1): PlanItem {
   const bpm = bpmFor(segment, input.level)
   const fit = fitBeats(e.clipSeconds, e.beatsPerRep, bpm)!
   const workSeconds = workSecondsFor(segment, input.level)
@@ -87,7 +87,7 @@ function pickSegment(ctx: SegmentContext, prior: readonly Exercise[]): Exercise[
   return picked
 }
 
-function segmentItems(segment: SegmentType, input: PlanInput, catalog: readonly Exercise[], rand: () => number, prior: Exercise[], target: number): PlanItem[] {
+function segmentItems(segment: SegmentType, input: ShapeInput, catalog: readonly Exercise[], rand: () => number, prior: Exercise[], target: number): PlanItem[] {
   const bpm = bpmFor(segment, input.level)
   const candidates = shuffle(
     catalog.filter(e => e.type === segment && eligible(e, input) && fitBeats(e.clipSeconds, e.beatsPerRep, bpm)),
@@ -149,7 +149,7 @@ function adjustMains(items: readonly PlanItem[], target: number): PlanItem[] {
   return result
 }
 
-export function generatePlan(input: PlanInput, catalog: readonly Exercise[], seed: number): Plan {
+export function generatePlan(input: ShapeInput, catalog: readonly Exercise[], seed: number): Plan {
   if (input.parts.length === 0) throw new Error('至少选择一个部位')
   const rand = mulberry32(seed)
   const target = input.minutes * 60

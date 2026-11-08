@@ -9,7 +9,7 @@ function fullManifest(seconds = 1): VoiceManifest {
   return Object.fromEntries(Object.keys(allPhrases(fixtureCatalog)).map(id => [id, /^n\d$/.test(id) ? 0.6 : seconds]))
 }
 const manifest = fullManifest()
-const plan = generatePlan({ parts: ['全身'], minutes: 10, level: 2 }, fixtureCatalog, 1)
+const plan = generatePlan({ mode: 'shape', parts: ['全身'], minutes: 10, level: 2 }, fixtureCatalog, 1)
 const sheet = (p: Plan = plan, m: VoiceManifest = manifest) => buildCueSheet(buildTimeline(p), p, fixtureCatalog, m)
 const near = (a: number, b: number) => Math.abs(a - b) < 1e-9
 
@@ -74,7 +74,7 @@ describe('buildCueSheet', () => {
   })
 
   it('announces round 2 before the second round', () => {
-    const p = generatePlan({ parts: ['肩颈'], minutes: 30, level: 1 }, fixtureCatalog, 1)
+    const p = generatePlan({ mode: 'shape', parts: ['肩颈'], minutes: 30, level: 1 }, fixtureCatalog, 1)
     expect(sheet(p).some(c => c.clip === 'round-2')).toBe(true)
   })
 
@@ -86,7 +86,7 @@ describe('buildCueSheet', () => {
   })
 
   it('a long next-exercise name never overlaps the countdown on a 10s rest (Review Focus 1)', () => {
-    const p = generatePlan({ parts: ['全身'], minutes: 10, level: 3 }, fixtureCatalog, 2)
+    const p = generatePlan({ mode: 'shape', parts: ['全身'], minutes: 10, level: 3 }, fixtureCatalog, 2)
     const long = { ...manifest, ...Object.fromEntries(Object.keys(manifest).filter(k => k.startsWith('next-')).map(k => [k, 4])) }
     const s = sheet(p, long)
     expectNoOverlap(s)

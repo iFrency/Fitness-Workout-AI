@@ -1,6 +1,6 @@
 import * as idb from 'idb-keyval'
 import type { StyleId } from '../beat/patterns'
-import type { Plan } from '../planner/types'
+import type { Plan, ShapeInput } from '../planner/types'
 
 export interface Settings {
   readonly mainStyle: StyleId
@@ -9,6 +9,7 @@ export interface Settings {
   readonly disclaimerAccepted: boolean
   readonly clickWithUserMusic: boolean
   readonly useUserMusic: boolean
+  readonly homeMode: 'dance' | 'shape'
 }
 
 export const DEFAULT_SETTINGS: Settings = {
@@ -18,6 +19,15 @@ export const DEFAULT_SETTINGS: Settings = {
   disclaimerAccepted: false,
   clickWithUserMusic: false,
   useUserMusic: false,
+  homeMode: 'dance',
+}
+
+/** Plans stored before the dance mode existed have no input.mode; they are shape plans. */
+export function normalizePlan(plan: unknown): Plan {
+  const input = (plan as { input?: unknown } | null)?.input
+  if (typeof input !== 'object' || input === null) throw new Error('存储的方案格式不正确')
+  if ('mode' in input) return plan as Plan
+  return { ...(plan as Plan), input: { ...(input as Omit<ShapeInput, 'mode'>), mode: 'shape' } }
 }
 
 export interface WorkoutRecord {
@@ -59,7 +69,8 @@ export function saveSettings(s: Settings): Promise<StoreResult<void>> {
 export async function listRecords(): Promise<StoreResult<readonly WorkoutRecord[]>> {
   const r = await attempt('读取记录', () => idb.get<WorkoutRecord[]>('records', kv()))
   if (!r.ok) return r
-  return { ok: true, value: [...(r.value ?? [])].sort((a, b) => b.date.localeCompare(a.date)) }
+  const records = (r.value ?? []).map(rec => ({ ...rec, plan: normalizePlan(rec.plan) }))
+  return { ok: true, value: records.sort((a, b) => b.date.localeCompare(a.date)) }
 }
 
 export async function appendRecord(record: WorkoutRecord): Promise<StoreResult<void>> {
@@ -81,8 +92,11 @@ export function saveProgress(progress: TrainingProgress): Promise<StoreResult<vo
 }
 
 export async function loadProgress(): Promise<TrainingProgress | null> {
-  const r = await attempt('读取训练进度', () => idb.get<TrainingProgress>('progress', kv()))
-  return r.ok ? (r.value ?? null) : null
+  const r = await attempt('读取训练进度', async () => {
+    const stored = await idb.get<TrainingProgress>('progress', kv())
+    return stored ? { ...stored, plan: normalizePlan(stored.plan) } : null
+  })
+  return r.ok ? r.value : null
 }
 
 export function clearProgress(): Promise<StoreResult<void>> {

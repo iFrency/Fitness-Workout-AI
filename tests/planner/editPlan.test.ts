@@ -3,7 +3,7 @@ import { removeItem, replaceItem, replacementCandidates } from '../../src/planne
 import type { Plan } from '../../src/planner/types'
 import { fixtureCatalog } from '../fixtures/catalog'
 
-const base = () => generatePlan({ parts: ['全身'], minutes: 10, level: 2 }, fixtureCatalog, 1)
+const base = () => generatePlan({ mode: 'shape', parts: ['全身'], minutes: 10, level: 2 }, fixtureCatalog, 1)
 const mainIndex = (p: Plan) => p.items.findIndex(i => i.segment === 'main')
 
 it('candidates exclude exercises already in plan and other segment types', () => {
@@ -26,7 +26,7 @@ it('replace changes the item, recomputes total, and does not mutate input', () =
 })
 
 it('replacing an item in round 2 keeps its round and work seconds', () => {
-  const p = generatePlan({ parts: ['肩颈'], minutes: 30, level: 1 }, fixtureCatalog, 1)
+  const p = generatePlan({ mode: 'shape', parts: ['肩颈'], minutes: 30, level: 1 }, fixtureCatalog, 1)
   const i = p.items.findIndex(x => x.round === 2)
   // Rounds repeat only once the candidates run out, so pick an outside exercise directly.
   const other = fixtureCatalog.find(e => e.type === 'main' && e.level === 1 && !p.items.some(x => x.exerciseId === e.id))!
@@ -36,7 +36,7 @@ it('replacing an item in round 2 keeps its round and work seconds', () => {
 })
 
 it('removing a round-1 item leaves round 2 untouched', () => {
-  const p = generatePlan({ parts: ['肩颈'], minutes: 30, level: 1 }, fixtureCatalog, 1)
+  const p = generatePlan({ mode: 'shape', parts: ['肩颈'], minutes: 30, level: 1 }, fixtureCatalog, 1)
   const i = p.items.findIndex(x => x.round === 1 && x.segment === 'main')
   const id = p.items[i].exerciseId
   const next = removeItem(p, i)

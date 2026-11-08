@@ -1,0 +1,127 @@
+{
+  "items": [
+    {
+      "exerciseId": "step-touch-clap",
+      "segment": "warmup",
+      "bpm": 100,
+      "beatsPerRep": 4,
+      "timeScale": 0.8470833333333333,
+      "sided": false,
+      "restBeforeSeconds": 0,
+      "round": 1,
+      "workSeconds": 30,
+      "reps": 13
+    },
+    {
+      "exerciseId": "standing-hip-circles",
+      "segment": "warmup",
+      "bpm": 100,
+      "beatsPerRep": 4,
+      "timeScale": 0.76375,
+      "sided": false,
+      "restBeforeSeconds": 16.8,
+      "round": 1,
+      "workSeconds": 30,
+      "reps": 13
+    },
+    {
+      "exerciseId": "glute-bridge",
+      "segment": "main",
+      "bpm": 120,
+      "beatsPerRep": 8,
+      "timeScale": 1.03325,
+      "sided": false,
+      "restBeforeSeconds": 16,
+      "round": 1,
+      "workSeconds": 40,
+      "reps": 10
+    },
+    {
+      "exerciseId": "high-knees",
+      "segment": "main",
+      "bpm": 120,
+      "beatsPerRep": 16,
+      "timeScale": 0.708375,
+      "sided": false,
+      "restBeforeSeconds": 16,
+      "round": 1,
+      "workSeconds": 40,
+      "reps": 5
+    },
+    {
+      "exerciseId": "standing-bicycle-crunch",
+      "segment": "main",
+      "bpm": 120,
+      "beatsPerRep": 4,
+      "timeScale": 1.2165,
+      "sided": false,
+      "restBeforeSeconds": 16,
+      "round": 1,
+      "workSeconds": 40,
+      "reps": 20
+    },
+    {
+      "exerciseId": "punches",
+      "segment": "main",
+      "bpm": 120,
+      "beatsPerRep": 2,
+      "timeScale": 0.833,
+      "sided": false,
+      "restBeforeSeconds": 16,
+      "round": 1,
+      "workSeconds": 40,
+      "reps": 40
+    },
+    {
+      "exerciseId": "step-jack",
+      "segment": "main",
+      "bpm": 120,
+      "beatsPerRep": 4,
+      "timeScale": 1.0165,
+      "sided": false,
+      "restBeforeSeconds": 16,
+      "round": 1,
+      "workSeconds": 60,
+      "reps": 30
+    },
+    {
+      "exerciseId": "skier-swing",
+      "segment": "main",
+      "bpm": 120,
+      "beatsPerRep": 4,
+      "timeScale": 0.7165,
+      "sided": false,
+      "restBeforeSeconds": 16,
+      "round": 1,
+      "workSeconds": 60,
+      "reps": 30
+    },
+    {
+      "exerciseId": "standing-cross-crunch",
+      "segment": "main",
+      "bpm": 120,
+      "beatsPerRep": 8,
+      "timeScale": 0.90825,
+      "sided": false,
+      "restBeforeSeconds": 16,
+      "round": 1,
+      "workSeconds": 60,
+      "reps": 15
+    },
+    {
+      "exerciseId": "supine-twist",
+      "segment": "stretch",
+      "bpm": 80,
+      "beatsPerRep": 16,
+      "timeScale": 0.7194166666666666,
+      "sided": false,
+      "restBeforeSeconds": 15,
+      "round": 1,
+      "workSeconds": 30,
+      "reps": 3
+    }
+  ],
+  "totalSeconds": 582.2,
+  "shortfallSeconds": 0,
+  "rounds": 1
+}

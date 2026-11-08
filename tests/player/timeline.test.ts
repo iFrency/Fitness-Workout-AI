@@ -3,7 +3,7 @@ import { barsCeil } from '../../src/planner/timing'
 import { buildTimeline, stateAt, timelineEnd } from '../../src/player/timeline'
 import { fixtureCatalog } from '../fixtures/catalog'
 
-const plan = generatePlan({ parts: ['全身'], minutes: 10, level: 2 }, fixtureCatalog, 1)
+const plan = generatePlan({ mode: 'shape', parts: ['全身'], minutes: 10, level: 2 }, fixtureCatalog, 1)
 const steps = buildTimeline(plan)
 
 it('starts with an 8-second prepare rounded to bars and is contiguous', () => {

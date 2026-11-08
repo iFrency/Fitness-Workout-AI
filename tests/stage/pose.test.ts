@@ -4,7 +4,7 @@ import { buildTimeline, stateAt } from '../../src/player/timeline'
 import { blendWeight, computePose, shouldMirror } from '../../src/stage/pose'
 import { fixtureCatalog } from '../fixtures/catalog'
 
-const plan = generatePlan({ parts: ['全身'], minutes: 10, level: 2 }, fixtureCatalog, 1)
+const plan = generatePlan({ mode: 'shape', parts: ['全身'], minutes: 10, level: 2 }, fixtureCatalog, 1)
 const steps = buildTimeline(plan)
 const work = steps.find(s => s.kind === 'work')!
 const workState = stateAt(steps, work.start)

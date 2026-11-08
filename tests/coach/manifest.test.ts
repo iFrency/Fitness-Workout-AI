@@ -15,7 +15,7 @@ it('countdown clips fit the one-second spacing, or the next number would be drop
 it('with real clip lengths, every rest and the prepare step still announce the next exercise', () => {
   // Level 3, 30 min, neck only: tight 11s rests at round boundaries (done + round + rest line + name).
   for (let seed = 0; seed < 10; seed++) {
-    const plan = generatePlan({ parts: ['肩颈'], minutes: 30, level: 3 }, catalog, seed)
+    const plan = generatePlan({ mode: 'shape', parts: ['肩颈'], minutes: 30, level: 3 }, catalog, seed)
     const steps = buildTimeline(plan)
     const sheet = buildCueSheet(steps, plan, catalog, manifest)
     steps.filter(s => s.kind === 'rest' || s.kind === 'prepare').forEach(s => {

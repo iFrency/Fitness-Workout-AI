@@ -3,7 +3,7 @@ import { TrainingSession } from '../../src/player/session'
 import { buildTimeline, stateAt, timelineEnd } from '../../src/player/timeline'
 import { fixtureCatalog } from '../fixtures/catalog'
 
-const steps = buildTimeline(generatePlan({ parts: ['全身'], minutes: 10, level: 2 }, fixtureCatalog, 1))
+const steps = buildTimeline(generatePlan({ mode: 'shape', parts: ['全身'], minutes: 10, level: 2 }, fixtureCatalog, 1))
 
 function fake() {
   let t = 100

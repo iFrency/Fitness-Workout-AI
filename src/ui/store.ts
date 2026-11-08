@@ -3,7 +3,7 @@ import { loadCatalog } from '../catalog/loadCatalog'
 import type { Exercise } from '../catalog/types'
 import { removeItem, replaceItem } from '../planner/editPlan'
 import { generatePlan } from '../planner/generatePlan'
-import type { Plan, PlanInput } from '../planner/types'
+import type { Plan, ShapeInput } from '../planner/types'
 import type { TrainingSession } from '../player/session'
 import type { Step } from '../player/timeline'
 import {
@@ -26,7 +26,7 @@ interface AppState {
   readonly catalog: readonly Exercise[] | null
   readonly loadError: string | null
   readonly settings: Settings
-  readonly input: PlanInput
+  readonly input: ShapeInput
   readonly plan: Plan | null
   readonly lastResult: LastResult | null
   /** An unfinished workout found at start-up, offered on the home page. */
@@ -37,7 +37,7 @@ interface AppState {
   checkSavedProgress(): Promise<void>
   resumeSavedProgress(): void
   discardSavedProgress(): void
-  setInput(patch: Partial<PlanInput>): void
+  setInput(patch: Partial<ShapeInput>): void
   generate(): void
   regenerate(): void
   replace(index: number, exercise: Exercise): void
@@ -54,7 +54,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   catalog: null,
   loadError: null,
   settings: DEFAULT_SETTINGS,
-  input: { parts: [], minutes: 10, level: 1 },
+  input: { mode: 'shape', parts: [], minutes: 10, level: 1 },
   plan: null,
   lastResult: null,
   savedProgress: null,
@@ -90,7 +90,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   },
   regenerate() {
     const { plan, catalog } = get()
-    if (plan && catalog) set({ plan: generatePlan(plan.input, catalog, plan.seed + 1) })
+    if (plan && catalog && plan.input.mode === 'shape') set({ plan: generatePlan(plan.input, catalog, plan.seed + 1) })
   },
   replace(index, exercise) {
     const { plan } = get()

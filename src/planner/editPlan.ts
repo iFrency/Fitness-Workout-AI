@@ -21,6 +21,7 @@ export function replacementCandidates(plan: Plan, index: number, catalog: readon
     e.type === item.segment &&
     !inRound.has(e.id) &&
     sharesPartOrFullBody(e, original) &&
+    plan.input.mode === 'shape' &&
     eligible(e, plan.input) &&
     fitBeats(e.clipSeconds, e.beatsPerRep, item.bpm) !== null,
   )

@@ -5,7 +5,7 @@ import { generatePlan } from '../../src/planner/generatePlan'
 import { buildTimeline } from '../../src/player/timeline'
 import { fixtureCatalog } from '../fixtures/catalog'
 
-const plan = generatePlan({ parts: ['全身'], minutes: 10, level: 2 }, fixtureCatalog, 1)
+const plan = generatePlan({ mode: 'shape', parts: ['全身'], minutes: 10, level: 2 }, fixtureCatalog, 1)
 const steps = buildTimeline(plan)
 
 const workEvent: BeatEvent = {

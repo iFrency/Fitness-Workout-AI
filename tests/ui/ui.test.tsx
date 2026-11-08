@@ -14,13 +14,13 @@ import { fixtureCatalog } from '../fixtures/catalog'
 const accepted = { ...DEFAULT_SETTINGS, disclaimerAccepted: true }
 
 function onePlan(): Plan {
-  const p = generatePlan({ parts: ['腰腹'], minutes: 5, level: 1 }, fixtureCatalog, 1)
+  const p = generatePlan({ mode: 'shape', parts: ['腰腹'], minutes: 5, level: 1 }, fixtureCatalog, 1)
   const items = [{ ...p.items[0], restBeforeSeconds: 0 }]
   return { ...p, items, totalSeconds: computeTotal(items), shortfallSeconds: 0 }
 }
 
 beforeEach(() => {
-  useAppStore.setState({ catalog: fixtureCatalog, settings: accepted, plan: null, page: 'home', input: { parts: [], minutes: 10, level: 1 } })
+  useAppStore.setState({ catalog: fixtureCatalog, settings: accepted, plan: null, page: 'home', input: { mode: 'shape', parts: [], minutes: 10, level: 1 } })
 })
 
 it('formats durations', () => {
@@ -33,7 +33,7 @@ it('secondsLabel', () => {
 })
 
 it('rest panel shows a countdown and the next exercise', () => {
-  const plan = generatePlan({ parts: ['全身'], minutes: 10, level: 2 }, fixtureCatalog, 1)
+  const plan = generatePlan({ mode: 'shape', parts: ['全身'], minutes: 10, level: 2 }, fixtureCatalog, 1)
   const steps = buildTimeline(plan)
   const rest = steps.find(s => s.kind === 'rest')!
   const byId = new Map(fixtureCatalog.map(e => [e.id, e]))
@@ -43,7 +43,7 @@ it('rest panel shows a countdown and the next exercise', () => {
 })
 
 it('Preview groups main items by round', () => {
-  useAppStore.setState({ plan: generatePlan({ parts: ['肩颈'], minutes: 30, level: 1 }, fixtureCatalog, 1), page: 'preview' })
+  useAppStore.setState({ plan: generatePlan({ mode: 'shape', parts: ['肩颈'], minutes: 30, level: 1 }, fixtureCatalog, 1), page: 'preview' })
   render(<Preview />)
   expect(screen.getByText('主训 · 第 2 轮')).toBeInTheDocument()
 })

@@ -1,10 +1,11 @@
-import type { Part } from '../../src/catalog/types'
+import { readFileSync } from 'node:fs'
+import { parseCatalog, type Part } from '../../src/catalog/types'
 import { eligible, generatePlan, itemActualSeconds } from '../../src/planner/generatePlan'
 import { repSeconds, workSecondsFor } from '../../src/planner/timing'
-import type { PlanInput } from '../../src/planner/types'
+import type { ShapeInput } from '../../src/planner/types'
 import { fixtureCatalog, makeExercise } from '../fixtures/catalog'
 
-const input = (p: Partial<PlanInput> = {}): PlanInput => ({ parts: ['腰腹'], minutes: 10, level: 1, ...p })
+const input = (p: Partial<ShapeInput> = {}): ShapeInput => ({ mode: 'shape', parts: ['腰腹'], minutes: 10, level: 1, ...p })
 const byId = new Map(fixtureCatalog.map(e => [e.id, e]))
 
 it('is deterministic for the same seed and differs for another seed', () => {
@@ -24,7 +25,7 @@ it('orders segments warmup, main, stretch with at least one each', () => {
 it.each([1, 2, 3] as const)('level %i: every duration lands within ±30s or reports shortfall at 3 rounds', level => {
   for (const minutes of [5, 10, 15, 20, 30] as const) {
     for (const parts of [['全身'], ['腰腹'], ['肩颈', '臀腿']] as Part[][]) {
-      const p = generatePlan({ parts, minutes, level }, fixtureCatalog, 7)
+      const p = generatePlan({ mode: 'shape', parts, minutes, level }, fixtureCatalog, 7)
       const ok = Math.abs(p.totalSeconds - minutes * 60) <= 30 || (p.rounds === 3 && p.shortfallSeconds > 0)
       expect(ok, `${level} ${minutes} ${parts.join('+')} total=${p.totalSeconds} rounds=${p.rounds}`).toBe(true)
     }
@@ -79,4 +80,15 @@ it('throws on empty parts', () => {
 
 it('eligible excludes dance-only moves', () => {
   expect(eligible(makeExercise({ pools: ['dance'], danceTier: 2 }), input({ parts: ['全身'], level: 3 }))).toBe(false)
+})
+
+it('generatePlan output for seed 7 is unchanged', () => {
+  const real = parseCatalog(JSON.parse(readFileSync('public/assets/catalog/exercises.json', 'utf8')))
+  const expected = JSON.parse(readFileSync('tests/fixtures/shapeSeed7.json', 'utf8'))
+  const p = generatePlan({ mode: 'shape', parts: ['腰腹'], minutes: 10, level: 2 }, real, 7)
+  expect(p.items).toHaveLength(expected.items.length)
+  p.items.forEach((it, i) => expect(it, `item ${i}`).toEqual(expected.items[i]))
+  expect(p.totalSeconds).toBe(expected.totalSeconds)
+  expect(p.shortfallSeconds).toBe(expected.shortfallSeconds)
+  expect(p.rounds).toBe(expected.rounds)
 })
