@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto'
 import { beatEventsInWindow, type BeatEvent } from '../../src/beat/events'
 import { hitsForEvent, styleForSegment } from '../../src/beat/patterns'
 import { scheduleWindow } from '../../src/beat/schedule'
@@ -83,5 +84,19 @@ describe('scheduleWindow', () => {
     const on = scheduleWindow(steps, plan, 0, 30, { ...opts, userMusic: true, clickWithUserMusic: true }, cues)
     expect(on.hits.length).toBeGreaterThan(0)
     expect(on.hits.every(h => h.sound === 'tick' && h.gain === 0.3)).toBe(true)
+  })
+})
+
+describe('existing styles are unchanged', () => {
+  it('existing styles are unchanged', () => {
+    const events = beatEventsInWindow(steps, plan, 0, steps.at(-1)!.end)
+    const out = (['guichu', 'guangchang', 'muyu'] as const).map(style => events.map(e => hitsForEvent(e, style)))
+    const digest = createHash('sha1').update(JSON.stringify(out)).digest('hex')
+    expect({ events: events.length, digest }).toMatchInlineSnapshot(`
+      {
+        "digest": "521589959cdfe8376d0c8e320c33ce36caf5ed27",
+        "events": 1120,
+      }
+    `)
   })
 })

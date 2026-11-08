@@ -1,8 +1,9 @@
-import type { SegmentType } from '../catalog/types'
-import type { BeatEvent } from './events'
+import type { DanceTier, SegmentType } from '../catalog/types'
+import type { BeatEvent, DanceBeatInfo } from './events'
 
-export type SoundId = 'kick' | 'snare' | 'hat' | 'bass' | 'duang' | 'muyu' | 'gong' | 'quack' | 'tick'
+export type SoundId = 'kick' | 'snare' | 'hat' | 'bass' | 'duang' | 'muyu' | 'gong' | 'quack' | 'tick' | 'clap'
 export type StyleId = 'guichu' | 'guangchang' | 'muyu'
+export type GrooveId = StyleId | 'dance'
 
 export const STYLE_LABELS: Readonly<Record<StyleId, string>> = {
   guichu: '电子鬼畜',
@@ -14,6 +15,7 @@ export interface Hit {
   readonly sound: SoundId
   readonly gain: number
   readonly rate: number
+  readonly offsetBeats?: 0 | 0.5
 }
 
 const ACCENT: Readonly<Record<StyleId, SoundId>> = { guichu: 'duang', guangchang: 'gong', muyu: 'muyu' }
@@ -46,7 +48,40 @@ function workHits(e: BeatEvent, style: StyleId): Hit[] {
   return hits.map(h => ({ ...h, rate }))
 }
 
-export function hitsForEvent(e: BeatEvent, style: StyleId): Hit[] {
+function danceGroove(tier: DanceTier, b: number): Hit[] {
+  const hit = (sound: SoundId, gain: number, offsetBeats?: 0.5): Hit => ({ sound, gain, rate: 1, ...(offsetBeats ? { offsetBeats } : {}) })
+  const even = b % 2 === 0
+  if (tier === 1) {
+    return [...(even ? [hit('clap', 0.5)] : [hit('kick', 1)]), ...(b === 1 ? [hit('bass', 0.6)] : [])]
+  }
+  if (tier === 2) {
+    return [hit('kick', 1), ...(even ? [hit('clap', 0.8)] : [hit('bass', 0.7)]), hit('hat', 0.4, 0.5)]
+  }
+  return [
+    hit('kick', 1), hit('bass', 0.7), hit('hat', 0.4), hit('hat', 0.4, 0.5),
+    ...(even ? [hit('clap', 0.8), hit('snare', 0.6)] : []),
+    ...(b === 1 ? [hit('duang', 0.9)] : []),
+  ]
+}
+
+function danceHits(e: BeatEvent, dance: DanceBeatInfo): Hit[] {
+  let hits = danceGroove(dance.tier, e.beatInStep % 8 + 1)
+  const left = e.beatsLeftInStep
+  if (left <= 4) {
+    const gain = 0.3 + 0.2 * (4 - left)
+    hits = [...hits, { sound: 'snare', gain, rate: 1 }, { sound: 'snare', gain, rate: 1, offsetBeats: 0.5 }]
+  }
+  if (dance.nextTier === 3 && left <= 8) {
+    const rate = 2 ** ((9 - left) / 2 / 12)
+    const extraHat: Hit = { sound: 'hat', gain: 0.4, rate: 1, offsetBeats: 0.5 }
+    hits = [...hits, extraHat].map(h => ({ ...h, rate: h.rate * rate }))
+  }
+  return dance.blockStart ? [...hits, { sound: 'gong', gain: 0.6, rate: 1 }] : hits
+}
+
+export function hitsForEvent(e: BeatEvent, groove: GrooveId): Hit[] {
+  if (groove === 'dance' && e.dance) return danceHits(e, e.dance)
+  const style = groove === 'dance' ? 'guichu' : groove
   if (e.kind === 'work') return workHits(e, style)
   if (e.beatsLeftInStep <= 3) return [{ sound: 'tick', gain: 1, rate: 1 }]
   return [{ sound: 'hat', gain: 0.3, rate: 1 }]

@@ -24,14 +24,14 @@ function osc(ctx: BaseAudioContext, type: OscillatorType, freq: number, to: Audi
   return o
 }
 
-function noise(ctx: BaseAudioContext, to: AudioNode, seconds: number): void {
+function noise(ctx: BaseAudioContext, to: AudioNode, seconds: number, at = 0): void {
   const buffer = ctx.createBuffer(1, Math.ceil(seconds * ctx.sampleRate), ctx.sampleRate)
   const data = buffer.getChannelData(0)
   for (let i = 0; i < data.length; i++) data[i] = Math.random() * 2 - 1
   const src = ctx.createBufferSource()
   src.buffer = buffer
   src.connect(to)
-  src.start(0)
+  src.start(at)
 }
 
 function filter(ctx: BaseAudioContext, type: BiquadFilterType, freq: number, q: number, to: AudioNode): BiquadFilterNode {
@@ -77,6 +77,16 @@ export const SOUND_RECIPES: Readonly<Record<SoundId, SoundRecipe>> = {
     const o = osc(ctx, 'square', 300, filter(ctx, 'bandpass', 900, 5, out), 0.3)
     o.connect(filter(ctx, 'bandpass', 1600, 5, out))
     o.frequency.linearRampToValueAtTime(240, 0.28)
+  } },
+  clap: { duration: 0.2, render: ctx => {
+    ;[0, 0.01, 0.02].forEach(at => {
+      const g = ctx.createGain()
+      g.gain.setValueAtTime(0.0001, at)
+      g.gain.exponentialRampToValueAtTime(0.7, at + 0.003)
+      g.gain.exponentialRampToValueAtTime(0.0001, at + (at === 0.02 ? 0.17 : 0.03))
+      g.connect(ctx.destination)
+      noise(ctx, filter(ctx, 'bandpass', 1500, 1, g), 0.2 - at, at)
+    })
   } },
   tick: { duration: 0.04, render: ctx => { osc(ctx, 'sine', 1500, envelope(ctx, 0.7, 0.03), 0.04) } },
 }
