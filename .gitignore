@@ -8,3 +8,4 @@ playwright-report
 .env.*.local
 tools/voice-audition/*.mp3
 tools/voice-audition/index.html
+key.env
