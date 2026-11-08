@@ -36,6 +36,11 @@ describe('placeCues', () => {
 })
 
 describe('buildCueSheet', () => {
+  it('buildCueSheet is unchanged for shape plans', () => {
+    const other = generatePlan({ mode: 'shape', parts: ['全身'], minutes: 15, level: 3 }, fixtureCatalog, 7)
+    expect({ a: sheet(), b: sheet(other) }).toMatchSnapshot()
+  })
+
   it('no two cues overlap', () => expectNoOverlap(sheet()))
 
   it('every work step has start or switch, a 5..1 countdown on whole seconds, and the sheet ends with finish', () => {

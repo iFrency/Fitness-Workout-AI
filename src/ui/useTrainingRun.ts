@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { decodeUserMusic } from '../audio/userMusic'
 import type { Exercise } from '../catalog/types'
 import { buildCueSheet } from '../coach/cues'
+import { buildDanceCueSheet } from '../dance/cues'
 import type { Plan } from '../planner/types'
 import { TrainingSession } from '../player/session'
 import { buildTimeline, timelineEnd, type Step } from '../player/timeline'
@@ -68,7 +69,7 @@ export function useTrainingRun(
       } else {
         session.start()
       }
-      const cues = buildCueSheet(steps, plan, catalog, engine.manifest())
+      const cues = (plan.input.mode === 'dance' ? buildDanceCueSheet : buildCueSheet)(steps, plan, catalog, engine.manifest())
       engine.run(session, steps, plan, { mainStyle: settings.mainStyle, userMusic: music.buffer, clickWithUserMusic: settings.clickWithUserMusic }, cues)
       setReady(true)
     })()

@@ -11,6 +11,8 @@ export interface Cue {
   readonly clip: string
   readonly duration: number
   readonly priority: number
+  /** Count clips may sit back to back with no gap between them. */
+  readonly group?: 'count'
 }
 
 export interface Candidate {
@@ -20,6 +22,7 @@ export interface Candidate {
   readonly priority: number
   /** Latest allowed end time. */
   readonly deadline: number
+  readonly group?: 'count'
 }
 
 export const CUE_GAP_SECONDS = 0.15
@@ -27,9 +30,10 @@ const SLACK_SECONDS = 4
 const EPS = 1e-9
 const P = { countdown: 5, marker: 4, announce: 3, detail: 2, cheer: 1 } as const
 
-function overlapEnd(placed: readonly Cue[], t: number, duration: number): number | null {
-  const hit = placed.find(p => t < p.time + p.duration + CUE_GAP_SECONDS - EPS && p.time < t + duration + CUE_GAP_SECONDS - EPS)
-  return hit ? hit.time + hit.duration + CUE_GAP_SECONDS : null
+function overlapEnd(placed: readonly Cue[], t: number, duration: number, group?: 'count'): number | null {
+  const gapTo = (p: Cue) => (group === 'count' && p.group === 'count' ? 0 : CUE_GAP_SECONDS)
+  const hit = placed.find(p => t < p.time + p.duration + gapTo(p) - EPS && p.time < t + duration + gapTo(p) - EPS)
+  return hit ? hit.time + hit.duration + gapTo(hit) : null
 }
 
 /** Places cues by priority, sliding each to the first free slot in its window; cues that do not fit are dropped. */
@@ -42,9 +46,9 @@ export function placeCues(candidates: readonly Candidate[], manifest: VoiceManif
   for (const { c } of ordered) {
     const duration = manifest[c.clip]
     let t = c.earliest
-    for (let next = overlapEnd(placed, t, duration); next !== null; next = overlapEnd(placed, t, duration)) t = next
+    for (let next = overlapEnd(placed, t, duration, c.group); next !== null; next = overlapEnd(placed, t, duration, c.group)) t = next
     if (t > c.latest + EPS || t + duration > c.deadline + EPS) continue
-    placed.push({ time: t, clip: c.clip, duration, priority: c.priority })
+    placed.push({ time: t, clip: c.clip, duration, priority: c.priority, ...(c.group ? { group: c.group } : {}) })
   }
   return placed.sort((a, b) => a.time - b.time)
 }
@@ -52,7 +56,6 @@ export function placeCues(candidates: readonly Candidate[], manifest: VoiceManif
 interface Ctx {
   readonly steps: readonly Step[]
   readonly plan: Plan
-  readonly byId: ReadonlyMap<string, Exercise>
   readonly manifest: VoiceManifest
   readonly lastWorkIndex: number
 }
@@ -131,12 +134,15 @@ function pauseCues(ctx: Ctx, step: Step, index: number, rand: () => number): Can
   return [...chain(ctx, step.start, limit, fitLines(ctx, step.start, limit, lines)), ...countdown(step, 3)]
 }
 
-export function buildCueSheet(steps: readonly Step[], plan: Plan, catalog: readonly Exercise[], manifest: VoiceManifest): readonly Cue[] {
+/** Time-based candidates for one step; `buildCueSheet` is the placement of these over every step. */
+export function stepCandidates(steps: readonly Step[], plan: Plan, manifest: VoiceManifest, index: number): Candidate[] {
   const lastWorkIndex = steps.map(s => s.kind).lastIndexOf('work')
-  const ctx: Ctx = { steps, plan, byId: new Map(catalog.map(e => [e.id, e])), manifest, lastWorkIndex }
-  const candidates = steps.flatMap((step, index) => {
-    const rand = mulberry32(plan.seed * 1000 + index)
-    return step.kind === 'work' ? workCues(ctx, step, index, rand) : pauseCues(ctx, step, index, rand)
-  })
-  return placeCues(candidates, manifest)
+  const ctx: Ctx = { steps, plan, manifest, lastWorkIndex }
+  const step = steps[index]
+  const rand = mulberry32(plan.seed * 1000 + index)
+  return step.kind === 'work' ? workCues(ctx, step, index, rand) : pauseCues(ctx, step, index, rand)
+}
+
+export function buildCueSheet(steps: readonly Step[], plan: Plan, _catalog: readonly Exercise[], manifest: VoiceManifest): readonly Cue[] {
+  return placeCues(steps.flatMap((_, index) => stepCandidates(steps, plan, manifest, index)), manifest)
 }
