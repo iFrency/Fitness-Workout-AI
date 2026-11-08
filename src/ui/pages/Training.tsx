@@ -6,6 +6,7 @@ import type { Plan } from '../../planner/types'
 import { stateAt, timelineEnd, type TrainingState } from '../../player/timeline'
 import { Stage, type CameraPreset } from '../../stage/Stage'
 import { getAudio, resumeSession } from '../audio'
+import { DanceStatus } from '../components/DanceStatus'
 import { useAppStore } from '../store'
 import { useTrainingRun } from '../useTrainingRun'
 
@@ -81,7 +82,11 @@ export function Training() {
         <Stage session={session} steps={run.steps} plan={plan} catalog={catalog} mirror={settings.mirror}
           preset={preset} onSelectView={setPreset} />
       </div>
-      {run.ready ? <StatusPanel state={state} plan={plan} byId={byId} /> : <div className="status"><strong>准备中</strong></div>}
+      {run.ready
+        ? (plan.items[state.step.itemIndex].dance
+          ? <DanceStatus state={state} plan={plan} byId={byId} />
+          : <StatusPanel state={state} plan={plan} byId={byId} />)
+        : <div className="status"><strong>准备中</strong></div>}
       <div className="controls">
         <button type="button" onClick={() => session.prev()}>上一个</button>
         <button type="button" className="primary" onClick={togglePause}>{session.isPaused() ? '继续' : '暂停'}</button>
@@ -89,9 +94,11 @@ export function Training() {
       </div>
       <div className="mixer">
         <label>音量<input type="range" min={0} max={1} step={0.05} value={settings.volume} onChange={e => setVolume(Number(e.target.value))} /></label>
-        <select aria-label="音乐风格" value={settings.mainStyle} onChange={e => setStyle(e.target.value as StyleId)}>
-          {(Object.keys(STYLE_LABELS) as StyleId[]).map(id => <option key={id} value={id}>{STYLE_LABELS[id]}</option>)}
-        </select>
+        {!plan.routine && (
+          <select aria-label="音乐风格" value={settings.mainStyle} onChange={e => setStyle(e.target.value as StyleId)}>
+            {(Object.keys(STYLE_LABELS) as StyleId[]).map(id => <option key={id} value={id}>{STYLE_LABELS[id]}</option>)}
+          </select>
+        )}
       </div>
       {run.toast && <p className="toast">{run.toast}</p>}
       {run.backgroundPaused && (

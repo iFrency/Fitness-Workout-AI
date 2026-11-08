@@ -1,4 +1,4 @@
-import { formatDuration } from '../format'
+import { formatDuration, modeTitle } from '../format'
 import { useAppStore } from '../store'
 
 export function Done() {
@@ -10,6 +10,7 @@ export function Done() {
   return (
     <main className="page done">
       <h1>练完啦</h1>
+      <h2 className="mode-title">{modeTitle(record.plan)}</h2>
       <p className="big-number">{formatDuration(record.actualSeconds)}</p>
       <p>完成 {completed} / {record.completedItems.length} 个动作</p>
       {!saved && <p className="notice">本次记录无法保存</p>}

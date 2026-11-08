@@ -3,6 +3,7 @@ import type { Exercise, SegmentType } from '../../catalog/types'
 import { replacementCandidates } from '../../planner/editPlan'
 import { itemActualSeconds } from '../../planner/generatePlan'
 import type { Plan } from '../../planner/types'
+import { DancePreview } from '../components/DancePreview'
 import { getAudio } from '../audio'
 import { SEGMENT_LABELS, formatDuration, secondsLabel } from '../format'
 import { useAppStore } from '../store'
@@ -55,7 +56,7 @@ export function Preview() {
       {plan.shortfallSeconds > 0 && (
         <p className="notice">可选动作不足，本方案约 {formatDuration(plan.totalSeconds)}。可以增加部位或缩短时长。</p>
       )}
-      {groupsOf(plan).map(group => (
+      {plan.routine ? <DancePreview plan={plan} catalog={catalog} /> : groupsOf(plan).map(group => (
         <section key={group.key}>
           <h2>{group.title}</h2>
           <ul className="items">

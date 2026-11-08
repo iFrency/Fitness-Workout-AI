@@ -91,3 +91,11 @@ button.small { padding: 4px 10px; font-size: 13px; }
 .pip { position: absolute; padding: 0; background: transparent; border: 2px solid var(--accent); border-radius: 12px; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45); }
 .pip span { position: absolute; top: 6px; left: 6px; padding: 1px 7px; border-radius: 999px; background: var(--accent); color: var(--accent-ink); font-size: 12px; font-weight: 700; }
 .pip:focus-visible { outline: 3px solid var(--hot); outline-offset: 2px; }
+
+.status.dance .cue { color: var(--accent); font-weight: 700; }
+.beat-dots { display: flex; gap: 8px; margin: 6px 0; }
+.beat-dot { width: 18px; height: 18px; border-radius: 50%; background: var(--muted); opacity: 0.35; }
+.beat-dot[data-lit='true'] { background: var(--accent); opacity: 1; }
+.next-card { display: flex; align-items: center; gap: 10px; }
+.next-card .meta { display: block; }
+.tier-badge { margin-left: 8px; }

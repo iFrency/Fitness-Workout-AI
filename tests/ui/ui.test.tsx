@@ -1,4 +1,5 @@
-import { render, screen } from '@testing-library/react'
+import { readFileSync } from 'node:fs'
+import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { generatePlan, computeTotal } from '../../src/planner/generatePlan'
 import type { Plan } from '../../src/planner/types'
@@ -10,6 +11,12 @@ import { Home } from '../../src/ui/pages/Home'
 import { Preview } from '../../src/ui/pages/Preview'
 import { useAppStore } from '../../src/ui/store'
 import { fixtureCatalog } from '../fixtures/catalog'
+import { parseCatalog } from '../../src/catalog/types'
+import { compileRoutine } from '../../src/dance/compileRoutine'
+import { generateRoutine } from '../../src/dance/generateRoutine'
+import { beatSeconds } from '../../src/planner/timing'
+import { DanceStatus } from '../../src/ui/components/DanceStatus'
+import { Done } from '../../src/ui/pages/Done'
 
 const accepted = { ...DEFAULT_SETTINGS, disclaimerAccepted: true }
 
@@ -91,4 +98,68 @@ it('Preview shows shortfall notice', () => {
   useAppStore.setState({ plan: { ...onePlan(), shortfallSeconds: 120 }, page: 'preview' })
   render(<Preview />)
   expect(screen.getByText(/可选动作不足/)).toBeInTheDocument()
+})
+
+const realCatalog = parseCatalog(JSON.parse(readFileSync('public/assets/catalog/exercises.json', 'utf8')))
+const dancePlan = compileRoutine(generateRoutine({ mode: 'dance', minutes: 10, level: 2, quiet: false }, realCatalog, 3), realCatalog)
+const realById = new Map(realCatalog.map(e => [e.id, e]))
+
+function setDance() {
+  useAppStore.setState({ catalog: realCatalog, plan: dancePlan, page: 'preview' })
+}
+
+it('dance preview groups 热身, 第 1 段 · 118 BPM and 放松 and has no 删除', () => {
+  setDance()
+  render(<Preview />)
+  expect(screen.getByRole('heading', { name: '热身' })).toBeInTheDocument()
+  expect(screen.getByRole('heading', { name: /^第 1 段 · 118 BPM/ })).toBeInTheDocument()
+  expect(screen.getByRole('heading', { name: '放松' })).toBeInTheDocument()
+  expect(screen.queryByRole('button', { name: '删除' })).toBeNull()
+})
+
+it('replace in a block updates the list', async () => {
+  setDance()
+  render(<Preview />)
+  const before = dancePlan.routine!.blocks[0].moves[1]
+  const section = screen.getByRole('heading', { name: /^第 1 段/ }).closest('section')!
+  await userEvent.click(within(section).getAllByRole('button', { name: '替换' })[1])
+  const options = section.querySelectorAll('.candidates button')
+  expect(options.length).toBeGreaterThan(0)
+  const name = options[0].textContent!
+  await userEvent.click(options[0])
+  const after = useAppStore.getState().plan!.routine!.blocks[0].moves[1]
+  expect(after).not.toBe(before)
+  expect(within(screen.getByRole('heading', { name: /^第 1 段/ }).closest('section')!).getByText(name)).toBeInTheDocument()
+})
+
+function danceState(itemIndex: number, beats: number) {
+  const steps = buildTimeline(dancePlan)
+  const step = steps.find(s => s.kind === 'work' && s.itemIndex === itemIndex)!
+  return { steps, state: stateAt(steps, step.start + beats * beatSeconds(step.bpm) + 0.01), step }
+}
+
+it('dance status lights the beat dot for the current beat', () => {
+  const idx = dancePlan.items.findIndex(i => i.dance?.phase === 'learn')
+  const { state } = danceState(idx, 11)
+  render(<DanceStatus state={state} plan={dancePlan} byId={realById} />)
+  const dots = within(screen.getByTestId('beat-dots')).getAllByTestId('beat-dot')
+  expect(dots).toHaveLength(8)
+  expect(dots.map(d => d.getAttribute('data-lit'))).toEqual(dots.map((_, i) => String(i === 3)))
+  expect(screen.getByText('学动作')).toBeInTheDocument()
+})
+
+it('next card appears in the last 8 beats only', () => {
+  const idx = dancePlan.items.findIndex(i => i.dance?.phase === 'learn')
+  const early = render(<DanceStatus state={danceState(idx, 10).state} plan={dancePlan} byId={realById} />)
+  expect(screen.queryByText('下一个')).toBeNull()
+  early.unmount()
+  render(<DanceStatus state={danceState(idx, 25).state} plan={dancePlan} byId={realById} />)
+  expect(screen.getByText('下一个')).toBeInTheDocument()
+})
+
+it('done page shows 燃脂跳操 · 10 分钟', () => {
+  const record = { id: 'r', date: '2026-11-08T00:00:00Z', plan: dancePlan, completedItems: dancePlan.items.map(() => true), actualSeconds: 600 }
+  useAppStore.setState({ lastResult: { record, saved: true }, page: 'done' })
+  render(<Done />)
+  expect(screen.getByRole('heading', { name: '燃脂跳操 · 10 分钟' })).toBeInTheDocument()
 })

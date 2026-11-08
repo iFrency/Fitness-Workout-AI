@@ -1,6 +1,10 @@
 import { generatePlan } from '../../src/planner/generatePlan'
 import { TrainingSession } from '../../src/player/session'
 import { buildTimeline, stateAt, timelineEnd } from '../../src/player/timeline'
+import { readFileSync } from 'node:fs'
+import { parseCatalog } from '../../src/catalog/types'
+import { compileRoutine } from '../../src/dance/compileRoutine'
+import { generateRoutine } from '../../src/dance/generateRoutine'
 import { fixtureCatalog } from '../fixtures/catalog'
 
 const steps = buildTimeline(generatePlan({ mode: 'shape', parts: ['全身'], minutes: 10, level: 2 }, fixtureCatalog, 1))
@@ -114,4 +118,17 @@ it('time is zero before start and clamps at the end', () => {
   expect(s.time()).toBe(0)
   s.start(); c.advance(1e6)
   expect(s.time()).toBeCloseTo(timelineEnd(steps))
+})
+
+it('skip during a combo item starts the next item at its first beat', () => {
+  const real = parseCatalog(JSON.parse(readFileSync('public/assets/catalog/exercises.json', 'utf8')))
+  const plan = compileRoutine(generateRoutine({ mode: 'dance', minutes: 10, level: 2, quiet: false }, real, 3), real)
+  const danceSteps = buildTimeline(plan)
+  const inside = danceSteps.find(s => s.kind === 'work' && s.itemIndex === 10)!
+  const s = new TrainingSession(danceSteps, fake())
+  s.startAt(inside.start + 3, [])
+  s.skip()
+  const st = stateAt(danceSteps, s.time())
+  expect(st.step.itemIndex).toBe(11)
+  expect(st.stepElapsed).toBeLessThan(1e-6)
 })
