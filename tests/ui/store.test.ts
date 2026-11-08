@@ -73,6 +73,18 @@ it('resuming re-unlocks audio before the session continues', () => {
   expect(s.isPaused()).toBe(false)
 })
 
+it('saved progress referencing an unknown exercise is discarded with a warning', async () => {
+  const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+  const bad = { ...plan, items: plan.items.map((it, i) => (i === 0 ? { ...it, exerciseId: 'no-such-move' } : it)) }
+  await saveProgress({ plan: bad, time: 50, skipped: [], savedAt: new Date().toISOString() })
+  useAppStore.setState({ savedProgress: null })
+  await useAppStore.getState().checkSavedProgress()
+  expect(useAppStore.getState().savedProgress).toBeNull()
+  expect(await loadProgress()).toBeNull()
+  expect(warn).toHaveBeenCalled()
+  warn.mockRestore()
+})
+
 describe('dance mode', () => {
   const danceCatalog = parseCatalog(JSON.parse(readFileSync('public/assets/catalog/exercises.json', 'utf8')))
   const setup = () => useAppStore.setState({
@@ -93,6 +105,20 @@ describe('dance mode', () => {
   it('setDanceInput({ level: 1 }) forces quiet', () => {
     setup()
     useAppStore.getState().setDanceInput({ level: 1 })
+    expect(useAppStore.getState().danceInput.quiet).toBe(true)
+  })
+
+  it('quiet choice round-trips through level 1', () => {
+    setup()
+    const st = useAppStore.getState()
+    st.setDanceInput({ quiet: false })
+    st.setDanceInput({ level: 1 })
+    expect(useAppStore.getState().danceInput.quiet).toBe(true)
+    useAppStore.getState().setDanceInput({ level: 2 })
+    expect(useAppStore.getState().danceInput.quiet).toBe(false)
+    useAppStore.getState().setDanceInput({ quiet: true })
+    useAppStore.getState().setDanceInput({ level: 1 })
+    useAppStore.getState().setDanceInput({ level: 3 })
     expect(useAppStore.getState().danceInput.quiet).toBe(true)
   })
 

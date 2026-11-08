@@ -4,13 +4,12 @@ import { COUNT_CLIPS, POOLS, allPhrases, cueClipId, nameClipId, nextClipId, quie
 import { mulberry32 } from '../planner/rng'
 import type { Plan, PlanItem } from '../planner/types'
 import type { Step } from '../player/timeline'
+import { isQuiet } from './pool'
 
 /** Priorities from the spec table; counts outrank everything on their beats. */
 const P = { count: 5, marker: 4, line: 3, detail: 2, cheer: 1 } as const
 /** An opening line may slide this far (seconds) when the previous item's last count is still ringing. */
 const OPEN_SLACK = 2
-
-const isQuiet = (plan: Plan): boolean => plan.input.mode === 'dance' && (plan.input.quiet || plan.input.level === 1)
 
 function at(clip: string, earliest: number, latest: number, priority: number, deadline: number): Candidate {
   return { clip, earliest, latest, priority, deadline }
@@ -84,7 +83,7 @@ function comboCues(v: ItemView, step: Step, b: number): Candidate[] {
   return again ? [...out, at('combo-again', e - 8 * b, e - 6 * b, P.line, e - 4 * b)] : out
 }
 
-function danceCandidates(steps: readonly Step[], plan: Plan, lastWork: number, index: number, quiet: boolean): Candidate[] {
+function danceItemCandidates(steps: readonly Step[], plan: Plan, lastWork: number, index: number, quiet: boolean): Candidate[] {
   const step = steps[index]
   const v = view(plan, step.itemIndex)
   const rand = mulberry32(plan.seed * 1000 + index)
@@ -96,13 +95,13 @@ function danceCandidates(steps: readonly Step[], plan: Plan, lastWork: number, i
 
 /** Dance cue sheet: the spec table for dance items, the time-based rules for prepare and stretch steps. */
 export function buildDanceCueSheet(steps: readonly Step[], plan: Plan, catalog: readonly Exercise[], manifest: VoiceManifest): readonly Cue[] {
-  const quiet = isQuiet(plan)
+  const quiet = plan.input.mode === 'dance' && isQuiet(plan.input)
   const lastWork = steps.map(s => s.kind).lastIndexOf('work')
   const text = allPhrases(catalog)
   const candidates = steps.flatMap((step, index) =>
     step.kind === 'work' && plan.items[step.itemIndex].dance
-      ? danceCandidates(steps, plan, lastWork, index, quiet)
+      ? danceItemCandidates(steps, plan, lastWork, index, quiet)
       : stepCandidates(steps, plan, manifest, index))
-  const allowed = quiet ? candidates.filter(c => !(text[c.clip] ?? '').includes('跳')) : candidates
+  const allowed = quiet ? candidates.filter(c => /^(name|next)-/.test(c.clip) || !(text[c.clip] ?? '').includes('跳')) : candidates
   return placeCues(allowed, manifest)
 }

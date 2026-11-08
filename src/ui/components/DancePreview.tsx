@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import type { Exercise } from '../../catalog/types'
-import { SLOT_TIERS } from '../../dance/compileRoutine'
+import { SLOT_TIERS } from '../../dance/tempo'
 import { danceCandidates } from '../../dance/editRoutine'
 import type { MoveRef, Routine } from '../../dance/types'
 import { itemActualSeconds } from '../../planner/generatePlan'

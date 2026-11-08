@@ -1,8 +1,8 @@
 import type { Exercise } from '../catalog/types'
 import type { Plan } from '../planner/types'
-import { SLOT_TIERS, danceFit } from './compileRoutine'
+import { danceFit } from './compileRoutine'
 import { danceEligible, isFunny } from './pool'
-import { WARMUP_BPM, COOLDOWN_BPM } from './tempo'
+import { WARMUP_BPM, COOLDOWN_BPM, SLOT_TIERS } from './tempo'
 import type { MoveRef, Routine } from './types'
 
 function listOf(routine: Routine, ref: MoveRef): readonly string[] {
@@ -17,8 +17,11 @@ export function danceCandidates(routine: Routine, ref: MoveRef, catalog: readonl
   const tier = ref.part === 'block' ? SLOT_TIERS[ref.slot] : 1
   const bpm = ref.part === 'block' ? routine.blocks[ref.block].bpm : ref.part === 'warmup' ? WARMUP_BPM : COOLDOWN_BPM
   const otherFunny = ref.part === 'block' && list.some((id, s) => s !== ref.slot && isFunny(id))
+  const neighbours = ref.part === 'block'
+    ? [routine.blocks[ref.block - 1], routine.blocks[ref.block + 1]].flatMap(b => b?.moves ?? [])
+    : []
   return catalog.filter(e =>
-    danceEligible(e, routine.input) && e.danceTier === tier && !list.includes(e.id) && e.id !== current &&
+    danceEligible(e, routine.input) && e.danceTier === tier && !list.includes(e.id) && e.id !== current && !neighbours.includes(e.id) &&
     danceFit(e, bpm) !== null &&
     !(ref.part !== 'block' && isFunny(e.id)) &&
     !(ref.part === 'block' && isFunny(e.id) && (ref.slot === 2 || otherFunny)))

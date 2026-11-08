@@ -1,4 +1,4 @@
-import type { Level } from '../catalog/types'
+import type { DanceTier, Level } from '../catalog/types'
 
 export const WARMUP_BPM = 100
 export const COOLDOWN_BPM = 96
@@ -6,6 +6,8 @@ export const STRETCH_BPM = 80
 export const ITEM_BEATS = 32
 export const COMBO_BEATS = 16
 export const STRETCH_SECONDS = 30
+/** Tier of each of the four move slots in a block. */
+export const SLOT_TIERS: readonly DanceTier[] = [2, 2, 3, 1]
 
 const START_BPM: Readonly<Record<Level, number>> = { 1: 110, 2: 118, 3: 124 }
 const CAP_BPM: Readonly<Record<Level, number>> = { 1: 122, 2: 130, 3: 136 }

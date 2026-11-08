@@ -1,5 +1,9 @@
 import 'fake-indexeddb/auto'
 import * as idb from 'idb-keyval'
+import { readFileSync } from 'node:fs'
+import { parseCatalog } from '../../src/catalog/types'
+import { compileRoutine } from '../../src/dance/compileRoutine'
+import { generateRoutine } from '../../src/dance/generateRoutine'
 import { generatePlan } from '../../src/planner/generatePlan'
 import {
   DEFAULT_SETTINGS, appendRecord, clearProgress, listRecords, loadProgress, loadSettings, loadUserMusic,
@@ -94,4 +98,14 @@ it('listRecords reports failure when the stored value is not an array', async ()
   await idb.set('records', { not: 'an array' }, idb.createStore('moxing-fitness', 'kv'))
   expect(await listRecords()).toEqual({ ok: false })
   silence.mockRestore()
+})
+
+it('round-trips a dance progress with plan.routine intact', async () => {
+  const realCatalog = parseCatalog(JSON.parse(readFileSync('public/assets/catalog/exercises.json', 'utf8')))
+  const dance = compileRoutine(generateRoutine({ mode: 'dance', minutes: 10, level: 2, quiet: false }, realCatalog, 3), realCatalog)
+  const snapshot = { plan: dance, time: 12, skipped: [], savedAt: '2026-11-08T08:00:00.000Z' }
+  await saveProgress(snapshot)
+  const loaded = await loadProgress()
+  expect(loaded).toEqual(snapshot)
+  expect(loaded?.plan.routine).toEqual(dance.routine)
 })

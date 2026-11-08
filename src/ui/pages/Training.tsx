@@ -42,6 +42,11 @@ export function StatusPanel({ state, plan, byId }: StatusPanelProps) {
   )
 }
 
+export function TrainingStatus({ state, plan, byId }: StatusPanelProps) {
+  const inDance = state.step.kind === 'work' && plan.items[state.step.itemIndex].dance
+  return inDance ? <DanceStatus state={state} plan={plan} byId={byId} /> : <StatusPanel state={state} plan={plan} byId={byId} />
+}
+
 export function Training() {
   const plan = useAppStore(s => s.plan)!
   const catalog = useAppStore(s => s.catalog)!
@@ -83,9 +88,7 @@ export function Training() {
           preset={preset} onSelectView={setPreset} />
       </div>
       {run.ready
-        ? (plan.items[state.step.itemIndex].dance
-          ? <DanceStatus state={state} plan={plan} byId={byId} />
-          : <StatusPanel state={state} plan={plan} byId={byId} />)
+        ? <TrainingStatus state={state} plan={plan} byId={byId} />
         : <div className="status"><strong>准备中</strong></div>}
       <div className="controls">
         <button type="button" onClick={() => session.prev()}>上一个</button>

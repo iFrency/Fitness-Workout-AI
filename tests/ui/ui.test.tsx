@@ -6,7 +6,7 @@ import type { Plan } from '../../src/planner/types'
 import { DEFAULT_SETTINGS } from '../../src/storage/storage'
 import { buildTimeline, stateAt } from '../../src/player/timeline'
 import { formatDuration, secondsLabel } from '../../src/ui/format'
-import { StatusPanel } from '../../src/ui/pages/Training'
+import { StatusPanel, TrainingStatus } from '../../src/ui/pages/Training'
 import { Home } from '../../src/ui/pages/Home'
 import { Preview } from '../../src/ui/pages/Preview'
 import { useAppStore } from '../../src/ui/store'
@@ -146,6 +146,15 @@ it('dance status lights the beat dot for the current beat', () => {
   expect(dots).toHaveLength(8)
   expect(dots.map(d => d.getAttribute('data-lit'))).toEqual(dots.map((_, i) => String(i === 3)))
   expect(screen.getByText('学动作')).toBeInTheDocument()
+})
+
+it('opening prepare step of a dance plan shows 准备 and item 0 as next, no beat dots', () => {
+  const state = stateAt(buildTimeline(dancePlan), 0)
+  expect(state.step.kind).toBe('prepare')
+  render(<TrainingStatus state={state} plan={dancePlan} byId={realById} />)
+  expect(screen.getByText('准备')).toBeInTheDocument()
+  expect(screen.getByText(`下一个：${realById.get(dancePlan.items[0].exerciseId)!.name}`)).toBeInTheDocument()
+  expect(screen.queryByTestId('beat-dots')).toBeNull()
 })
 
 it('next card appears in the last 8 beats only', () => {

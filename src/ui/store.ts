@@ -32,6 +32,8 @@ interface AppState {
   readonly settings: Settings
   readonly shapeInput: ShapeInput
   readonly danceInput: DanceInput
+  /** The user's last explicit quiet choice, restored when leaving level 1. */
+  readonly quietPref: boolean
   readonly plan: Plan | null
   readonly lastResult: LastResult | null
   /** An unfinished workout found at start-up, offered on the home page. */
@@ -63,6 +65,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   settings: DEFAULT_SETTINGS,
   shapeInput: { mode: 'shape', parts: [], minutes: 10, level: 1 },
   danceInput: { mode: 'dance', minutes: 15, level: 1, quiet: true },
+  quietPref: true,
   plan: null,
   lastResult: null,
   savedProgress: null,
@@ -70,7 +73,16 @@ export const useAppStore = create<AppState>((set, get) => ({
 
   async checkSavedProgress() {
     const progress = await loadProgress()
-    const fresh = progress !== null && Date.now() - Date.parse(progress.savedAt) < RESUME_WINDOW_MS
+    let fresh = progress !== null && Date.now() - Date.parse(progress.savedAt) < RESUME_WINDOW_MS
+    const { catalog } = get()
+    if (fresh && progress && catalog) {
+      const ids = new Set(catalog.map(e => e.id))
+      if (progress.plan.items.some(i => !ids.has(i.exerciseId))) {
+        console.warn('已保存的训练进度包含未知动作，已丢弃')
+        void clearProgress()
+        fresh = false
+      }
+    }
     set({ savedProgress: fresh ? progress : null })
   },
   resumeSavedProgress() {
@@ -94,7 +106,10 @@ export const useAppStore = create<AppState>((set, get) => ({
   setShapeInput: patch => set(s => ({ shapeInput: { ...s.shapeInput, ...patch } })),
   setDanceInput: patch => set(s => {
     const next = { ...s.danceInput, ...patch }
-    return { danceInput: next.level === 1 ? { ...next, quiet: true } : next }
+    const pref = patch.quiet !== undefined && next.level !== 1 ? patch.quiet : s.quietPref
+    const leaving = s.danceInput.level === 1 && next.level !== 1 && patch.quiet === undefined
+    const quiet = next.level === 1 ? true : leaving ? pref : next.quiet
+    return { quietPref: pref, danceInput: { ...next, quiet } }
   }),
   generate() {
     const { shapeInput, danceInput, settings, catalog } = get()

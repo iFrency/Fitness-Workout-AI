@@ -23,6 +23,16 @@ describe('editRoutine', () => {
     }
   })
 
+  it('danceCandidates excludes moves of the neighbouring blocks', () => {
+    const r = generateRoutine({ ...input, minutes: 30 }, catalog, 4)
+    expect(r.blocks.length).toBeGreaterThan(2)
+    for (const block of [0, 1]) {
+      const bref = { part: 'block', block, slot: 1 } as const
+      const neighbours = [r.blocks[block - 1], r.blocks[block + 1]].filter(Boolean).flatMap(b => b.moves)
+      for (const e of danceCandidates(r, bref, catalog)) expect(neighbours).not.toContain(e.id)
+    }
+  })
+
   it('danceCandidates for warmup offers tier-1 moves not in the list', () => {
     const cands = danceCandidates(routine, { part: 'warmup', index: 0 }, catalog)
     expect(cands.every(e => e.danceTier === 1 && !routine.warmup.includes(e.id))).toBe(true)

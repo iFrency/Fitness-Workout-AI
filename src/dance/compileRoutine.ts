@@ -2,11 +2,10 @@ import type { DanceTier, Exercise } from '../catalog/types'
 import { TOLERANCE_SECONDS, TIME_SCALE_MAX, TIME_SCALE_MIN, fitBeats, repSeconds } from '../planner/timing'
 import { computeTotal, toItem } from '../planner/generatePlan'
 import type { DanceItemInfo, Plan, PlanItem } from '../planner/types'
-import { COMBO_BEATS, COOLDOWN_BPM, ITEM_BEATS, WARMUP_BPM } from './tempo'
+import { COMBO_BEATS, COOLDOWN_BPM, ITEM_BEATS, SLOT_TIERS, WARMUP_BPM } from './tempo'
 import type { Routine } from './types'
 
 const ALLOWED_BEATS: readonly number[] = [1, 2, 4, 8]
-export const SLOT_TIERS: readonly DanceTier[] = [2, 2, 3, 1]
 
 /** Beats per rep for a dance move at one tempo, limited to 1, 2, 4 or 8; null when none fits. */
 export function danceFit(e: Exercise, bpm: number): { beatsPerRep: number; timeScale: number } | null {

@@ -1,14 +1,12 @@
-import type { Exercise } from '../catalog/types'
+import type { DanceTier as Tier, Exercise } from '../catalog/types'
 import { mulberry32, shuffle } from '../planner/rng'
 import { TOLERANCE_SECONDS, repSeconds, repsForSeconds } from '../planner/timing'
 import { DANCE_STRETCH_IDS, danceEligible, isFunny } from './pool'
 import {
-  COOLDOWN_BPM, ITEM_BEATS, STRETCH_BPM, STRETCH_SECONDS, WARMUP_BPM, blockBeats, blockBpm,
+  COOLDOWN_BPM, ITEM_BEATS, SLOT_TIERS, STRETCH_BPM, STRETCH_SECONDS, WARMUP_BPM, blockBeats, blockBpm,
 } from './tempo'
 import type { Block, DanceInput, Routine } from './types'
 
-type Tier = 1 | 2 | 3
-const SLOT_TIERS: readonly Tier[] = [2, 2, 3, 1]
 const COOLDOWN_COUNT = 2
 const MAX_WARMUP = 6
 const MAX_STRETCH = 4

@@ -124,8 +124,19 @@ describe('buildDanceCueSheet', () => {
       expect(p.input.mode === 'dance' && (p.input.quiet || p.input.level === 1)).toBe(true)
       const s = sheetOf(p)
       expect(s.length).toBeGreaterThan(0)
-      s.forEach(c => expect(phrases[c.clip], c.clip).not.toContain('跳'))
+      s.filter(c => !/^(name|next)-/.test(c.clip)).forEach(c => expect(phrases[c.clip], c.clip).not.toContain('跳'))
     }
+  })
+
+  it('quiet routines keep name- and next- clips of moves whose name contains 跳', () => {
+    const r = generateRoutine(input(true, 2), catalog, 3)
+    const swapped = { ...r, blocks: r.blocks.map((b, i) => (i === 0 ? { ...b, moves: b.moves.map((m, k) => (k === 1 ? 'step-jack' : m)) } : b)) }
+    const p = compileRoutine(swapped, catalog)
+    const s = sheetOf(p)
+    const clips = s.map(c => c.clip)
+    expect(clips).toContain('name-step-jack')
+    expect(clips).toContain('next-step-jack')
+    s.filter(c => !/^(name|next)-/.test(c.clip)).forEach(c => expect(phrases[c.clip], c.clip).not.toContain('跳'))
   })
 
   it('a 0.5 s count clip at 136 BPM is dropped rather than shifted', () => {
