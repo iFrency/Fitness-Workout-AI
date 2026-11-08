@@ -32,7 +32,9 @@ it('requires danceTier for dance pool', () => {
 })
 
 it('rejects danceTier outside dance pool', () => {
-  expect(() => parseCatalog([makeExercise({ pools: ['shape'], danceTier: 2 })])).toThrow(CatalogError)
+  const bad = [makeExercise({ pools: ['shape'], danceTier: 2 })]
+  expect(() => parseCatalog(bad)).toThrow(CatalogError)
+  expect(() => parseCatalog(bad)).toThrow(/danceTier/)
 })
 
 it('rejects sided dance move', () => {
