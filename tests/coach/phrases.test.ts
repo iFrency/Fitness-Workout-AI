@@ -65,5 +65,9 @@ it('adds the dance fixed phrases and pools from the spec', () => {
 it('clip ids match /^[a-z0-9-]+$/ for the real catalog too', () => {
   const real = parseCatalog(JSON.parse(readFileSync('public/assets/catalog/exercises.json', 'utf8')))
   Object.keys(allPhrases(real)).forEach(id => expect(id).toMatch(/^[a-z0-9-]+$/))
-  expect(Object.keys(allPhrases(real)).filter(id => id.startsWith('name-'))).toHaveLength(44)
+  const danceIds = real.filter(e => e.pools.includes('dance')).map(e => e.id)
+  const names = Object.keys(allPhrases(real)).filter(id => id.startsWith('name-'))
+  expect(danceIds.length).toBeGreaterThan(0)
+  expect(names).toHaveLength(danceIds.length)
+  danceIds.forEach(id => expect(names, id).toContain(nameClipId(id)))
 })
