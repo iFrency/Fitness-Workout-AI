@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto'
 import { CUE_GAP_SECONDS, buildCueSheet, placeCues, type Cue, type VoiceManifest } from '../../src/coach/cues'
 import { allPhrases } from '../../src/coach/phrases'
 import { generatePlan } from '../../src/planner/generatePlan'
@@ -35,10 +36,19 @@ describe('placeCues', () => {
   })
 })
 
+/** One line per cue with the full-precision time; the digest changes if any cue's clip, time, duration or priority changes. */
+function sheetDigest(s: readonly Cue[]): string {
+  const lines = s.map(c => `${c.time} ${c.clip} ${c.duration} ${c.priority}`)
+  const digest = createHash('sha1').update(lines.join('\n')).digest('hex')
+  return `${lines.length} ${digest}`
+}
+
 describe('buildCueSheet', () => {
   it('buildCueSheet is unchanged for shape plans', () => {
     const other = generatePlan({ mode: 'shape', parts: ['全身'], minutes: 15, level: 3 }, fixtureCatalog, 7)
-    expect({ a: sheet(), b: sheet(other) }).toMatchSnapshot()
+    // Digests of the sheets the former 2.3k-line snapshot recorded (same cue count, clips, times, durations and priorities).
+    expect(sheetDigest(sheet())).toBe('153 8d8f31eea5c97c623e4959094854e1e11d30ac69')
+    expect(sheetDigest(sheet(other))).toBe('235 1ba997506fbff56830ee603258fe3147461a1be8')
   })
 
   it('no two cues overlap', () => expectNoOverlap(sheet()))
