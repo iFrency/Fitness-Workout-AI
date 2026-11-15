@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs'
 import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { generatePlan, computeTotal } from '../../src/planner/generatePlan'
+import { generatePlan, computeTotal, itemActualSeconds } from '../../src/planner/generatePlan'
 import type { Plan } from '../../src/planner/types'
 import { DEFAULT_SETTINGS } from '../../src/storage/storage'
 import { buildTimeline, stateAt } from '../../src/player/timeline'
@@ -235,4 +235,26 @@ it('quiet hint is linked to the checkbox', () => {
   render(<Home />)
   const box = screen.getByRole('checkbox', { name: '安静模式（不跳）' })
   expect(box).toHaveAccessibleDescription('适合办公室和楼下有邻居')
+})
+
+it('next card names the next move and flips exactly at 8 beats remaining', () => {
+  const idx = dancePlan.items.findIndex((it, i) => it.dance?.phase === 'learn' && dancePlan.items[i + 1]?.dance)
+  const { state, step } = danceState(idx, 10)
+  const b = beatSeconds(step.bpm)
+  const nextName = realById.get(dancePlan.items[idx + 1].exerciseId)!.name
+  const at8 = render(<DanceStatus state={{ ...state, stepRemaining: 8 * b }} plan={dancePlan} byId={realById} />)
+  expect(screen.getByText('下一个')).toBeInTheDocument()
+  expect(within(document.querySelector('.next-card')!).getByText(nextName)).toBeInTheDocument()
+  at8.unmount()
+  render(<DanceStatus state={{ ...state, stepRemaining: 8 * b + 0.001 }} plan={dancePlan} byId={realById} />)
+  expect(screen.queryByText('下一个')).toBeNull()
+})
+
+it('dance preview block headings end with the block duration as mm:ss', () => {
+  setDance()
+  render(<Preview />)
+  const seconds = dancePlan.items.filter(i => i.dance?.block === 1).reduce((s, i) => s + itemActualSeconds(i), 0)
+  const heading = screen.getByRole('heading', { name: /^第 1 段/ })
+  expect(heading.textContent).toBe(`第 1 段 · 118 BPM · ${formatDuration(seconds)}`)
+  expect(heading.textContent).toMatch(/ · \d{2}:\d{2}$/)
 })
