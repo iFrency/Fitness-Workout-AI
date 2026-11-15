@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import type { Exercise } from '../../catalog/types'
 import { SLOT_TIERS } from '../../dance/tempo'
 import { danceCandidates } from '../../dance/editRoutine'
@@ -55,10 +55,21 @@ export function DancePreview({ plan, catalog }: DancePreviewProps) {
   const replaceDance = useAppStore(s => s.replaceDance)
   const [open, setOpen] = useState<string | null>(null)
   const routine = plan.routine!
-  const byId = new Map(catalog.map(e => [e.id, e]))
+  const byId = useMemo(() => new Map(catalog.map(e => [e.id, e])), [catalog])
+  const sections = useMemo(() => sectionsOf(plan, routine), [plan, routine])
+  // Only the routine and catalog decide which rows can be replaced, so open/close clicks do not recompute it.
+  const noCandidates = useMemo(() => {
+    const keys = new Set<string>()
+    for (const section of sections) {
+      for (const row of section.rows) {
+        if (row.ref && danceCandidates(routine, row.ref, catalog).length === 0) keys.add(row.key)
+      }
+    }
+    return keys
+  }, [sections, routine, catalog])
   return (
     <>
-      {sectionsOf(plan, routine).map(section => (
+      {sections.map(section => (
         <section key={section.key}>
           <h2>{section.title}</h2>
           <ul className="items">
@@ -74,7 +85,7 @@ export function DancePreview({ plan, catalog }: DancePreviewProps) {
                     </div>
                     {ref && (
                       <div className="actions">
-                        <button type="button" disabled={danceCandidates(routine, ref, catalog).length === 0}
+                        <button type="button" disabled={noCandidates.has(row.key)}
                           onClick={() => setOpen(open === row.key ? null : row.key)}>替换</button>
                       </div>
                     )}
