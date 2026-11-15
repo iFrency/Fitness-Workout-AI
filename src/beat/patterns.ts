@@ -66,6 +66,7 @@ function danceGroove(tier: DanceTier, b: number): Hit[] {
 
 function danceHits(e: BeatEvent, dance: DanceBeatInfo): Hit[] {
   let hits = danceGroove(dance.tier, e.beatInStep % 8 + 1)
+  if (dance.blockStart) hits = [...hits, { sound: 'gong', gain: 0.6, rate: 1 }]
   const left = e.beatsLeftInStep
   if (left <= 4) {
     const gain = 0.3 + 0.2 * (4 - left)
@@ -76,7 +77,7 @@ function danceHits(e: BeatEvent, dance: DanceBeatInfo): Hit[] {
     const extraHat: Hit = { sound: 'hat', gain: 0.4, rate: 1, offsetBeats: 0.5 }
     hits = [...hits, extraHat].map(h => ({ ...h, rate: h.rate * rate }))
   }
-  return dance.blockStart ? [...hits, { sound: 'gong', gain: 0.6, rate: 1 }] : hits
+  return hits
 }
 
 export function hitsForEvent(e: BeatEvent, groove: GrooveId): Hit[] {

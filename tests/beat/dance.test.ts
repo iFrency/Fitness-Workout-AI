@@ -62,6 +62,11 @@ describe('dance groove', () => {
     expect(at(1, 2, { beatsLeftInStep: 8, dance })[0].rate).toBeCloseTo(2 ** (0.5 / 12))
     expect(last.some(h => h.sound === 'hat' && h.offsetBeats === 0.5)).toBe(true)
   })
+  it('build-up multiplier also applies to the block-start gong', () => {
+    const dance = { tier: 1 as const, phase: 'learn' as const, nextTier: 3 as const, blockStart: true }
+    const gong = at(1, 1, { beatsLeftInStep: 1, dance }).find(h => h.sound === 'gong')!
+    expect(gong.rate).toBeCloseTo(2 ** (4 / 12))
+  })
   it('block start adds a gong', () => {
     const dance = { tier: 1 as const, phase: 'learn' as const, nextTier: null, blockStart: true }
     expect(at(1, 1, { dance }).find(h => h.sound === 'gong')).toEqual({ sound: 'gong', gain: 0.6, rate: 1 })
