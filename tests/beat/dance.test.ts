@@ -115,4 +115,15 @@ describe('dance scheduling', () => {
     expect(s.hits.filter(h => h.gain === 0.6)).toHaveLength(danceEvents.filter(e => e.beatsLeftInStep <= 4).length)
     expect(s.hits.every(h => h.sound === 'tick' && h.rate === 1)).toBe(true)
   })
+  it('user music with the click on: one hit per beat, the louder tick only in the last 4 beats of a dance item', () => {
+    const clicking = { ...opts, userMusic: true, clickWithUserMusic: true }
+    const s = scheduleWindow(steps, dancePlan, 0, steps.at(-1)!.end, clicking, [])
+    const danceEvents = all.filter(e => e.dance)
+    const tickAt = (e: BeatEvent) => s.hits.filter(h => Math.abs(h.time - e.time) < 1e-9)
+    for (const e of danceEvents) expect(tickAt(e).map(h => h.gain)).toEqual([e.beatsLeftInStep <= 4 ? 0.6 : 0.3])
+    expect(s.hits.filter(h => h.gain === 0.6)).toHaveLength(danceEvents.filter(e => e.beatsLeftInStep <= 4).length)
+    const plain = all.filter(e => !e.dance && e.kind === 'work')
+    expect(plain.length).toBeGreaterThan(0)
+    for (const e of plain) expect(tickAt(e).map(h => h.gain)).toEqual([0.3])
+  })
 })
