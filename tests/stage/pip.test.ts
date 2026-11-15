@@ -9,7 +9,7 @@ it('tapping an inset selects that view', async () => {
   screen.getByRole('button', { name: '切换到正面视角' }).click()
   expect(onSelect).toHaveBeenCalledWith('front')
   expect(screen.getByRole('button', { name: '切换到侧面视角' })).toHaveStyle({ left: '278px', bottom: '10px' })
-})
+}, 20_000) // importing the three.js stage takes over 5 s when the full suite runs in parallel
 
 it('places two 3:4 insets in the bottom corners at 28% of the stage width', () => {
   const [left, right] = insetRects(400, 600)
