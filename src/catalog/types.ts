@@ -24,6 +24,9 @@ export const ExerciseSchema = z.object({
   pools: z.array(z.enum(['shape', 'dance'])).min(1).default(['shape']),
   danceTier: z.union([z.literal(1), z.literal(2), z.literal(3)]).optional(),
 }).superRefine((ex, ctx) => {
+  if (new Set(ex.pools).size !== ex.pools.length) {
+    ctx.addIssue({ code: 'custom', path: ['pools'], message: 'pools 不能重复' })
+  }
   const isDance = ex.pools.includes('dance')
   if (isDance && ex.danceTier === undefined) {
     ctx.addIssue({ code: 'custom', path: ['danceTier'], message: 'danceTier 必填 (dance pool)' })

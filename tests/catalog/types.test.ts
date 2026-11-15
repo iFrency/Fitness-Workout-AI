@@ -41,3 +41,9 @@ it('rejects sided dance move', () => {
   const bad = [makeExercise({ pools: ['dance'], danceTier: 1, sided: true })]
   expect(() => parseCatalog(bad)).toThrow(/sided/)
 })
+
+it('rejects duplicate pools', () => {
+  const bad = [makeExercise({ pools: ['shape', 'shape'] })]
+  expect(() => parseCatalog(bad)).toThrow(CatalogError)
+  expect(() => parseCatalog(bad)).toThrow(/pools 不能重复/)
+})
