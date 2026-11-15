@@ -169,4 +169,98 @@ describe('buildDanceCueSheet', () => {
   it('the plan ends with finish', () => {
     expect(sheetOf(planOf()).at(-1)!.clip).toBe('finish')
   })
+
+  describe('spec 6.3 rows', () => {
+    const p = twoPass()
+    const steps = buildTimeline(p)
+    const s = sheetOf(p)
+    const dance = (i: number) => p.items[i].dance!
+    const indexes = (test: (i: number) => boolean) => p.items.map((_, i) => i).filter(test)
+    const near = (a: number, b: number) => Math.abs(a - b) < EPS
+
+    it('dance-start opens the first warm-up item and cooldown opens the first cool-down item', () => {
+      const first = indexes(i => dance(i)?.phase === 'warmup')[0]
+      const start = s.find(c => c.clip === 'dance-start')!
+      expect(start.time).toBeGreaterThanOrEqual(workStep(steps, first).start - EPS)
+      expect(start.time).toBeLessThanOrEqual(workStep(steps, first).start + 2)
+      expect(s.filter(c => c.clip === 'dance-start')).toHaveLength(1)
+      const cool = indexes(i => dance(i)?.phase === 'cooldown')[0]
+      const cd = s.filter(c => c.clip === 'cooldown')
+      expect(cd).toHaveLength(1)
+      expect(cd[0].time).toBeGreaterThanOrEqual(workStep(steps, cool).start - EPS)
+      expect(cd[0].time).toBeLessThanOrEqual(workStep(steps, cool).start + 2)
+    })
+
+    it('block-up opens the first learn item of blocks 2 and later, never block 1', () => {
+      const firsts = indexes(i => dance(i)?.phase === 'learn' && dance(i).tier === 2 && p.items[i - 1]?.dance?.phase !== 'learn')
+      expect(firsts.length).toBeGreaterThan(1)
+      for (const i of firsts) {
+        const st = workStep(steps, i)
+        const up = inItem(s, st).filter(c => c.clip.startsWith('block-up-'))
+        expect(up, `block ${dance(i).block}`).toHaveLength(dance(i).block >= 2 ? 1 : 0)
+        if (up[0]) expect(up[0].time).toBeLessThanOrEqual(st.start + 2)
+      }
+    })
+
+    it('tier-1 learn items open with easy-*', () => {
+      const easy = indexes(i => dance(i)?.phase === 'learn' && dance(i).tier === 1)
+      expect(easy.length).toBeGreaterThan(0)
+      for (const i of easy) {
+        const st = workStep(steps, i)
+        const c = inItem(s, st).find(x => x.clip.startsWith('easy-'))
+        expect(c, `item ${i}`).toBeDefined()
+        expect(c!.time).toBeLessThanOrEqual(st.start + 2)
+      }
+    })
+
+    it('cue-<id>-0 lands in S+8B..S+16B of learn and warm-up items', () => {
+      for (const i of indexes(i => ['learn', 'warmup'].includes(dance(i)?.phase))) {
+        const st = workStep(steps, i)
+        const c = s.find(x => x.clip === `cue-${p.items[i].exerciseId}-0` && x.time >= st.start - EPS && x.time < st.end)
+        expect(c, `item ${i}`).toBeDefined()
+        expect(c!.time).toBeGreaterThanOrEqual(st.start + 8 * beat(st) - EPS)
+        expect(c!.time).toBeLessThanOrEqual(st.start + 16 * beat(st) + EPS)
+      }
+    })
+
+    it('hype lands in S+16B..S+20B of learn and warm-up items and never in cool-down', () => {
+      for (const i of indexes(i => ['learn', 'warmup'].includes(dance(i)?.phase))) {
+        const st = workStep(steps, i)
+        const h = inItem(s, st).find(x => x.clip.startsWith('hype-'))
+        expect(h, `item ${i}`).toBeDefined()
+        expect(h!.time).toBeGreaterThanOrEqual(st.start + 16 * beat(st) - EPS)
+        expect(h!.time).toBeLessThanOrEqual(st.start + 20 * beat(st) + EPS)
+      }
+      for (const i of indexes(i => dance(i)?.phase === 'cooldown')) {
+        expect(inItem(s, workStep(steps, i)).some(x => x.clip.startsWith('hype-'))).toBe(false)
+      }
+    })
+
+    it('a non-final learn or warm-up item calls next-<next id> between E-16B and E-4B', () => {
+      const withNext = indexes(i => ['learn', 'warmup'].includes(dance(i)?.phase) && p.items[i + 1]?.dance?.phase !== 'combo' && !!p.items[i + 1])
+      expect(withNext.length).toBeGreaterThan(0)
+      for (const i of withNext) {
+        const st = workStep(steps, i)
+        const c = inItem(s, st).find(x => x.clip === `next-${p.items[i + 1].exerciseId}`)
+        expect(c, `item ${i}`).toBeDefined()
+        expect(c!.time).toBeGreaterThanOrEqual(st.end - 16 * beat(st) - EPS)
+        expect(c!.time + c!.duration).toBeLessThanOrEqual(st.end - 4 * beat(st) + EPS)
+      }
+    })
+
+    it("a block's last combo item has c5..c8 on its last four beats and no name- or next-", () => {
+      const lasts = indexes(i => dance(i)?.phase === 'combo' && !(p.items[i + 1]?.dance?.phase === 'combo' && p.items[i + 1].dance!.block === dance(i).block))
+      expect(lasts.length).toBe(p.routine!.blocks.length)
+      for (const i of lasts) {
+        const st = workStep(steps, i)
+        const here = inItem(s, st)
+        COUNTS.forEach((id, k) => {
+          const c = here.find(x => x.clip === id)
+          expect(c, `${id} in item ${i}`).toBeDefined()
+          expect(near(c!.time, st.end - (4 - k) * beat(st))).toBe(true)
+        })
+        expect(here.some(x => /^(name|next)-/.test(x.clip))).toBe(false)
+      }
+    })
+  })
 })
