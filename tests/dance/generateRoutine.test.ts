@@ -79,7 +79,41 @@ describe('generateRoutine', () => {
     ]
     const r = generateRoutine(input(10, 2), tiny, 4)
     expect(r.blocks[0].moves).toHaveLength(4)
-    expect(byId.size).toBeGreaterThan(0)
     expect(tiny.find(e => e.id === r.blocks[0].moves[2])?.danceTier).toBe(2)
+  })
+
+  describe('tier fallback order', () => {
+    const STRETCH = ['chest-opener-clasp', 'arms-back-chest-stretch', 'standing-side-bend-reach', 'tall-reach-tiptoes', 'standing-forward-fold-soft']
+    const mk = (id: string, tier: 1 | 2 | 3): Exercise => ({ ...realCatalog[0], id, pools: ['dance'], danceTier: tier, level: 1, impact: 'low', sided: false, beatsPerRep: 2 })
+    const tierMoves = (tier: 1 | 2 | 3, n: number): Exercise[] => Array.from({ length: n }, (_, i) => mk(`t${tier}-m${i}`, tier))
+    const stretches = realCatalog.filter(e => STRETCH.includes(e.id))
+    const tierOf = (cat: readonly Exercise[], id: string) => cat.find(e => e.id === id)?.danceTier
+
+    it('tier+1 is used when tier 1 is missing (warm-up and cool-down fall back to tier 2)', () => {
+      const cat = [...tierMoves(2, 14), ...tierMoves(3, 8), ...stretches]
+      const r = generateRoutine(input(10, 2), cat, 4)
+      expect([...r.warmup, ...r.cooldown].every(id => tierOf(cat, id) === 2)).toBe(true)
+      expect(r.blocks[0].moves.map(id => tierOf(cat, id))).toEqual([2, 2, 3, 2])
+    })
+
+    it('tier-1 is tried before tier+1 when tier 2 is missing', () => {
+      const cat = [...tierMoves(1, 20), ...tierMoves(3, 8), ...stretches]
+      const r = generateRoutine(input(10, 2), cat, 4)
+      for (const b of r.blocks) expect(b.moves.map(id => tierOf(cat, id))).toEqual([1, 1, 3, 1])
+    })
+
+    it('does not mutate the catalog or the input', () => {
+      const deepFreeze = <T,>(v: T): T => {
+        if (v && typeof v === 'object') Object.values(v).forEach(deepFreeze)
+        return Object.freeze(v)
+      }
+      const cat = deepFreeze(structuredClone([...realCatalog]))
+      const inp = deepFreeze(structuredClone(input(20, 2)))
+      const catBefore = JSON.stringify(cat)
+      const inpBefore = JSON.stringify(inp)
+      expect(() => generateRoutine(inp, cat, 7)).not.toThrow()
+      expect(JSON.stringify(cat)).toBe(catBefore)
+      expect(JSON.stringify(inp)).toBe(inpBefore)
+    })
   })
 })

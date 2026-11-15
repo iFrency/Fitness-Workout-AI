@@ -77,4 +77,12 @@ describe('compileRoutine', () => {
       }
     }
   })
+
+  it('reports shortfallSeconds when the routine falls short of the target by more than the tolerance', () => {
+    const full = generateRoutine(input(30, 2), catalog, 1)
+    expect(compileRoutine(full, catalog).shortfallSeconds).toBe(0)
+    const short = compileRoutine({ ...full, blocks: full.blocks.slice(0, 2) }, catalog)
+    expect(short.shortfallSeconds).toBeGreaterThan(0)
+    expect(short.shortfallSeconds).toBe(Math.round(30 * 60 - short.totalSeconds))
+  })
 })
