@@ -73,12 +73,6 @@ export function generateRoutine(input: DanceInput, catalog: readonly Exercise[],
     throw new Error('no eligible dance move available')
   }
 
-  const warmup: string[] = []
-  while (warmup.length < MAX_WARMUP) warmup.push(takeNear(1, id => !isFunny(id) && !warmup.includes(id)))
-  const cooldown: string[] = []
-  while (cooldown.length < COOLDOWN_COUNT) {
-    cooldown.push(takeNear(1, id => !isFunny(id) && !cooldown.includes(id)))
-  }
   const stretchIds = shuffle(DANCE_STRETCH_IDS, rand).slice(0, MAX_STRETCH)
   const stretchEx = stretchIds.map(id => {
     const ex = catalog.find(e => e.id === id)
@@ -91,17 +85,9 @@ export function generateRoutine(input: DanceInput, catalog: readonly Exercise[],
   const stretchSecs = stretchEx.slice(0, stretch0).reduce((s, e) => s + stretchSeconds(e), 0)
   const blockCount = planBlockCount(input, warm0, stretchSecs)
 
-  const blocks: Block[] = []
-  for (let b = 0; b <= blockCount; b++) {
-    const prev = new Set(blocks[b - 1]?.moves ?? [])
-    const moves: string[] = []
-    SLOT_TIERS.forEach((tier, slot) => {
-      const hasFunny = (): boolean => moves.some(isFunny)
-      moves.push(takeNear(tier, id =>
-        !prev.has(id) && !moves.includes(id) && !(isFunny(id) && (slot === 2 || hasFunny()))))
-    })
-    blocks.push({ index: b, bpm: blockBpm(input.level, b), moves, comboPasses: 2 })
-  }
+  /** Timing depends only on counts, tempos and passes, so plan with empty slots and draw the moves for what is kept. */
+  const slots: Block[] = Array.from({ length: blockCount + 1 }, (_, b) => ({ index: b, bpm: blockBpm(input.level, b), moves: [], comboPasses: 2 }))
+  const placeholders = (n: number): string[] => Array.from({ length: n }, () => '')
 
   const fit = (count: number): { routine: Routine; key: readonly number[] } => {
     let best: { routine: Routine; key: readonly number[] } | null = null
@@ -110,9 +96,9 @@ export function generateRoutine(input: DanceInput, catalog: readonly Exercise[],
         for (let st = 1; st <= MAX_STRETCH; st++) {
           const routine: Routine = {
             input, seed,
-            warmup: warmup.slice(0, warm),
-            blocks: blocks.slice(0, count).map((blk, i) => (i === count - 1 ? { ...blk, comboPasses: lastPasses } : blk)),
-            cooldown,
+            warmup: placeholders(warm),
+            blocks: slots.slice(0, count).map((blk, i) => (i === count - 1 ? { ...blk, comboPasses: lastPasses } : blk)),
+            cooldown: placeholders(COOLDOWN_COUNT),
             stretch: stretchIds.slice(0, st),
           }
           const key = [
@@ -128,9 +114,29 @@ export function generateRoutine(input: DanceInput, catalog: readonly Exercise[],
     return best!
   }
   const base = fit(blockCount)
-  if (base.key[0] <= TOLERANCE_SECONDS) return base.routine
-  const more = fit(blockCount + 1)
-  return more.key[0] < base.key[0] ? more.routine : base.routine
+  const chosen = base.key[0] <= TOLERANCE_SECONDS ? base.routine : (() => {
+    const more = fit(blockCount + 1)
+    return more.key[0] < base.key[0] ? more.routine : base.routine
+  })()
+
+  const warmup: string[] = []
+  while (warmup.length < chosen.warmup.length) warmup.push(takeNear(1, id => !isFunny(id) && !warmup.includes(id)))
+  const cooldown: string[] = []
+  while (cooldown.length < COOLDOWN_COUNT) {
+    cooldown.push(takeNear(1, id => !isFunny(id) && !cooldown.includes(id)))
+  }
+  const blocks: Block[] = []
+  for (const slot of chosen.blocks) {
+    const prev = new Set(blocks.at(-1)?.moves ?? [])
+    const moves: string[] = []
+    SLOT_TIERS.forEach((tier, slotIndex) => {
+      const hasFunny = (): boolean => moves.some(isFunny)
+      moves.push(takeNear(tier, id =>
+        !prev.has(id) && !moves.includes(id) && !(isFunny(id) && (slotIndex === 2 || hasFunny()))))
+    })
+    blocks.push({ ...slot, moves })
+  }
+  return { ...chosen, warmup, cooldown, blocks }
 }
 
 function lexLess(a: readonly number[], b: readonly number[]): boolean {
