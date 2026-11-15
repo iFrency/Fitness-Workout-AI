@@ -1419,6 +1419,102 @@
     "danceTier": 3
   },
   {
+    "id": "high-knee-march",
+    "name": "高抬膝踏步",
+    "clip": "high-knee-march",
+    "clipSeconds": 1.133,
+    "parts": [
+      "全身"
+    ],
+    "type": "main",
+    "level": 1,
+    "impact": "low",
+    "beatsPerRep": 2,
+    "defaultReps": 16,
+    "sided": false,
+    "cues": [
+      "身体挺直，双臂屈肘",
+      "快速交替把膝盖抬到髋部高度，手臂前后摆动"
+    ],
+    "caution": "膝盖或腰部不适时抬低一些",
+    "pools": [
+      "dance"
+    ],
+    "danceTier": 3
+  },
+  {
+    "id": "knee-lift-pull-down",
+    "name": "提膝下拉",
+    "clip": "knee-lift-pull-down",
+    "clipSeconds": 2.233,
+    "parts": [
+      "全身"
+    ],
+    "type": "main",
+    "level": 1,
+    "impact": "low",
+    "beatsPerRep": 4,
+    "defaultReps": 10,
+    "sided": false,
+    "cues": [
+      "双臂向上伸直",
+      "抬起一侧膝盖，同时双臂向下拉向膝盖，再举起换腿"
+    ],
+    "caution": "",
+    "pools": [
+      "dance"
+    ],
+    "danceTier": 3
+  },
+  {
+    "id": "hamstring-curl-arm-pull",
+    "name": "后勾腿划臂",
+    "clip": "hamstring-curl-arm-pull",
+    "clipSeconds": 2.233,
+    "parts": [
+      "全身"
+    ],
+    "type": "main",
+    "level": 1,
+    "impact": "low",
+    "beatsPerRep": 4,
+    "defaultReps": 10,
+    "sided": false,
+    "cues": [
+      "双臂向前伸出",
+      "向侧迈步，另一腿向后弯勾，同时双肘向后拉，像划船"
+    ],
+    "caution": "膝盖不适时后勾幅度小一些",
+    "pools": [
+      "dance"
+    ],
+    "danceTier": 3
+  },
+  {
+    "id": "side-step-arm-swing",
+    "name": "侧步开臂",
+    "clip": "side-step-arm-swing",
+    "clipSeconds": 2.233,
+    "parts": [
+      "全身"
+    ],
+    "type": "main",
+    "level": 1,
+    "impact": "low",
+    "beatsPerRep": 4,
+    "defaultReps": 13,
+    "sided": false,
+    "cues": [
+      "向侧迈一大步，另一脚并拢",
+      "每一步双臂向两侧打开，再向反方向走回"
+    ],
+    "caution": "",
+    "pools": [
+      "dance"
+    ],
+    "danceTier": 3
+  },
+  {
     "id": "jab-cross-step",
     "name": "直拳转体步",
     "clip": "jab-cross-step",
