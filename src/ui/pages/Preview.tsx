@@ -54,7 +54,10 @@ export function Preview() {
         <h1>预计 {formatDuration(plan.totalSeconds)}</h1>
       </header>
       {plan.shortfallSeconds > 0 && (
-        <p className="notice">可选动作不足，本方案约 {formatDuration(plan.totalSeconds)}。可以增加部位或缩短时长。</p>
+        <p className="notice">
+          可选动作不足，本方案约 {formatDuration(plan.totalSeconds)}。
+          {plan.routine ? '可以缩短时长或换一个难度。' : '可以增加部位或缩短时长。'}
+        </p>
       )}
       {plan.routine ? <DancePreview plan={plan} catalog={catalog} /> : groupsOf(plan).map(group => (
         <section key={group.key}>

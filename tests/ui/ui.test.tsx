@@ -172,3 +172,35 @@ it('done page shows 燃脂跳操 · 10 分钟', () => {
   render(<Done />)
   expect(screen.getByRole('heading', { name: '燃脂跳操 · 10 分钟' })).toBeInTheDocument()
 })
+
+it('done page counts distinct dance moves, not compiled items', () => {
+  const distinct = new Set(dancePlan.items.map(i => i.exerciseId)).size
+  expect(distinct).toBeLessThan(dancePlan.items.length)
+  const all = { id: 'r', date: '2026-11-08T00:00:00Z', plan: dancePlan, completedItems: dancePlan.items.map(() => true), actualSeconds: 600 }
+  useAppStore.setState({ lastResult: { record: all, saved: true }, page: 'done' })
+  const first = render(<Done />)
+  expect(screen.getByText(`完成 ${distinct} / ${distinct} 个动作`)).toBeInTheDocument()
+  first.unmount()
+  const firstId = dancePlan.items[0].exerciseId
+  const some = { ...all, completedItems: dancePlan.items.map(i => i.exerciseId === firstId) }
+  useAppStore.setState({ lastResult: { record: some, saved: true }, page: 'done' })
+  render(<Done />)
+  expect(screen.getByText(`完成 1 / ${distinct} 个动作`)).toBeInTheDocument()
+})
+
+it('done page keeps the item count for shape plans', () => {
+  const plan = onePlan()
+  const record = { id: 'r', date: '2026-11-08T00:00:00Z', plan, completedItems: [true], actualSeconds: 60 }
+  useAppStore.setState({ lastResult: { record, saved: true }, page: 'done' })
+  render(<Done />)
+  expect(screen.getByText('完成 1 / 1 个动作')).toBeInTheDocument()
+})
+
+it('dance shortfall notice does not mention body parts', () => {
+  useAppStore.setState({ catalog: realCatalog, plan: { ...dancePlan, shortfallSeconds: 120 }, page: 'preview' })
+  render(<Preview />)
+  const notice = document.querySelector('.notice')!
+  expect(notice.textContent).toMatch(/可选动作不足/)
+  expect(notice.textContent).not.toMatch(/部位/)
+  expect(notice.textContent).toMatch(/缩短时长|降低难度|难度/)
+})
