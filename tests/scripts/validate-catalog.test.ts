@@ -95,6 +95,23 @@ describe('dance pool checks', () => {
     expect(errs.some(e => e.includes('dual-long') && e.includes('八拍'))).toBe(true)
   })
 
+  it('flags a dual-pool move whose stored beatsPerRep is not an eight-count unit', () => {
+    const dual = makeExercise({
+      id: 'dual-three', clip: 'dual-three', clipSeconds: 2.2, parts: ['全身'], pools: ['shape', 'dance'], danceTier: 2, beatsPerRep: 3,
+    })
+    const { cat, clips } = withDance([...fullPool, dual])
+    expect(validateCatalog(cat, clips, 1000).some(e => e.includes('dual-three') && e.includes('beatsPerRep'))).toBe(true)
+  })
+
+  it('flags an empty dance pool only when a dance pool is expected', () => {
+    const shapeOnly = [...fixtureCatalog, makeExercise({ id: 'dance-ish', clip: 'dance-ish', pools: ['shape'], danceTier: 3 })]
+    const clips = clipsFor(shapeOnly)
+    expect(validateCatalog(shapeOnly, clips, 1000)).toEqual([])
+    const errs = validateCatalog(shapeOnly, clips, 1000, { expectDancePool: true })
+    expect(errs).toContain('低冲击高潮动作少于 6 条')
+    expect(errs).toContain('入门可用的强度 1 动作少于 4 条')
+  })
+
   it('flags fewer than 6 low-impact tier-3 moves', () => {
     const { cat, clips } = withDance([...tierMoves(1, 4, 't1'), ...tierMoves(2, 4, 't2'), ...tierMoves(3, 5, 't3')])
     expect(validateCatalog(cat, clips, 1000)).toContain('低冲击高潮动作少于 6 条')

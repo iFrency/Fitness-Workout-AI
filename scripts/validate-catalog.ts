@@ -59,6 +59,9 @@ function danceBeatErrors(catalog: readonly Exercise[]): string[] {
   for (const e of catalog) {
     if (!e.pools.includes('dance') || e.danceTier === undefined) continue
     const dualPool = e.pools.includes('shape')
+    if (!EIGHT_COUNT_UNITS.includes(e.beatsPerRep)) {
+      errors.push(`动作 ${e.id} 存储的 beatsPerRep ${e.beatsPerRep} 不是八拍制（1、2、4、8）`)
+    }
     for (const bpm of danceBpmsFor(e.danceTier)) {
       let beats: number | null
       if (dualPool) {
@@ -74,9 +77,9 @@ function danceBeatErrors(catalog: readonly Exercise[]): string[] {
   return errors
 }
 
-/** Pool-size checks apply once a catalog has a dance pool at all; a shape-only catalog has no dance mode. */
-function dancePoolErrors(catalog: readonly Exercise[]): string[] {
-  if (!catalog.some(e => e.pools.includes('dance'))) return []
+/** Pool-size checks run when the catalog has a dance pool, or when the caller expects one (the real app catalog). */
+function dancePoolErrors(catalog: readonly Exercise[], expectDancePool: boolean): string[] {
+  if (!expectDancePool && !catalog.some(e => e.pools.includes('dance'))) return []
   const errors: string[] = []
   const dance = catalog.filter(e => e.pools.includes('dance') && e.impact === 'low')
   if (dance.filter(e => e.danceTier === 3).length < MIN_CLIMAX_MOVES) errors.push('低冲击高潮动作少于 6 条')
@@ -105,20 +108,27 @@ function coverageErrors(catalog: readonly Exercise[]): string[] {
   return errors
 }
 
-export function validateCatalog(catalog: readonly Exercise[], clips: Map<string, number>, glbBytes: number): string[] {
+export interface ValidateOptions {
+  /** True for the real app catalog: an empty dance pool is then an error instead of a shape-only fixture. */
+  readonly expectDancePool?: boolean
+}
+
+export function validateCatalog(
+  catalog: readonly Exercise[], clips: Map<string, number>, glbBytes: number, options: ValidateOptions = {},
+): string[] {
   const errors: string[] = []
   if (catalog.length < MIN_MOVES || catalog.length > MAX_MOVES) errors.push(`动作数 ${catalog.length} 不在 ${MIN_MOVES} 到 ${MAX_MOVES} 之间`)
   if (glbBytes >= MAX_GLB_BYTES) errors.push(`GLB 大小 ${(glbBytes / 1048576).toFixed(2)}MB，应小于 3MB`)
   return [
     ...errors, ...clipErrors(catalog, clips), ...danceBeatErrors(catalog),
-    ...coverageErrors(catalog.filter(e => e.pools.includes('shape'))), ...dancePoolErrors(catalog),
+    ...coverageErrors(catalog.filter(e => e.pools.includes('shape'))), ...dancePoolErrors(catalog, options.expectDancePool ?? false),
   ]
 }
 
 function main(): void {
   const catalog = parseCatalog(JSON.parse(readFileSync('public/assets/catalog/exercises.json', 'utf8')))
   const glbPath = 'public/assets/models/mannequin.glb'
-  const errors = validateCatalog(catalog, readGlbAnimations(readFileSync(glbPath)), statSync(glbPath).size)
+  const errors = validateCatalog(catalog, readGlbAnimations(readFileSync(glbPath)), statSync(glbPath).size, { expectDancePool: true })
   errors.forEach(e => console.error(e))
   process.exit(errors.length > 0 ? 1 : 0)
 }
