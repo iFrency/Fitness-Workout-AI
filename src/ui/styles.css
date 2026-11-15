@@ -22,6 +22,7 @@ button, select, input { font: inherit; color: inherit; }
 h1 { margin: 0; font-size: 26px; letter-spacing: 1px; }
 h2 { margin: 0 0 10px; font-size: 15px; color: var(--muted); font-weight: 600; }
 .home h1 { color: var(--accent); font-size: 32px; transform: rotate(-2deg); }
+.home [role="tabpanel"] { display: flex; flex-direction: column; gap: 18px; }
 
 button { border: 1px solid var(--line); background: var(--surface); border-radius: var(--radius); padding: 10px 14px; cursor: pointer; }
 button:disabled { opacity: 0.4; cursor: not-allowed; }

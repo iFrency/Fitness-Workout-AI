@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, type KeyboardEvent } from 'react'
 import { PARTS, type Level } from '../../catalog/types'
 import { MINUTES_OPTIONS } from '../../planner/timing'
 import { Disclaimer } from '../components/Disclaimer'
@@ -8,6 +8,8 @@ import { LEVEL_LABELS, formatDuration } from '../format'
 import { useAppStore } from '../store'
 
 const DANCE_MINUTES = [10, 15, 20, 30] as const
+const PANEL_ID = 'home-panel'
+const tabId = (mode: string) => `home-tab-${mode}`
 const HOME_TABS = [
   { mode: 'dance', label: '燃脂跳操' },
   { mode: 'shape', label: '部位塑形' },
@@ -30,6 +32,16 @@ export function Home() {
   }
   const [showSettings, setShowSettings] = useState(false)
 
+  const onTabKeyDown = (e: KeyboardEvent<HTMLButtonElement>) => {
+    if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return
+    e.preventDefault()
+    const step = e.key === 'ArrowRight' ? 1 : -1
+    const current = HOME_TABS.findIndex(t => t.mode === homeMode)
+    const next = HOME_TABS[(current + step + HOME_TABS.length) % HOME_TABS.length]
+    updateSettings({ homeMode: next.mode })
+    document.getElementById(tabId(next.mode))?.focus()
+  }
+
   const togglePart = (part: (typeof PARTS)[number]) =>
     setInput({ parts: input.parts.includes(part) ? input.parts.filter(p => p !== part) : [...input.parts, part] })
 
@@ -50,9 +62,14 @@ export function Home() {
       )}
       <div className="tabs" role="tablist">
         {HOME_TABS.map(t => (
-          <button key={t.mode} type="button" role="tab" aria-selected={homeMode === t.mode} onClick={() => updateSettings({ homeMode: t.mode })}>{t.label}</button>
+          <button
+            key={t.mode} type="button" role="tab" id={tabId(t.mode)} aria-controls={PANEL_ID}
+            aria-selected={homeMode === t.mode} tabIndex={homeMode === t.mode ? 0 : -1}
+            onKeyDown={onTabKeyDown} onClick={() => updateSettings({ homeMode: t.mode })}
+          >{t.label}</button>
         ))}
       </div>
+      <div role="tabpanel" id={PANEL_ID} aria-labelledby={tabId(homeMode)}>
       {homeMode === 'dance' ? (
         <>
           <section>
@@ -76,12 +93,13 @@ export function Home() {
               <input
                 type="checkbox"
                 checked={danceInput.quiet}
+                aria-describedby="quiet-hint"
                 disabled={danceInput.level === 1}
                 onChange={e => setDanceInput({ quiet: e.target.checked })}
               />
               安静模式（不跳）
             </label>
-            <p className="hint">适合办公室和楼下有邻居</p>
+            <p className="hint" id="quiet-hint">适合办公室和楼下有邻居</p>
           </section>
           <button type="button" className="primary big" onClick={generate}>生成方案</button>
         </>
@@ -114,6 +132,7 @@ export function Home() {
         <button type="button" className="primary big" disabled={input.parts.length === 0} onClick={generate}>生成方案</button>
         </>
       )}
+      </div>
       {!accepted && <Disclaimer />}
       {showSettings && <SettingsSheet onClose={() => setShowSettings(false)} />}
     </main>

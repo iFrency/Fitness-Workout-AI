@@ -204,3 +204,35 @@ it('dance shortfall notice does not mention body parts', () => {
   expect(notice.textContent).not.toMatch(/部位/)
   expect(notice.textContent).toMatch(/缩短时长|降低难度|难度/)
 })
+
+it('home tabs are wired to a labelled tabpanel with roving tabindex', () => {
+  render(<Home />)
+  const danceTab = screen.getByRole('tab', { name: '燃脂跳操' })
+  const shapeTab = screen.getByRole('tab', { name: '部位塑形' })
+  expect(danceTab).toHaveAttribute('tabindex', '0')
+  expect(shapeTab).toHaveAttribute('tabindex', '-1')
+  const panel = screen.getByRole('tabpanel')
+  expect(danceTab).toHaveAttribute('aria-controls', panel.id)
+  expect(panel).toHaveAttribute('aria-labelledby', danceTab.id)
+  expect(shapeTab.id).not.toBe('')
+})
+
+it('home tabs move with ArrowRight and ArrowLeft', async () => {
+  render(<Home />)
+  screen.getByRole('tab', { name: '燃脂跳操' }).focus()
+  await userEvent.keyboard('{ArrowRight}')
+  const shapeTab = screen.getByRole('tab', { name: '部位塑形' })
+  expect(shapeTab).toHaveAttribute('aria-selected', 'true')
+  expect(shapeTab).toHaveFocus()
+  expect(shapeTab).toHaveAttribute('tabindex', '0')
+  expect(screen.getByRole('tabpanel')).toHaveAttribute('aria-labelledby', shapeTab.id)
+  await userEvent.keyboard('{ArrowLeft}')
+  expect(screen.getByRole('tab', { name: '燃脂跳操' })).toHaveAttribute('aria-selected', 'true')
+  expect(screen.getByRole('tab', { name: '燃脂跳操' })).toHaveFocus()
+})
+
+it('quiet hint is linked to the checkbox', () => {
+  render(<Home />)
+  const box = screen.getByRole('checkbox', { name: '安静模式（不跳）' })
+  expect(box).toHaveAccessibleDescription('适合办公室和楼下有邻居')
+})
