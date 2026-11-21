@@ -13,6 +13,8 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="android:background">@null</item>
+        <!-- Shows behind the status and navigation bars; matches the bg variable in src/ui/styles.css. -->
+        <item name="android:windowBackground">@color/app_background</item>
     </style>
 
 
