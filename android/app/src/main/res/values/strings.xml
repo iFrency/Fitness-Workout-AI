@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">魔性健身</string>
+    <string name="title_activity_main">魔性健身</string>
+    <string name="package_name">app.moxing.fitness</string>
+    <string name="custom_url_scheme">app.moxing.fitness</string>
+</resources>

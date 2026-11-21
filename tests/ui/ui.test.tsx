@@ -258,3 +258,17 @@ it('dance preview block headings end with the block duration as mm:ss', () => {
   expect(heading.textContent).toBe(`第 1 段 · 118 BPM · ${formatDuration(seconds)}`)
   expect(heading.textContent).toMatch(/ · \d{2}:\d{2}$/)
 })
+
+it('the Android back button closes the settings sheet before leaving the app', async () => {
+  const { act } = await import('@testing-library/react')
+  const { backRouter } = await import('../../src/native/backButton')
+  render(<Home />)
+  await userEvent.click(screen.getByRole('button', { name: '设置' }))
+  expect(screen.getByRole('button', { name: '完成' })).toBeInTheDocument()
+  const exit = vi.fn()
+  act(() => backRouter.handle('home', vi.fn(), exit))
+  expect(screen.queryByRole('button', { name: '完成' })).not.toBeInTheDocument()
+  expect(exit).not.toHaveBeenCalled()
+  act(() => backRouter.handle('home', vi.fn(), exit))
+  expect(exit).toHaveBeenCalledTimes(1)
+})

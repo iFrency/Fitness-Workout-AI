@@ -26,7 +26,8 @@ const pwa = VitePWA({
 })
 
 export default defineConfig(({ mode }) => ({
-  plugins: [react(), pwa],
+  // The Android app ships every file inside the APK, so it needs no service worker.
+  plugins: mode === 'android' ? [react()] : [react(), pwa],
   define: {
     'import.meta.env.VITE_ALLOW_SPEED': JSON.stringify(mode === 'e2e' ? 'true' : 'false'),
   },

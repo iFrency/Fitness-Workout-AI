@@ -1,4 +1,4 @@
-import { createWakeLock, type WakeLockEnv } from '../../src/ui/wakeLock'
+import { createWakeLock, nativeWakeLockEnv, type WakeLockEnv } from '../../src/ui/wakeLock'
 
 function fakeEnv(supported: boolean, rejects = false) {
   const sentinels: { released: boolean; release: () => Promise<void> }[] = []
@@ -66,4 +66,24 @@ it('falls back to the video when the request is refused (e.g. not a secure conte
   const lock = createWakeLock(f.env)
   lock.acquire(); await flush()
   expect(f.video.playing).toBe(true)
+})
+
+describe('native keep-awake env', () => {
+  it('turns the keep-screen-on flag on and off through the plugin', async () => {
+    const plugin = { keepAwake: vi.fn(async () => {}), allowSleep: vi.fn(async () => {}) }
+    const lock = createWakeLock(nativeWakeLockEnv(plugin))
+    lock.acquire(); await flush()
+    expect(plugin.keepAwake).toHaveBeenCalledTimes(1)
+    lock.release(); await flush()
+    expect(plugin.allowSleep).toHaveBeenCalledTimes(1)
+  })
+
+  it('falls back to the video when the plugin call fails', async () => {
+    const plugin = { keepAwake: vi.fn(async () => { throw new Error('no activity') }), allowSleep: vi.fn(async () => {}) }
+    const video = { play: vi.fn(async () => {}), pause: vi.fn() }
+    const env = { ...nativeWakeLockEnv(plugin), makeVideo: () => video }
+    const lock = createWakeLock(env)
+    lock.acquire(); await flush()
+    expect(video.play).toHaveBeenCalled()
+  })
 })

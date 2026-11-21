@@ -8,7 +8,7 @@ import { TrainingSession } from '../player/session'
 import { buildTimeline, timelineEnd, type Step } from '../player/timeline'
 import { loadUserMusic, saveProgress, type Settings, type TrainingProgress } from '../storage/storage'
 import { getAudio, resumeSession, speedFromUrl } from './audio'
-import { browserWakeLockEnv, createWakeLock } from './wakeLock'
+import { createWakeLock, defaultWakeLockEnv } from './wakeLock'
 
 const UI_REFRESH_MS = 100
 const SAVE_PROGRESS_MS = 5000
@@ -87,7 +87,7 @@ export function useTrainingRun(
       if (!session.isStarted() || session.time() >= timelineEnd(steps)) return
       void saveProgress({ plan, time: session.time(), skipped: [...session.skippedItems()], savedAt: new Date().toISOString() })
     }
-    const wakeLock = createWakeLock(browserWakeLockEnv())
+    const wakeLock = createWakeLock(defaultWakeLockEnv())
     // Keep the screen on while the workout is running; let it sleep when paused.
     const timer = setInterval(() => {
       setT(session.time())

@@ -1,5 +1,6 @@
 import { useState, type ChangeEvent } from 'react'
 import { STYLE_LABELS, type StyleId } from '../../beat/patterns'
+import { useBackHandler } from '../../native/useBackHandler'
 import { saveUserMusic } from '../../storage/storage'
 import { useAppStore } from '../store'
 import { About } from './About'
@@ -12,6 +13,7 @@ export function SettingsSheet({ onClose }: SettingsSheetProps) {
   const settings = useAppStore(s => s.settings)
   const update = useAppStore(s => s.updateSettings)
   const [musicNote, setMusicNote] = useState<string | null>(null)
+  useBackHandler(onClose)
 
   async function onFile(event: ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0]

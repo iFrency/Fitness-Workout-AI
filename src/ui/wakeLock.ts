@@ -1,5 +1,9 @@
+import { KeepAwake } from '@capacitor-community/keep-awake'
+import { Capacitor } from '@capacitor/core'
+
 /**
- * Keeps the phone screen on during a workout. Uses the Screen Wake Lock API where it is
+ * Keeps the phone screen on during a workout. In the Android app it sets the native
+ * keep-screen-on window flag. Uses the Screen Wake Lock API where it is
  * available (HTTPS or localhost); otherwise plays a tiny silent looping video, which also
  * keeps mobile browsers awake (the usual NoSleep technique).
  */
@@ -41,6 +45,36 @@ export function browserWakeLockEnv(): WakeLockEnv {
       return video
     },
   }
+}
+
+export interface KeepAwakePlugin {
+  keepAwake(): Promise<void>
+  allowSleep(): Promise<void>
+}
+
+/**
+ * The Android app keeps the screen on with the native window flag. The flag survives the app
+ * going to the background, so this env never reports the page as hidden: the lock is only
+ * dropped by an explicit release.
+ */
+export function nativeWakeLockEnv(plugin: KeepAwakePlugin): WakeLockEnv {
+  const browser = browserWakeLockEnv()
+  return {
+    wakeLock: {
+      async request() {
+        await plugin.keepAwake()
+        return { release: () => plugin.allowSleep() }
+      },
+    },
+    isHidden: () => false,
+    onVisibilityChange: () => {},
+    offVisibilityChange: () => {},
+    makeVideo: browser.makeVideo,
+  }
+}
+
+export function defaultWakeLockEnv(): WakeLockEnv {
+  return Capacitor.isNativePlatform() ? nativeWakeLockEnv(KeepAwake) : browserWakeLockEnv()
 }
 
 export function createWakeLock(env: WakeLockEnv): WakeLock {
