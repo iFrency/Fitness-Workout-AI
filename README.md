@@ -4,6 +4,14 @@
 
 无广告、无会员、无账号，不连接任何云端服务：训练记录和设置只保存在你自己的设备上，打开过一次后断网也能完整训练。
 
+## 界面
+
+| 首页 | 方案预览 | 训练中 | 休息 | 燃脂跳操 |
+|---|---|---|---|---|
+| <img src="docs/screenshots/home.png" width="160" alt="首页：选择模式、部位、时长和难度"> | <img src="docs/screenshots/preview.png" width="160" alt="方案预览：热身、主训、拉伸"> | <img src="docs/screenshots/training.png" width="160" alt="训练中：主画面加正面、侧面画中画"> | <img src="docs/screenshots/rest.png" width="160" alt="休息倒计时与下一个动作"> | <img src="docs/screenshots/dance.png" width="160" alt="燃脂跳操训练"> |
+
+截图由 `npx tsx tools/screenshots/capture.ts` 生成。
+
 ## 功能
 
 - **部位塑形**：选择肩颈、上肢、胸背、腰腹、臀腿或全身，加上时长（5 到 30 分钟）和难度（入门、进阶、挑战），按"热身、主训、拉伸"自动生成方案；主训可循环多轮。方案生成后可以替换、删除动作或整套换掉。
