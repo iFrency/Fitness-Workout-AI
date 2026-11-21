@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import { STYLE_LABELS, type StyleId } from '../../beat/patterns'
 import { THUMB_URL } from '../../catalog/constants'
 import type { Exercise } from '../../catalog/types'
+import { useBackHandler } from '../../native/useBackHandler'
 import type { Plan } from '../../planner/types'
 import { stateAt, timelineEnd, type TrainingState } from '../../player/timeline'
 import { Stage, type CameraPreset } from '../../stage/Stage'
@@ -68,6 +69,8 @@ export function Training() {
   const quit = () => {
     if (window.confirm('确定结束本次训练吗？已完成的动作会被记录。')) void finishTraining(session, run.steps)
   }
+  // Android back button: same confirm as the 结束 button, never a silent exit.
+  useBackHandler(quit)
   const setStyle = (mainStyle: StyleId) => {
     updateSettings({ mainStyle })
     getAudio().engine.setOptions({ mainStyle })
